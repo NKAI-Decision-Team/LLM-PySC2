@@ -1,0 +1,36 @@
+load("@my_deps//:requirements.bzl", "requirement")
+
+licenses(["notice"])
+
+py_library(
+    name = "dm_env",
+    srcs = [
+        "dm_env/__init__.py",
+        "dm_env/_environment.py",
+        "dm_env/_metadata.py",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@dm_env_archive//:specs",
+    ],
+)
+
+py_library(
+    name = "specs",
+    srcs = [
+        "dm_env/specs.py",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+py_library(
+    name = "test_utils",
+    srcs = [
+        "dm_env/_abstract_test_mixin.py",
+        "dm_env/test_utils.py",
+    ],
+    deps = [
+        requirement("dm-tree"),
+    ],
+    visibility = ["//visibility:public"],
+)

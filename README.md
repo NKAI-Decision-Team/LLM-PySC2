@@ -16,7 +16,7 @@
 # LLM-PySC2 - LLM StarCraft II Learning Environment
 
 [LLM-PySC2](https://github.com/NKAI-Decision-Team/LLM-PySC2) is 
-[NKAI Intelligent Decision Team](https://github.com/orgs/NKAI-Decision-Team/repositories) and 
+[NKU Robot Autonomy and Human-AI Collaboration Group](https://rh.nankai.edu.cn/) and 
 [NUDT Laboratory for Big Data and Decision](https://www.nudt.edu.cn/)'s Python component of the StarCraft II LLM Decision Environment. 
 It wraps [Deepmind](https://deepmind.google/)'s [PySC2 Learning Environment API](https://github.com/deepmind/pysc2) 
 in to a LLM energized Multi-Agent Decision Environment. 
@@ -355,7 +355,9 @@ Organize.
 
 ## Thanks
 
+https://github.com/oxwhirl/smac
+
 https://github.com/google-deepmind/pysc2
 
-https://github.com/oxwhirl/smac
+https://github.com/histmeisah/Large-Language-Models-play-StarCraftII
 

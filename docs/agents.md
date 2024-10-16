@@ -16,20 +16,20 @@ communication information transmission.
 
 ### camera calibration
 
-View code in `llm_pysc2.lib.main_agent_funcs.main_agent_func0` for more information.
+View code in `llm_pysc2.agents.main_agent_funcs.main_agent_func0` for more information.
 
 ### unit grouping
 
-View code in `llm_pysc2.lib.main_agent_funcs.main_agent_func1` for more information.
+View code in `llm_pysc2.agents.main_agent_funcs.main_agent_func1` for more information.
 
 ### auto economic management
 
-View code in `llm_pysc2.lib.main_agent_funcs.main_agent_func2` 
-and `llm_pysc2.lib.main_agent_funcs.main_agent_func3` for more information.
+View code in `llm_pysc2.agents.main_agent_funcs.main_agent_func2` 
+and `llm_pysc2.agents.main_agent_funcs.main_agent_func3` for more information.
 
 ### gathering scattered team 
 
-View code in `llm_pysc2.lib.main_agent_funcs.main_agent_func4` for more information.
+View code in `llm_pysc2.agents.main_agent_funcs.main_agent_func4` for more information.
 
 ### mainloop managing
 

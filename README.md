@@ -20,11 +20,11 @@
 [NUDT Laboratory for Big Data and Decision](https://www.nudt.edu.cn/)'s Python component of the StarCraft II LLM Decision Environment. 
 It wraps [Deepmind](https://deepmind.google/)'s [PySC2 Learning Environment API](https://github.com/deepmind/pysc2) 
 in to a LLM energized Multi-Agent Decision Environment. 
-This is a collaboration between NKAI and NUDT to develop StarCraft II into a rich environment for LLM research. 
+This is a collaboration between NKU and NUDT to develop StarCraft II into a rich environment for LLM research. 
 LLM-PySC2 provides an interface for LLM agents to interact with StarCraft 2, 
 getting textual/multimodal observations and dealing with textual actions.
 
-We also make it possible for LLLMs to make decisions in SMAC tasks, which make it possible to compare LLM with RL method.
+We also make it possible for LLMs to make decisions in SMAC tasks, which make it possible to compare LLM with RL method.
 
 ## Features
 1. Support for more than 5 series of mainstream LLMs;
@@ -43,7 +43,7 @@ We also make it possible for LLLMs to make decisions in SMAC tasks, which make i
 If you use the LLM-PySC2 environment or LLM-SMAC tasks in your research, 
 please cite our [github pager](https://github.com/NKAI-Decision-Team/LLM-PySC2) or 
 LLM StarCraft II Paper after preprint paper published. 
-You can also contact us by e-mail 734162621@qq.com temporarily.
+You can also contact us by e-mail [2120230524@mail.nankai.edu.cn]() or [734162621@qq.com]() temporarily.
 
 ## Quick Start Guide
 
@@ -145,7 +145,7 @@ $ python -m llm_pysc2.bin.experiment_llm_smac
 ```
 
 These two script will load gpt-3.5 energized agents and use pure text observation to make decisions.
-If you want to use multimodal llms like gpt-4v, you can set `config.ENABLE_IMAGE_RGB = True` to 
+If you want to use multimodal LLMs like gpt-4v, you can set `config.ENABLE_IMAGE_RGB = True` to 
 activate image observations.
 
 Also, you can use --parallel parameter (or edit files in ./llm_pysc2/bin) to run several games at the same time:

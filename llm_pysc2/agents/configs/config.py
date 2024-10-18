@@ -90,12 +90,20 @@ class AgentConfig:
 
   def auto_check(self, log_id):
     if not isinstance(self.LLM_SIMULATION_TIME, (int, float)) or self.LLM_SIMULATION_TIME <= 0:
-      if self.model_name == '':
+      error_in_llm_setting = False
+      if self.model_name == '' or self.model_name == 'YOUR-MODEL-NAME':
+        self.reset_llm(model_name='gpt-3.5-turbo')
         logger.error(f"[ID {log_id}] No model_name set, please specify model_name in the config.")
-      if self.api_key == '':
+        self.LLM_SIMULATION_TIME = 5
+        error_in_llm_setting = True
+      if self.api_key == '' or self.api_key == 'YOUR-API-KEY':
         logger.error(f"[ID {log_id}] No api_key set, please specify your api_key in the config.")
+        self.LLM_SIMULATION_TIME = 5
+        error_in_llm_setting = True
       if self.model_name == '' or self.api_key == '':
         self.LLM_SIMULATION_TIME = 5
+        error_in_llm_setting = True
+      if error_in_llm_setting:
         wait(5, log_id, "(in LLM SIMULATION MODE)")
 
     if self.ENABLE_IMAGE_RGB or self.ENABLE_IMAGE_FEATURE:

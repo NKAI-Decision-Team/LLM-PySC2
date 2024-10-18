@@ -117,20 +117,13 @@ class GptClient:
         {"role": "system", "content": self.system_prompt},
         {"role": "user", "content": self.example_i_prompt},
         {"role": "assistant", "content": self.example_o_prompt},
-
+        # TODO: Incorrect img usage, to be update in recent commit
         {"role": "user", "content": [
-          {"type": "text", "text": self.screen_rgb_prompt},   # obs_prompt
+          {"type": "text", "text": obs_prompt},   # obs_prompt
           {"type": "image_url", "image_url": {
             "url": f"data:image/png;base64,{base64_image}"
           }}
         ]},
-        {"role": "user", "content": [
-          {"type": "text", "text": self.minimap_rgb_prompt},  # obs_prompt
-          {"type": "image_url", "image_url": {
-            "url": f"data:image/png;base64,{base64_image}"
-          }}
-        ]},
-        {"role": "user", "content": obs_prompt},
       ]
 
   def query(self, obs_prompt, base64_image=None):

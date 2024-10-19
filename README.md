@@ -171,7 +171,7 @@ You can run these experiments in `./llm_pysc2/bin/llm_pysc2` and `./llm_pysc2/bi
 
 llm_smac experiments are original smac tasks, use the same map and setting of smac tasks. Consider that 
 the control of the Zerg and Terran is still ongoing, we will add more smac tasks in the future 
-(executable file in `./llm_pysc2/bin/llm_smac`):
+(executable files in `./llm_pysc2/bin/llm_smac`):
 
     2s3z                3s5z                1c3s5z              
     3s_vs_3z            3s_vs_4z            3s_vs_5z            
@@ -264,7 +264,7 @@ class ConfigSmac_2s3z(ProtossAgentConfig):
 you can add more sub agent in your configuration if needed.
 
 
-### Customize SubAgent's UniTeams
+### Customize SubAgent's UnitTeams
 
 You can design agent's unit team in config. 
 In the example above, we showed a sub agent with 3 teams called 'Zealot-1', 'Zealot-2' and 'Stalker-1'. 
@@ -275,12 +275,12 @@ A team should consist of:
 'name': any str
 'unit_type': list, of pysc2 unit enum
 'game_group': int, -1 to 9, -1 refers to do not add units to any game_group
-'select_type': str, 'group' for group recall, 'select' for single select(like mouse left click), 'select_all_type' for select screen units of same types(like mouse double click)
+'select_type': str, 'group' for group recall, 'select' for single select(mouse left click), 'select_all_type' for select screen units of same types(mouse double click)
 ```
 
 More examples can be viewed in `./llm_pysc2/agents/configs`.
 
-### Customize UniTeam's action space
+### Customize UnitTeam's action space
 
 You can design team's action space in config. 
 In the example(ConfigSmac_2s3z) above, we showed a action space of CombatGroupSmac.

@@ -977,7 +977,7 @@ Actions:
         <Hold_Position()>
 """
 
-  actions, processed_text_a = translator.translate(text)
+  actions, processed_text_a, _ = translator.translate(text)
   print(f"\n\ntext to translator:{text}")
   print(f"detected action from translator:\n{actions}\n")
   print(f"detected text_a from translator:\n{processed_text_a}\n")

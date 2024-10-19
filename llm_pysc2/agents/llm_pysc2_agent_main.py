@@ -14,6 +14,7 @@
 
 
 from llm_pysc2.lib.llm_communicate import communication_info_transmission
+from llm_pysc2.lib.data_recorder import DataRecorder
 from llm_pysc2.agents.main_agent_funcs import *
 from llm_pysc2.agents.configs import ProtossAgentConfig
 from llm_pysc2.agents.llm_pysc2_agent import LLMAgent
@@ -30,6 +31,9 @@ import random
 import time
 import sys
 import os
+
+
+llm_pysc2_global_log_id = 0
 
 
 # multi thread query, target function
@@ -51,6 +55,7 @@ class MainAgent(base_agent.BaseAgent):
     self._initialize_logger()
     self.config.auto_check(self.log_id)
     self._initialize_agents(SubAgent)
+    self._initialize_data_recorder()
     logger.success(f"[ID {self.log_id}] Main Agent successfully initialized!")
 
   def _logger_filter_function(self, record):
@@ -109,18 +114,23 @@ class MainAgent(base_agent.BaseAgent):
 
   def _initialize_logger(self):
 
+    global llm_pysc2_global_log_id
+
     time.sleep(random.random())
     base_log_dir = f"{os.path.dirname(os.path.abspath(__file__))}/../../llm_log"
     if not os.path.exists(base_log_dir):
       os.mkdir(base_log_dir)
-    if not os.path.exists(base_log_dir + f"/show.py"):
-      copyfile(f"{os.path.dirname(os.path.abspath(__file__))}/../lib/show.py", base_log_dir + f"/show.py")
+    if not os.path.exists(base_log_dir + f"/log_show.py"):
+      copyfile(f"{os.path.dirname(os.path.abspath(__file__))}/../lib/log_show.py", base_log_dir + f"/log_show.py")
+    if not os.path.exists(base_log_dir + f"/log_analyse.py"):
+      copyfile(f"{os.path.dirname(os.path.abspath(__file__))}/../lib/log_analyse.py", base_log_dir + f"/log_analyse.py")
 
     self.log_id = -1
     while True:
       self.log_id += 1
       self.log_dir_path = f"{os.path.dirname(os.path.abspath(__file__))}/../../llm_log/{self.start_time}-{self.log_id}"
-      if not os.path.exists(self.log_dir_path):
+      if not os.path.exists(self.log_dir_path) and self.log_id == llm_pysc2_global_log_id + 1:
+        llm_pysc2_global_log_id += 1
         self.log_error_path = self.log_dir_path + f"/log_error.txt"
         self.log_success_path = self.log_dir_path + f"/log_success.txt"
         self.log_debug_path = self.log_dir_path + f"/log_debug.txt"
@@ -145,12 +155,12 @@ class MainAgent(base_agent.BaseAgent):
     logger.add(self.log_success_path, level="SUCCESS", rotation="100 MB", catch=True, filter=self._logger_filter_function)
     logger.add(self.log_debug_path, level="DEBUG", rotation="100 MB", catch=True, filter=self._logger_filter_function)
     logger.add(self.log_info_path, level="INFO", rotation="100 MB", catch=True, filter=self._logger_filter_function)
-    if self.log_id == 0:
+    if self.log_id == 1:
       try:
         logger.remove(handler_id=0)
+        logger.add(sys.stderr, level="INFO", catch=True, filter=self._logger_filter_function)
       except:
         pass
-      logger.add(sys.stderr, level="INFO", catch=True, filter=self._logger_filter_function)
 
   def _initialize_agents(self, SubAgent):
     self.agents = {}
@@ -167,6 +177,9 @@ class MainAgent(base_agent.BaseAgent):
       self.agents_query_llm_times[agent_name] = 0
       self.agents_executing_times[agent_name] = 0
       self.agents[agent_name].log_id = self.log_id
+
+  def _initialize_data_recorder(self):
+    self.data_recorder = DataRecorder(self.log_dir_path, save_level=0)
 
   def _all_agent_query_llm_finished(self):
     for agent_name in self.AGENT_NAMES:
@@ -194,8 +207,8 @@ class MainAgent(base_agent.BaseAgent):
 
     # main agent control data updates
     agent_name = None
-    self.num_step += 1
     self.obs_history.append(obs)
+    self.data_recorder.step(obs, self.episodes, self.steps)
     if len(self.func_id_history) > 0 and self.func_id_history[-1] == 573:
       self.camera_threshold += 0.05
     elif len(self.func_id_history) > 0 and self.func_id_history[-1] == 3:
@@ -207,7 +220,7 @@ class MainAgent(base_agent.BaseAgent):
       self.main_loop_step_old = self.main_loop_step
       self.main_loop_lock = False
       logger.success(f"[ID {self.log_id}] " + '========== ' + '==' * 25 + f" Loop {self.main_loop_step} " + '==' * 25 + ' ==========')
-    logger.success(f"[ID {self.log_id}] " + '---------- ' + '--' * 25 + f" Step {self.num_step} " + '--' * 25 + ' ----------')
+    logger.success(f"[ID {self.log_id}] " + '---------- ' + '--' * 25 + f" Step {self.steps} " + '--' * 25 + ' ----------')
     func_id, func_call = (0, actions.FUNCTIONS.no_op())
 
     # initial steps and camera calibration (necessary)
@@ -243,7 +256,7 @@ class MainAgent(base_agent.BaseAgent):
     # SubAgent data update
     for agent_name in self.AGENT_NAMES:
       agent = self.agents[agent_name]
-      agent.num_step = self.num_step
+      agent.num_step = self.steps
       agent.main_loop_step = self.main_loop_step
       agent.world_range = self.world_range
       agent.world_x_offset = self.world_x_offset

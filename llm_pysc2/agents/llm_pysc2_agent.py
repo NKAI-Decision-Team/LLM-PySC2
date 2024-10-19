@@ -260,7 +260,7 @@ class LLMAgent:
 
       if not os.path.exists(self.log_dir_path + f"/{self.name}"):
         os.mkdir(self.log_dir_path + f"/{self.name}")
-        copyfile(self.current_dir + f"/../../llm_log/show.py", self.log_dir_path + f"/{self.name}/show.py")
+        copyfile(self.current_dir + f"/../../llm_log/log_show.py", self.log_dir_path + f"/{self.name}/log_show.py")
       if not os.path.exists(self.log_dir_path + f"/{self.name}/o.txt"):
         with open(self.log_dir_path + f"/{self.name}/o.txt", "w") as f:
           f.write('')

@@ -44,6 +44,8 @@ flags.DEFINE_enum("action_space", None, sc2_env.ActionSpace._member_names_,  # p
                   "and rgb observations.")
 flags.DEFINE_bool("use_feature_units", True,
                   "Whether to include feature units.")
+flags.DEFINE_bool("add_cargo_to_units", True,
+                  "Whether to add cargo units to feature/raw units.")
 flags.DEFINE_bool("use_raw_units", True,
                   "Whether to include raw units.")
 flags.DEFINE_bool("disable_fog", False, "Whether to disable Fog of War.")
@@ -96,7 +98,9 @@ def run_thread(agent_classes, players, map_name, visualize):
           rgb_minimap=FLAGS.rgb_minimap_size,
           action_space=FLAGS.action_space,
           use_feature_units=FLAGS.use_feature_units,
-          use_raw_units=FLAGS.use_raw_units),
+          use_raw_units=FLAGS.use_raw_units,
+          add_cargo_to_units=FLAGS.add_cargo_to_units,
+      ),
       step_mul=FLAGS.step_mul,
       game_steps_per_episode=FLAGS.game_steps_per_episode,
       disable_fog=FLAGS.disable_fog,

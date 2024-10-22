@@ -1328,8 +1328,8 @@ class Features(object):
           len(u.orders),
           raw_order(0),
           raw_order(1),
-          # u.tag if is_raw else 0,
-          u.tag,
+          # u.tag if is_raw else 0,     # pysc2 original code
+          u.tag,                        # llm-pysc2 code
           u.is_hallucination,
           u.buff_ids[0] if len(u.buff_ids) >= 1 else 0,
           u.buff_ids[1] if len(u.buff_ids) >= 2 else 0,
@@ -1445,7 +1445,8 @@ class Features(object):
             0,  # order_length
             0,  # order_id_0
             0,  # order_id_1
-            v.tag if is_raw else 0,
+            # v.tag if is_raw else 0,   # pysc2 original code
+            v.tag,                      # llm-pysc2 code
             0,  # is hallucination
             0,  # buff_id_1
             0,  # buff_id_2

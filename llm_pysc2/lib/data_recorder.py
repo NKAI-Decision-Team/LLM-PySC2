@@ -21,9 +21,19 @@ from pysc2.env import environment
 
 class DataRecorder():
   def __init__(self, save_dir, save_level=0):
+    """
+    Args:
+      save_dir:
+        MainAgent.log_dir_path
+      save_level:
+        0 for only first and last step,
+        1 for important steps that unit changes,
+        2 add obs that action may be important,
+        3 for all obs
+    """
     self.obs_list = []
     self.save_dir = save_dir
-    # save_level: 0 for important steps that unit changes, 1 add obs that action may be important, 2 for all obs
+    # save_level:
     self.save_level = save_level
     self.last_step_unit_tags = []
     if not os.path.exists(self.save_dir):
@@ -73,11 +83,13 @@ class DataRecorder():
 
   def step(self, obs, num_episode, num_step):
     if obs.step_type == environment.StepType.MID:
-      if self.save_level >= 0 and self._is_unit_appear_or_disappear(obs):
+      if self.save_level >= 0:
+        pass
+      if self.save_level >= 1 and self._is_unit_appear_or_disappear(obs):
         self._save_temp(obs, num_episode, num_step)
-      if self.save_level >= 1 and 9 < obs.observation.last_actions[0] < 573:
+      if self.save_level >= 2 and 9 < obs.observation.last_actions[0] < 573:
         self._save_temp(obs, num_episode, num_step)
-      if self.save_level >= 2:
+      if self.save_level >= 3:
         self._save_temp(obs, num_episode, num_step)
     if obs.step_type == environment.StepType.FIRST:
       self.obs_list = []

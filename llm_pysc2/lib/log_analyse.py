@@ -14,54 +14,16 @@
 
 import os
 import pickle
+import shutil
 
-# import matplotlib.pyplot as plt
-import numpy as np
-from llm_pysc2.lib.knowledge import DATA_ZERG, DATA_PROTOSS, DATA_TERRAN
-from pysc2.lib import units, features
 from pysc2.env import environment
 
-
-def analyse_all(start_time: int, end_time=0):
-  num_experiments = 0
-  total_enemy_lost = 0
-  total_self_lost = 0
-  total_win = 0
-  total_tie = 0
-  total_lose = 0
-  log_folder_names = os.listdir(os.path.dirname(os.path.abspath(__file__)))
-  for folder_name in log_folder_names:
-    if '-' in folder_name and start_time <= int(folder_name.split('-')[0]) <= max(end_time, start_time + 1):
-      experiment_folder = f'./{folder_name}'
-      print("--" * 50)
-      print(f"start analyse {experiment_folder}")
-      print("--" * 25)
-      enemy_lost, self_lost, win, tie, lose = analyse(experiment_folder)
-      num_experiments = num_experiments + win + tie + lose
-      total_enemy_lost += enemy_lost
-      total_self_lost += self_lost
-      total_win += win
-      total_tie += tie
-      total_lose += lose
-
-  if num_experiments > 0:
-    rate_win = 100 * total_win / num_experiments
-    rate_tie = 100 * total_tie / num_experiments
-    rate_lose = 100 * total_lose / num_experiments
-    ave_enemy_lost = total_enemy_lost / num_experiments
-    ave_self_lost = total_self_lost / num_experiments
-    ave_ratio = ave_enemy_lost / ave_self_lost if ave_self_lost != 0 else 999999
-    return ave_enemy_lost, ave_self_lost, ave_ratio, rate_win, rate_tie, rate_lose
-  else:
-    print(f"\033[1;31m Error num_experiments == 0! \033[0m")
-    return 0, 0, 0, 0, 0, 0
-
-
-
-def analyse(experiment_folder):
+# analyse one experiment folder
+def analyse(experiment_folder, delete_unfinished):
   win, tie, lose = 0, 0, 0
-  self_total_resource_lost = 0
-  enemy_total_resource_lost = 0
+  score_cumulative = None
+  score_by_category = None
+  score_by_vital = None
   obs_lists = []  # 1 experiment with several episodes
   obs_list = []
 
@@ -100,8 +62,16 @@ def analyse(experiment_folder):
   # analyse
   for obs_list in obs_lists:
     raw_units_list = []
+
+    if len(obs_list) > 0 and obs_list[-1].step_type != environment.StepType.LAST:  # unfinished experiment
+      print("Possible unfinished experiment")
+      if delete_unfinished:
+        shutil.rmtree(experiment_folder)
+      continue
+
     for obs in obs_list:
       raw_units = obs.observation.raw_units
+      raw_units_list.append(raw_units)
       if obs.step_type == environment.StepType.LAST:
         if obs.reward == 1 and obs.discount == 0:
           win += 1
@@ -109,136 +79,94 @@ def analyse(experiment_folder):
           tie += 1
         if obs.reward == -1 and obs.discount == 0:
           lose += 1
-      raw_units_list.append(raw_units)
+        score_c = obs.observation.score_cumulative
+        score_bc = obs.observation.score_by_category
+        score_bv = obs.observation.score_by_vital
+        score_cumulative = score_c if score_cumulative is None else score_cumulative + score_c
+        score_by_category = score_bc if score_by_category is None else score_by_category + score_bc
+        score_by_vital = score_bv if score_by_vital is None else score_by_vital + score_bv
 
-    # Generate unit matrix
-    episode_all_unit_tags = []
-    for raw_units in raw_units_list:
-      for unit in raw_units:
-        if unit.tag not in episode_all_unit_tags:
-          episode_all_unit_tags.append(unit.tag)
-    unit_mat = np.zeros((len(episode_all_unit_tags), len(obs_list)))
-    for i in range(len(obs_list)):
-      raw_units = raw_units_list[i]
-      for unit in raw_units:
-        tag = unit.tag
-        index = episode_all_unit_tags.index(tag)
-        unit_mat[index][i] = 1
-
-    # plt.imshow(unit_mat, aspect='equal', cmap='gray')
-    # plt.xlabel('Step')
-    # plt.ylabel('Unit Index')
-    # plt.show()
-
-    lost_units = []
-    self_lost_units = []
-    enemy_lost_units = []
-    self_lost_gas = []
-    self_lost_minerals = []
-    enemy_lost_gas = []
-    enemy_lost_minerals = []
-
-    self_gas_lost = 0
-    self_minerals_lost = 0
-    enemy_gas_lost = 0
-    enemy_minerals_lost = 0
-
-    for index in range(1, len(raw_units_list)):
-      obs = raw_units_list[index]
-      last_obs = raw_units_list[index - 1]
-      tags = [unit.tag for unit in obs]
-      for last_unit in last_obs:
-        if last_unit.tag not in tags:
-          for i in range(index + 1, len(raw_units_list)):
-            if last_unit.tag in (d.tag for d in raw_units_list[i]):
-              break
-          else:
-            lost_units.append(last_unit)
-            if last_unit.alliance == features.PlayerRelative.SELF:
-              print(f"\033[1;31m {units.get_unit_type(last_unit.unit_type).name} lost at step {index} \033[0m")
-              self_lost_units.append(last_unit)
-              for race in (DATA_PROTOSS, DATA_TERRAN, DATA_ZERG):
-                try:
-                  self_gas_lost += race[last_unit.unit_type]['produce_cost_gas']
-                  self_minerals_lost += race[last_unit.unit_type]['produce_cost_mineral']
-                except KeyError:
-                  pass
-            elif last_unit.alliance == features.PlayerRelative.ENEMY:
-              print(f"\033[1;32m {units.get_unit_type(last_unit.unit_type).name} lost at step {index} \033[0m")
-              enemy_lost_units.append(last_unit)
-              for race in (DATA_PROTOSS, DATA_TERRAN, DATA_ZERG):
-                try:
-                  enemy_gas_lost += race[last_unit.unit_type]['produce_cost_gas']
-                  enemy_minerals_lost += race[last_unit.unit_type]['produce_cost_mineral']
-                except KeyError:
-                  pass
-        self_lost_gas.append(self_gas_lost)
-        self_lost_minerals.append(self_minerals_lost)
-        enemy_lost_gas.append(enemy_gas_lost)
-        enemy_lost_minerals.append(enemy_minerals_lost)
-
-    enemy_total_resource_lost += enemy_gas_lost * 2 + enemy_minerals_lost
-    self_total_resource_lost += self_gas_lost * 2 + self_minerals_lost
-    # ratio = enemy_resource_lost / self_resource_lost
-
-  return enemy_total_resource_lost, self_total_resource_lost, win, tie, lose
+  return score_cumulative, score_by_category, score_by_vital, win, tie, lose
 
 
-# # print(self_lost_minerals)
-#
-# plt.subplot(2, 2, 1)
-# plt.plot(self_lost_gas, label='Self Gas')
-# plt.title('Self Gas Lost')
-# plt.xlabel('Step')
-# plt.ylabel('Gas')
-# plt.legend()
-#
-# plt.subplot(2, 2, 2)
-# plt.plot(self_lost_minerals, label='Self Minerals')
-# plt.title('Self Minerals Lost')
-# plt.xlabel('Step')
-# plt.ylabel('Minerals')
-# plt.legend()
-#
-# plt.subplot(2, 2, 3)
-# plt.plot(enemy_lost_gas, label='Enemy Gas')
-# plt.title('Enemy Gas Lost')
-# plt.xlabel('Step')
-# plt.ylabel('Gas')
-# plt.legend()
-#
-# plt.subplot(2, 2, 4)
-# plt.plot(enemy_lost_minerals, label='Enemy Minerals')
-# plt.title('Enemy Minerals Lost')
-# plt.xlabel('Step')
-# plt.ylabel('Minerals')
-# plt.legend()
-#
-# plt.tight_layout()
-# plt.show()
+# analyse all experiment folder in llm_log
+def analyse_all(start_time: int, end_time=0, delete_unfinished=False):
+  num_experiments = 0
+  total_score_cumulative, total_score_by_category, total_score_by_vital = None, None, None
+  total_damage_dealt, total_damage_taken, total_healed = 0, 0, 0
+  total_killed_minerals, total_killed_vespene = 0, 0
+  total_lost_minerals, total_lost_vespene = 0, 0
+  total_win, total_tie, total_lose = 0, 0, 0
 
-# print("--" * 50)
-# print(f"Self total gas lost: {self_total_gas_lost}")
-# print(f"Self total minerals lost: {self_total_minerals_lost}")
-# print(f"Enemy total gas lost: {enemy_total_gas_lost}")
-# print(f"Enemy total minerals lost: {enemy_total_minerals_lost}")
-# print("--" * 50)
-# if self_total_gas_lost != 0:
-#   print(f"Gas lost ratio: {enemy_total_gas_lost / self_total_gas_lost}")
-# if self_total_minerals_lost != 0:
-#   print(f"Minerals lost ratio: {enemy_total_minerals_lost / self_total_minerals_lost}")
-# print("--" * 50)
-# enemy_resource_lost = enemy_total_gas_lost / 4 + enemy_total_minerals_lost / 7
-# self_resource_lost = self_total_gas_lost / 4 + self_total_minerals_lost / 7
-# print(f"resource lost ratio: {enemy_resource_lost / self_resource_lost}")
+  log_folder_names = os.listdir(os.path.dirname(os.path.abspath(__file__)))
+  for folder_name in log_folder_names:
+
+    if '-' in folder_name and start_time <= int(folder_name.split('-')[0]) <= max(end_time, start_time + 1):
+      experiment_folder = f'./{folder_name}'
+      score_cumulative, score_by_category, score_by_vital, win, tie, lose = analyse(experiment_folder, delete_unfinished)
+
+      if total_score_cumulative is None:
+        total_score_cumulative = score_cumulative
+        total_score_by_category = score_by_category
+        total_score_by_vital = score_by_vital
+      elif (score_cumulative is not None) and (score_by_category is not None) and (score_by_vital is not None):
+        total_score_cumulative += score_cumulative
+        total_score_by_category += score_by_category
+        total_score_by_vital += score_by_vital
+      else:
+        continue
+      num_experiments = num_experiments + win + tie + lose
+      total_win += win
+      total_tie += tie
+      total_lose += lose
+
+  if num_experiments > 0:
+    print(f"num_experiments={num_experiments}")
+    print("--" * 25)
+
+    total_damage_dealt = total_score_by_vital[0][0] + total_score_by_vital[0][1]
+    total_damage_taken = total_score_by_vital[1][0] + total_score_by_vital[1][1]
+    total_healed = total_score_by_vital[2][0] + total_score_by_vital[2][1]
+
+    total_killed_minerals = total_score_by_category.killed_minerals.army + total_score_by_category.killed_minerals.economy
+    total_killed_vespene = total_score_by_category.killed_vespene.army + total_score_by_category.killed_vespene.economy
+    total_lost_minerals = total_score_by_category.lost_minerals.army + total_score_by_category.lost_minerals.economy
+    total_lost_vespene = total_score_by_category.lost_vespene.army + total_score_by_category.lost_vespene.economy
+
+    total_killed_resource = total_killed_minerals + 2 * total_killed_vespene
+    total_lost_resource = total_lost_minerals + 2 * total_lost_vespene
+
+    rate_win = 100 * total_win / num_experiments
+    rate_tie = 100 * total_tie / num_experiments
+    rate_lose = 100 * total_lose / num_experiments
+    ave_damage_dealt = total_damage_dealt / num_experiments
+    ave_damage_taken = total_damage_taken / num_experiments
+    ave_healed = total_healed / num_experiments
+    ave_killed_resource = total_killed_resource / num_experiments
+    ave_lost_resource = total_lost_resource / num_experiments
+    ave_kill_death_ratio = ave_killed_resource / ave_lost_resource if ave_lost_resource != 0 else None
+
+    result = {
+      'rate_win': rate_win,
+      'rate_tie': rate_tie,
+      'rate_lose': rate_lose,
+      'ave_damage_dealt': ave_damage_dealt,
+      'ave_damage_taken': ave_damage_taken,
+      'ave_healed': ave_healed,
+      'ave_killed_resource': ave_killed_resource,
+      'ave_lost_resource': ave_lost_resource,
+      'ave_kill_death_ratio': ave_kill_death_ratio,
+    }
+
+    return result
+  else:
+    print(f"\033[1;31m Error num_experiments == 0! \033[0m")
+    return None
+
 
 start_time = 20240000000000
 end_time   = 20250000000000
-ave_enemy_lost, ave_self_lost, ave_ratio, rate_win, rate_tie, rate_lose = analyse_all(start_time, end_time)
+result = analyse_all(start_time, end_time)
 
-print("--" * 50)
-print(f"ave_enemy_resource_lost = {ave_enemy_lost:.2f} (1 gas for 2 mineral)")
-print(f"ave_self_resource_lost = {ave_self_lost:.2f} (1 gas for 2 mineral)")
-print(f"ave_ratio = {ave_ratio:.2f}")
-
-print(f"winning_rate = {rate_win:.2f}% (win {rate_win:.2f}% tie {rate_tie:.2f}%, lose {rate_lose:.2f}%)")
+from pprint import pprint
+pprint(result)

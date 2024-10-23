@@ -65,7 +65,7 @@ def get_config(task):
     config.AGENTS_ALWAYS_DISABLE.remove('Developer')
     config.AGENTS['Commander']['team'][0]['task'] = [
       {'time': None, 'pos': None, 'info': "Organize a multiline combat to defeat enemy troops and kill their workers, "
-                                          "you should reach all the goals and finish the battle before game time 2:00."},
+                                          "you should reach all the goals and finish the battle before game time 1:30."},
     ]
   else:
     raise AssertionError("wrong task index")

@@ -293,10 +293,11 @@ def get_single_unit_info(unit, team_unit_screen_coord=None, size_screen=None) ->
   unit_info += f"    ScreenPos: [{unit.x}, {unit.y}]"
   total_health = unit.health + unit.shield
   # distance to current team head unit
-  if team_unit_screen_coord is not None and size_screen is not None:
-    ratio = int(size_screen / SCREEN_WORLD_GRID)
-    dist = math.sqrt((team_unit_screen_coord[0] - unit.x) ** 2 + (team_unit_screen_coord[1] - unit.y) ** 2) / ratio
-    unit_info += f"    Distance: {int(dist)}"
+  if unit.unit_type not in UNIT_DONOT_NEED_DIS:
+    if team_unit_screen_coord is not None and size_screen is not None:
+      ratio = int(size_screen / SCREEN_WORLD_GRID)
+      dist = math.sqrt((team_unit_screen_coord[0] - unit.x) ** 2 + (team_unit_screen_coord[1] - unit.y) ** 2) / ratio
+      unit_info += f"    Distance: {int(dist)}"
   # health, energy, build_progress, weapon_cooldown
   unit_info += f"    Health: {total_health}"
   if unit.unit_type in knowledge_dict.keys():

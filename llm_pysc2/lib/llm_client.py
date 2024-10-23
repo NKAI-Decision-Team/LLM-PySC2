@@ -49,10 +49,10 @@ def llama_query_runtime(self, ):
     'model': self.model_name,
     'messages': self.messages,
     'temperature': self.temperature,}
-  )
-  self.query_token_in = 0
-  self.query_token_out = 0
-  self.llm_response = json.dumps(llm_response.json(), indent=2)
+  ).json()
+  self.query_token_in = llm_response["usage"]["prompt_tokens"] if 'usage' in llm_response.keys() else 0
+  self.query_token_out = llm_response["usage"]["prompt_tokens"] if 'usage' in llm_response.keys() else 0
+  self.llm_response = llm_response['choices'][0]["message"]["content"]
 
 def glm_query_runtime(self, ):
   llm_response = self.client.chat.completions.create(
@@ -119,6 +119,9 @@ class GptClient:
     self.total_query_time = 0
     self.total_query_token_in = 0
     self.total_query_token_out = 0
+    self.ave_query_time = 0
+    self.ave_query_token_in = 0
+    self.ave_query_token_out = 0
 
   def wrap_message(self, obs_prompt, base64_image):
 
@@ -272,6 +275,7 @@ video_model_names = []
 FACTORY = {
   'default': GptClient,
   'gpt-3.5-turbo': GptClient,
+  'gpt-3.5-turbo-1106': GptClient,
 
   'gpt-4o': GptClient,
   'gpt-4o-mini': GptClient,

@@ -283,7 +283,7 @@ class MainAgent(base_agent.BaseAgent):
       self.func_id_history.append(func_id)
       return func_call
 
-    # skip main loop if on agent enabled
+    # skip main loop if no agent enabled
     all_agent_disabled = True
     for agent_name in self.AGENT_NAMES:
       if self.agents[agent_name].enable:
@@ -434,6 +434,7 @@ class MainAgent(base_agent.BaseAgent):
             if unit_f.is_selected:
               logger.info(f"[ID {self.log_id}] 7.1.6 Agent {agent_name}: collect obs for team {team['name']}")
               logger.info("--" * 25)
+              team['unit_tags_selected'] = []
               for unit in obs.observation.raw_units:
                 if unit.tag == tag:
                   x, y = get_camera_xy(self, unit.x, unit.y)
@@ -464,7 +465,7 @@ class MainAgent(base_agent.BaseAgent):
           for i in range(len(agent.teams)):
             agent.teams[i]['obs'] = []
             agent.teams[i]['pos'] = []
-            agent.teams[i]['unit_tags_selected'] = []
+            # agent.teams[i]['unit_tags_selected'] = []
           self.agent_id = (self.agent_id + 1) % len(self.AGENT_NAMES)
           continue
 

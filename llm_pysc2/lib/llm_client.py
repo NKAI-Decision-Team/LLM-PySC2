@@ -21,7 +21,7 @@ from loguru import logger
 import threading
 import random
 import time
-import json
+# import json
 
 
 def gpt_query_runtime(self, ):
@@ -51,7 +51,7 @@ def llama_query_runtime(self, ):
     'temperature': self.temperature,}
   ).json()
   self.query_token_in = llm_response["usage"]["prompt_tokens"] if 'usage' in llm_response.keys() else 0
-  self.query_token_out = llm_response["usage"]["prompt_tokens"] if 'usage' in llm_response.keys() else 0
+  self.query_token_out = llm_response["usage"]["completion_tokens"] if 'usage' in llm_response.keys() else 0
   self.llm_response = llm_response['choices'][0]["message"]["content"]
 
 def glm_query_runtime(self, ):
@@ -62,7 +62,7 @@ def glm_query_runtime(self, ):
   )
   self.query_token_in = 0
   self.query_token_out = 0
-  self.llm_response = llm_response.choices[0].message
+  self.llm_response = llm_response.choices[0].message.content
 
 def glm4v_query_runtime(self, ):
   llm_response = self.client.chat.completions.create(

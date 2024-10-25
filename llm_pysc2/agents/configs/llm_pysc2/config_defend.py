@@ -55,7 +55,13 @@ class ConfigPysc2_Defend(ProtossAgentConfig):
            'game_group': 4, 'select_type': 'group'},
         ],
         'action': {
-          units.Protoss.Stalker: PROTOSS_BASIC_ACTION_SMAC2,
+          units.Protoss.Stalker: PROTOSS_BASIC_ACTION_2 + [
+            {'name': 'Ability_Blink_Screen', 'arg': ['screen'],
+             'func': [(180, F.Effect_Blink_screen, ('queued', 'screen'))]},
+            {'name': 'Select_Unit_Blink_Screen', 'arg': ['tag', 'screen'],
+             'func': [(3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
+                      (180, F.Effect_Blink_screen, ('now', 'screen'))]},
+          ]
         },
       },
     }

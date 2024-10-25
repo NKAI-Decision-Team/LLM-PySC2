@@ -129,7 +129,7 @@ Analysis:
 Actions:
   Team Oracle-1:
     <Attack_Unit(0x101480001)>
-    <Move_Screen(67, 96)>
+    <Move_Screen([67, 96])>
 """
 
     # Part 2

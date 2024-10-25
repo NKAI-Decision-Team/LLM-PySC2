@@ -260,7 +260,7 @@ class LLMAgent:
 
       if not os.path.exists(self.log_dir_path + f"/{self.name}"):
         os.mkdir(self.log_dir_path + f"/{self.name}")
-        copyfile(self.current_dir + f"/../../llm_log/show.py", self.log_dir_path + f"/{self.name}/show.py")
+        copyfile(self.current_dir + f"/../../llm_log/log_show.py", self.log_dir_path + f"/{self.name}/log_show.py")
       if not os.path.exists(self.log_dir_path + f"/{self.name}/o.txt"):
         with open(self.log_dir_path + f"/{self.name}/o.txt", "w") as f:
           f.write('')
@@ -273,14 +273,17 @@ class LLMAgent:
       if not os.path.exists(self.log_dir_path + f"/{self.name}/a_pro.txt"):
         with open(self.log_dir_path + f"/{self.name}/a_pro.txt", "w") as f:
           f.write('')
-      if not os.path.exists(self.log_dir_path + f"/{self.name}/a_inp.txt"):
+      if not os.path.exists(self.log_dir_path + f"/{self.name}/a_inp.txt") and self.config.LLM_SIMULATION_TIME > 0:
         with open(self.log_dir_path + f"/{self.name}/a_inp.txt", "w") as f:
           f.write('')
-      if not os.path.exists(self.log_dir_path + f"/{self.name}/c_inp.txt"):
+      if not os.path.exists(self.log_dir_path + f"/{self.name}/c_inp.txt") and self.config.ENABLE_COMMUNICATION:
         with open(self.log_dir_path + f"/{self.name}/c_inp.txt", "w") as f:
           f.write('')
-      if not os.path.exists(self.log_dir_path + f"/{self.name}/c_out.txt"):
+      if not os.path.exists(self.log_dir_path + f"/{self.name}/c_out.txt") and self.config.ENABLE_COMMUNICATION:
         with open(self.log_dir_path + f"/{self.name}/c_out.txt", "w") as f:
+          f.write('')
+      if not os.path.exists(self.log_dir_path + f"/{self.name}/cost.txt"):
+        with open(self.log_dir_path + f"/{self.name}/cost.txt", "w") as f:
           f.write('')
       if not os.path.exists(self.log_dir_path + f"/{self.name}/prompt.txt"):
         with open(self.log_dir_path + f"/{self.name}/prompt.txt", "w") as f:
@@ -385,18 +388,26 @@ class LLMAgent:
       with open(self.log_dir_path + f"/{self.name}/a_pro.txt", "a", newline='\n') as f:
         print(json.dumps({self.main_loop_step: processed_text_a}), file=f)
 
+    if self.name not in self.config.AGENTS_ALWAYS_DISABLE and self.enable:
+      with open(self.log_dir_path + f"/{self.name}/cost.txt", "a", newline='\n') as f:
+        c = self.client
+        client_cost = f"time={c.query_time:.2f}, ave_time={c.ave_query_time:.2f}, " \
+                      f"token_in={c.query_token_in}, ave_token_in={c.ave_query_token_in:.2f}, " \
+                      f"token_out={c.query_token_out}, ave_token_out = {c.ave_query_token_out:.2f}"
+        print(json.dumps({self.main_loop_step: client_cost}), file=f)
+
     return new_action_lists, action_list_dict
 
   # get text shaped communication
   def get_text_c_inp(self) -> None:
-    if self.name not in self.config.AGENTS_ALWAYS_DISABLE and self.enable:
+    if self.name not in self.config.AGENTS_ALWAYS_DISABLE and self.enable and self.config.ENABLE_COMMUNICATION:
       with open(self.log_dir_path + f"/{self.name}/c_inp.txt", "a", newline='\n') as f:
         print(json.dumps({self.main_loop_step: self.last_text_c_inp}), file=f)
 
   # get channel listen to and sort information to sent out
   def get_info_c_out(self, raw_text_a) -> None:
     self.communication_message_i, self.communication_message_o, self.last_text_c_out = self.communicator.send(raw_text_a)
-    if self.name not in self.config.AGENTS_ALWAYS_DISABLE and self.enable:
+    if self.name not in self.config.AGENTS_ALWAYS_DISABLE and self.enable and self.config.ENABLE_COMMUNICATION:
       with open(self.log_dir_path + f"/{self.name}/c_out.txt", "a", newline='\n') as f:
         print(json.dumps({self.main_loop_step: self.last_text_c_out}), file=f)
 

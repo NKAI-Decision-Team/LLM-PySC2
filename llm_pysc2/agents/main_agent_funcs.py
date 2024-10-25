@@ -1166,10 +1166,10 @@ def get_select_func_smart(obs, log_id, tags, size_screen, strict: "0, 1, 2" = 0,
       max_unit_type = unit_type
 
   if len(unit_toselect_list) != 0:
-    print(f"in get_select_func_smart: a = {1} / {len(unit_toselect_list)}")
-    print(f"                          b = {max_num} / {len(unit_toselect_list)}")
-    print(
-      f"                          c = {num_unit_select_rect - num_wrong_select_rect - 0.5} / {len(unit_toselect_list)}")
+    logger.debug(f"in get_select_func_smart: "
+                 f"\na = {1} / {len(unit_toselect_list)} "
+                 f"\nb = {max_num} / {len(unit_toselect_list)} "
+                 f"\nc = {num_unit_select_rect - num_wrong_select_rect - 0.5} / {len(unit_toselect_list)}")
   else:
     logger.error(f"[ID {log_id}] in get_select_func_smart: a = {1} / {len(unit_toselect_list)}")
     logger.error(f"[ID {log_id}]                           b = {max_num} / {len(unit_toselect_list)}")
@@ -1248,6 +1248,7 @@ def main_agent_func4(self, obs):
             if 0 < unselected_unit_num < len(team['unit_tags']):
               self.temp_head_unit_tag = team['unit_tags'][0]
               self.temp_team_unit_tags = team['unit_tags']
+              logger.debug(f"[ID {self.log_id}] main_agent_func4: Agent {agent_name} team {team['name']} need to gather")
 
     # print(f"locked_func_4: unselected_unit_num {unselected_unit_num} {len(self.temp_team_unit_tags)} {len(self.unit_selected_tag_list)}")
     # time.sleep(5)
@@ -1257,7 +1258,7 @@ def main_agent_func4(self, obs):
         if unit.tag in self.temp_team_unit_tags and unit.tag not in self.unit_selected_tag_list and \
             unit.order_id_0 != 547 and self.temp_curr_unit_tag is None:
           self.temp_curr_unit_tag = unit.tag
-          print(f"locked_func_4: find temp_curr_unit_tag {unit.unit_type} {unit.tag} {unit.x} {unit.y}")
+          logger.debug(f"[ID {self.log_id}] main_agent_func4: find temp_curr_unit_tag {unit.unit_type} {unit.tag} {unit.x} {unit.y}")
           # time.sleep(5)
       # if self.temp_curr_unit_tag is None:
       #     print(f"locked_func_4: cannot find temp_curr_unit_tag")
@@ -1280,7 +1281,7 @@ def main_agent_func4(self, obs):
         # 移动相机到走散的单位
         func_id, func_call = get_camera_func_smart(self, obs, self.temp_curr_unit.tag, threshold=0.35)
         if func_id == 573:
-          logger.info(f"[ID {self.log_id}] locked_func_4: camera to curr unit, Func Call: {func_call}")
+          logger.info(f"[ID {self.log_id}] main_agent_func4: camera to curr unit, Func Call: {func_call}")
           self.func_id_history.append(func_id)
           # time.sleep(5)
           return func_call
@@ -1305,13 +1306,13 @@ def main_agent_func4(self, obs):
         if len(screen_team_unit_unselected) > 0:
           func_id, func_call = get_select_func_smart(obs, self.log_id, self.temp_team_unit_tags, self.size_screen)
           if func_id != 0:
-            print(f"locked_func_4: get_select_func_smart call func {func_call}")
+            logger.debug(f"[ID {self.log_id}] main_agent_func4: get_select_func_smart call func {func_call}")
           if func_id == 0:
             unit_f = screen_team_unit_unselected[0]
             x, y = min(max(0, unit_f.x), self.size_screen), min(max(0, unit_f.y), self.size_screen)
             func_id, func_call = (2, actions.FUNCTIONS.select_point('toggle', (x, y)))
-            print("locked_func_4: get_select_func_smart return func_id=0")
-          logger.info(f"[ID {self.log_id}] locked_func_4: smart select curr unit, Func Call: {func_call}")
+            logger.debug(f"[ID {self.log_id}] main_agent_func4: get_select_func_smart return func_id=0")
+          logger.info(f"[ID {self.log_id}] main_agent_func4: smart select curr unit, Func Call: {func_call}")
           self.func_id_history.append(func_id)
           return func_call
 
@@ -1336,7 +1337,7 @@ def main_agent_func4(self, obs):
 
       func_id, func_call = get_camera_func_smart(self, obs, self.temp_head_unit.tag)
       if func_id == 573:
-        logger.info(f"[ID {self.log_id}] locked_func_4: camera to head unit, Func Call: {func_call}")
+        logger.info(f"[ID {self.log_id}] main_agent_func4: camera to head unit, Func Call: {func_call}")
         self.func_id_history.append(func_id)
         # time.sleep(5)
         return func_call
@@ -1347,12 +1348,11 @@ def main_agent_func4(self, obs):
         if unit.tag == self.temp_head_unit_tag:
           unit_f = unit
       if unit_f is None:
-        logger.error(
-          f"[ID {self.log_id}] locked_func_4: head unit of tag {self.temp_head_unit_tag} not found, unit_f is None")
+        logger.error(f"[ID {self.log_id}] main_agent_func4: head unit of tag {self.temp_head_unit_tag} not found, unit_f is None")
         self.unit_selected_tag_list.append(self.temp_curr_unit_tag)
       else:
         func_id, func_call = (331, actions.FUNCTIONS.Move_screen('now', (unit_f.x, unit_f.y)))
-        logger.info(f"[ID {self.log_id}] locked_func_4: move to head unit, Func Call: {func_call}")
+        logger.info(f"[ID {self.log_id}] main_agent_func4: move to head unit, Func Call: {func_call}")
 
         # 选中的单位加入到unit_selected_tag_list
         self.flag_locked_func4 = False
@@ -1371,13 +1371,13 @@ def main_agent_func4(self, obs):
 
     if self.flag_locked_func4:
       # else:
-      logger.error(f"[ID {self.log_id}] locked_func_4: Something wrong")
-      logger.error(f"[ID {self.log_id}]                self.unit_selected_tag_list = {self.unit_selected_tag_list}")
-      logger.error(f"[ID {self.log_id}]                len(self.unit_selected_tag_list) = {len(self.unit_selected_tag_list)}")
-      logger.error(f"[ID {self.log_id}]                self.temp_head_unit_tag = {self.temp_head_unit_tag}")
-      logger.error(f"[ID {self.log_id}]                self.temp_curr_unit_tag = {self.temp_curr_unit_tag}")
-      logger.error(f"[ID {self.log_id}]                self.temp_head_unit = {self.temp_head_unit}")
-      logger.error(f"[ID {self.log_id}]                self.temp_curr_unit = {self.temp_curr_unit}")
+      logger.error(f"[ID {self.log_id}] main_agent_func4: Something wrong")
+      logger.error(f"[ID {self.log_id}]                   self.unit_selected_tag_list = {self.unit_selected_tag_list}")
+      logger.error(f"[ID {self.log_id}]                   len(self.unit_selected_tag_list) = {len(self.unit_selected_tag_list)}")
+      logger.error(f"[ID {self.log_id}]                   self.temp_head_unit_tag = {self.temp_head_unit_tag}")
+      logger.error(f"[ID {self.log_id}]                   self.temp_curr_unit_tag = {self.temp_curr_unit_tag}")
+      logger.error(f"[ID {self.log_id}]                   self.temp_head_unit = {self.temp_head_unit}")
+      logger.error(f"[ID {self.log_id}]                   self.temp_curr_unit = {self.temp_curr_unit}")
       if self.temp_curr_unit_tag is not None:
         self.unit_selected_tag_list.append(self.temp_curr_unit_tag)
       self.temp_head_unit_tag = None

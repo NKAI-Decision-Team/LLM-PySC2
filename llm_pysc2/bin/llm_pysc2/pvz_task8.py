@@ -26,7 +26,7 @@ class MainAgentLLMPysc2(MainAgent):
     config.AGENTS_ALWAYS_DISABLE.remove('Developer')
     config.AGENTS['Commander']['team'][0]['task'] = [
       {'time': None, 'pos': None, 'info': "Organize a multiline combat to defeat enemy troops and kill their workers, "
-                                          "must finish the battle before game time 2:00."},
+                                          "must finish the battle before game time 1:30."},
     ]
     super(MainAgentLLMPysc2, self).__init__(config, LLMAgent)
 

@@ -181,6 +181,10 @@ BOOSTABLE_TYPE = [
 UNIT_DONOT_NEED_TAG = \
   [units.Protoss.Interceptor,
    units.Zerg.Broodling, units.Zerg.Locust, units.Zerg.LocustFlying, units.Zerg.Larva]
+UNIT_DONOT_NEED_DIS = \
+  [units.Protoss.Interceptor,
+   units.Zerg.Broodling, units.Zerg.Locust, units.Zerg.LocustFlying, units.Zerg.Larva,
+   units.Zerg.Zergling, units.Zerg.Baneling]
 # used in locked_func1
 UNIT_DONOT_NEED_GATHER = \
   [units.Protoss.Interceptor, units.Protoss.AdeptPhaseShift, units.Protoss.DisruptorPhased,

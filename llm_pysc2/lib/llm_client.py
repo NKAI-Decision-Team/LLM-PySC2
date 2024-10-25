@@ -21,56 +21,72 @@ from loguru import logger
 import threading
 import random
 import time
-import json
+# import json
 
 
 def gpt_query_runtime(self, ):
-  self.llm_response = openai.ChatCompletion.create(
+  llm_response = openai.ChatCompletion.create(
     model=self.model_name,
     messages=self.messages,
     temperature=self.temperature
-  )["choices"][0]["message"]["content"]
+  )
+  self.query_token_in = llm_response["usage"]["prompt_tokens"]
+  self.query_token_out = llm_response["usage"]["completion_tokens"]
+  self.llm_response = llm_response["choices"][0]["message"]["content"]
 
 def claude_query_runtime(self, ):
-  self.llm_response = openai.ChatCompletion.create(
-                    model=self.model_name,
-                    messages=self.messages,
-                    temperature=self.temperature
-                ).choices[0].message.content
+  llm_response = openai.ChatCompletion.create(
+    model=self.model_name,
+    messages=self.messages,
+    temperature=self.temperature
+  )
+  self.query_token_in = llm_response.usage.prompt_tokens
+  self.query_token_out = llm_response.usage.completion_tokens
+  self.llm_response = llm_response.choices[0].message.content
 
 def llama_query_runtime(self, ):
-  self.llm_response = json.dumps(self.client.run({
-      'model': self.model_name,
-      'messages': self.messages,
-      'temperature': self.temperature,
-    }
-  ).json(), indent=2)
-  print(self.llm_response)
+  llm_response = self.client.run({
+    'model': self.model_name,
+    'messages': self.messages,
+    'temperature': self.temperature,}
+  ).json()
+  self.query_token_in = llm_response["usage"]["prompt_tokens"] if 'usage' in llm_response.keys() else 0
+  self.query_token_out = llm_response["usage"]["completion_tokens"] if 'usage' in llm_response.keys() else 0
+  self.llm_response = llm_response['choices'][0]["message"]["content"]
 
 def glm_query_runtime(self, ):
-  self.llm_response = self.client.chat.completions.create(
-                    model=self.model_name,  # 填写需要调用的模型名称
-                    messages=self.messages,
-                    temperature=self.temperature
-                ).choices[0].message
+  llm_response = self.client.chat.completions.create(
+    model=self.model_name,  # 填写需要调用的模型名称
+    messages=self.messages,
+    temperature=self.temperature
+  )
+  self.query_token_in = 0
+  self.query_token_out = 0
+  self.llm_response = llm_response.choices[0].message.content
 
 def glm4v_query_runtime(self, ):
-  self.llm_response = self.client.chat.completions.create(
-                    model=self.model_name,  # 填写需要调用的模型名称
-                    messages=self.messages,
-                    temperature=self.temperature
-                ).choices[0].message.content
+  llm_response = self.client.chat.completions.create(
+    model=self.model_name,  # 填写需要调用的模型名称
+    messages=self.messages,
+    temperature=self.temperature
+  )
+  self.query_token_in = llm_response.usage.prompt_tokens
+  self.query_token_out = llm_response.usage.completion_tokens
+  self.llm_response = llm_response.choices[0].message.content
 
 # def gemini_query_runtime(self, ):
 #   self.llm_response = self.model.generate_content(
 #     messages=self.messages, generation_config=genai.types.GenerationConfig(temperature=self.temperature)).text
 
-def qwen2_query_runtime(self, ):
-  self.llm_response = openai.ChatCompletion.create(
-                    model=self.model_name,  # 填写需要调用的模型名称
-                    messages=self.messages,
-                    temperature=self.temperature
-                ).choices[0].message.content
+# def qwen2_query_runtime(self, ):
+#   llm_response = openai.ChatCompletion.create(
+#     model=self.model_name,  # 填写需要调用的模型名称
+#     messages=self.messages,
+#     temperature=self.temperature
+#   )
+#   self.query_token_in = llm_response.usage.prompt_tokens
+#   self.query_token_out = llm_response.usage.completion_tokens
+#   self.llm_response = llm_response.choices[0].message.content
 
 class GptClient:
 
@@ -95,6 +111,17 @@ class GptClient:
     self.query_runtime = gpt_query_runtime
     if 'gpt' in self.model_name or self.model_name == 'default':
       logger.info(f"[ID {self.log_id}] {self.agent_name} {self.model_name} GptClient initialized")
+
+    self.num_query = 0
+    self.query_time = 0
+    self.query_token_in = 0
+    self.query_token_out = 0
+    self.total_query_time = 0
+    self.total_query_token_in = 0
+    self.total_query_token_out = 0
+    self.ave_query_time = 0
+    self.ave_query_token_in = 0
+    self.ave_query_token_out = 0
 
   def wrap_message(self, obs_prompt, base64_image):
 
@@ -150,6 +177,16 @@ class GptClient:
             logger.error(f"[ID {self.log_id}] {self.agent_name} LLM query runtime error")
             raise RuntimeError(f"{self.agent_name} LLM query runtime error")
 
+        if isinstance(self.llm_response, str):
+          self.num_query += 1
+          self.query_time = float(time.time()) - query_start_time
+          self.total_query_time += self.query_time
+          self.total_query_token_in += self.query_token_in
+          self.total_query_token_out += self.query_token_out
+          self.ave_query_time = self.total_query_time / self.num_query
+          self.ave_query_token_in = self.total_query_token_in / self.num_query
+          self.ave_query_token_out = self.total_query_token_out / self.num_query
+
         answer = self.llm_response
         logger.success(f"[ID {self.log_id}] {self.agent_name} Get llm response!")
         logger.debug(f"[ID {self.log_id}] {self.agent_name} llm response: \n{answer}")
@@ -174,6 +211,26 @@ class GptClient:
 
     logger.error(f"[ID {self.log_id}] {self.agent_name} Can not get llm response after try {max_retries} times!")
     return f'[ID {self.log_id}] {self.agent_name} Can not get llm response after try {max_retries} times!'
+
+class O1Client(GptClient):
+  def __init__(self, name, log_id, config):
+    super(O1Client, self).__init__(name, log_id, config)
+    self.query_runtime = gpt_query_runtime
+    self.temperature = 1  # Only the default (1) value is supported.
+    self.client = openai
+    logger.info(f"[ID {self.log_id}] {self.agent_name} {self.model_name} O1Client initialized")
+
+  def wrap_message(self, obs_prompt, base64_image):
+    super().wrap_message(obs_prompt, base64_image)
+    # 不包含图像的消息
+    self.messages = [
+      {"role": "user", "content": self.system_prompt},
+      {"role": "assistant", "content": "Understand."},
+      {"role": "user", "content": self.example_i_prompt},
+      {"role": "assistant", "content": self.example_o_prompt},
+      {"role": "user", "content": obs_prompt}
+    ]
+
 
 class ClaudeClient(GptClient):
   def __init__(self, name, log_id, config):
@@ -218,6 +275,7 @@ video_model_names = []
 FACTORY = {
   'default': GptClient,
   'gpt-3.5-turbo': GptClient,
+  'gpt-3.5-turbo-1106': GptClient,
 
   'gpt-4o': GptClient,
   'gpt-4o-mini': GptClient,
@@ -227,8 +285,8 @@ FACTORY = {
   # 'gpt-4v-1106': GptClient,
   # 'gpt-4v-0409': GptClient,
 
-  # 'o1-mini': GptClient,
-  # 'o1-preview': GptClient,
+  'o1-mini': O1Client,
+  'o1-preview': O1Client,
 
   'claude-3-opus': ClaudeClient,
   'claude-3-haiku': ClaudeClient,
@@ -251,5 +309,6 @@ FACTORY = {
   # 'glm-4v-plus': GlmClient,
 
   # 'qwen2.5-7b-instruct': QWen2Client,
+  # 'qwen2:72b': QWen2Client,  # debug for LAN LLM
   # 'gemini': GeminiClient,
 }

@@ -31,10 +31,11 @@ def wait(second, log_id, more_info=''):
 class AgentConfig:
 
   def __init__(self):
-    self.race = ''
-    self.model_name = ''
-    self.api_base = ''
-    self.api_key = ''
+
+    self.race = 'protoss'
+    self.model_name = 'YOUR-MODEL-NAME'       # 'gpt-3.5-turbo'
+    self.api_base = 'YOUR-API-BASE'           # 'https://hk.xty.app/v1'
+    self.api_key = 'YOUR-API-KEY'             # 'xxxxxxxxxxxxxxxxxxxxxxxx....'
     self.temperature = 0.1
 
     self.basic_prompt = 'default'
@@ -53,8 +54,8 @@ class AgentConfig:
 
     self.LLM_SIMULATION_TIME = 0
     self.MAX_LLM_QUERY_TIMES = 5
-    self.MAX_LLM_WAITING_TIME = 10
-    self.MAX_LLM_RUNTIME_ERROR_TIME = 30
+    self.MAX_LLM_WAITING_TIME = 15
+    self.MAX_LLM_RUNTIME_ERROR_TIME = 45
     self.MAX_LLM_DECISION_FREQUENCY = 1
     self.MAX_NUM_ACTIONS = 3
 
@@ -125,32 +126,8 @@ class ProtossAgentConfig(AgentConfig):
 
   def __init__(self):
     super(ProtossAgentConfig, self).__init__()
-    self.race = 'protoss'
-    self.model_name = 'YOUR-MODEL-NAME'     # 'gpt-3.5-turbo'
-    self.api_base = 'YOUR-API-BASE'         # 'https://hk.xty.app/v1'
-    self.api_key = 'YOUR-API-KEY'           # 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-    self.temperature = 0.1
 
-    self.basic_prompt = 'default'
-    self.translator_o = 'default'
-    self.translator_a = 'default'
-    self.communicator = 'default'
-
-    self.ENABLE_INIT_STEPS = True
-    self.ENABLE_AUTO_WORKER_MANAGE = True
-    self.ENABLE_AUTO_WORKER_TRAINING = True
-    self.ENABLE_COMMUNICATION = False
-
-    self.ENABLE_IMAGE_RGB = False
-    self.ENABLE_IMAGE_FEATURE = False
-    self.ENABLE_SAVE_IMAGES = True  # 默认打开存图，方便用户在前期调试
-
-    self.LLM_SIMULATION_TIME = 0
-    self.MAX_LLM_QUERY_TIMES = 5
-    self.MAX_LLM_WAITING_TIME = 10
-    self.MAX_LLM_RUNTIME_ERROR_TIME = 30
-    self.MAX_LLM_DECISION_FREQUENCY = 1
-    self.MAX_NUM_ACTIONS = 3
+    # Program control parameters in class AgentConfig (above)
 
     self.AGENTS_ALWAYS_DISABLE = []
     self.AGENTS = {

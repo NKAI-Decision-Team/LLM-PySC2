@@ -47,7 +47,7 @@ def communication_info_transmission(self: "llm_pysc2 MainAgent"):
         receiver_agent.last_text_c_inp = f"\n\nCommunication information:" + receiver_agent.last_text_c_inp
 
       # Generate Communication Target
-      receiver_agent.last_text_c_tar = "\n\nAvailable Communication Tragets:"
+      receiver_agent.last_text_c_tar = "\n\nAvailable Communication Targets:"
       for agent_name in self.AGENT_NAMES:
         agent = self.agents[agent_name]
         if agent_name != receiver_name and agent.enable:
@@ -60,7 +60,7 @@ def communication_info_transmission(self: "llm_pysc2 MainAgent"):
       receiver_agent.last_text_c_tar += "\n\t<MessageTo(ChannelName, message)>"
       receiver_agent.last_text_c_tar += "\n\t<ListenTo(ChannelName)>"
       receiver_agent.last_text_c_tar += "\nArgs explanation:"
-      receiver_agent.last_text_c_tar += "\n\t(1)AgentName: refers to a name mentioned in Available Communication Tragets."
+      receiver_agent.last_text_c_tar += "\n\t(1)AgentName: refers to a name mentioned in Available Communication Targets."
       receiver_agent.last_text_c_tar += "\n\t(2)ChannelName: shape as Channel-i, i refers to an integer."
       receiver_agent.last_text_c_tar += "\n\t(2)message: any text wrapped between ''' and '''."
 

@@ -322,7 +322,7 @@ class MainAgent(base_agent.BaseAgent):
           logger.debug(f"[ID {self.log_id}]     Agent Info: {len(agent.func_list)} {len(agent.action_list)} {len(agent.action_lists)} {agent.is_waiting}")
           # for team in agent.teams:
           #   logger.debug(f"[ID {self.log_id}]     Team Infos:{team}")
-          # agent.func_list, agent.action_list, agent.action_lists = [], [], []
+          agent.func_list, agent.action_list, agent.action_lists = [], [], []  #  TODO: Test this
           self.agent_id = (self.agent_id + 1) % len(self.AGENT_NAMES)
           # continue
 

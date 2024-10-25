@@ -311,9 +311,11 @@ def get_single_unit_info(unit, team_unit_screen_coord=None, size_screen=None) ->
   if unit.build_progress == 100 and unit.alliance == features.PlayerRelative.SELF and unit.is_selected and \
       unit.unit_type in knowledge_dict.keys() and 'weapon1_attack' in knowledge_dict[unit.unit_type].keys() \
       and knowledge_dict[unit.unit_type]['weapon1_attack'] not in [0, -1]:
-    if unit.weapon_cooldown == 0:
+    if unit.unit_type == units.Protoss.Phoenix and unit.order_id_0 == 32:
+      unit_info += f"    Weapon Locked by GravitonBeam Ability"
+    elif unit.weapon_cooldown == 0:
       unit_info += f"    Weapon Ready"
-    if unit.weapon_cooldown > 0:
+    elif unit.weapon_cooldown > 0:
       unit_info += f"    Weapon Cooldown Time: {unit.weapon_cooldown / 22:.2f}s"
   if unit.build_progress == 100 and unit.buff_id_0 != 0:
     unit_info += f"    Buff: {str(buffs.Buffs(unit.buff_id_0))}"

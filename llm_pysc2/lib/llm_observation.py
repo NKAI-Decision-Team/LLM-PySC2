@@ -317,6 +317,8 @@ def get_single_unit_info(unit, team_unit_screen_coord=None, size_screen=None) ->
       unit_info += f"    Weapon Ready"
     elif unit.weapon_cooldown > 0:
       unit_info += f"    Weapon Cooldown Time: {unit.weapon_cooldown / 22:.2f}s"
+    else:
+      pass
   if unit.build_progress == 100 and unit.buff_id_0 != 0:
     unit_info += f"    Buff: {str(buffs.Buffs(unit.buff_id_0))}"
   if unit.build_progress == 100 and unit.buff_id_1 != 0:

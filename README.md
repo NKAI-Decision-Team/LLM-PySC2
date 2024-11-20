@@ -42,8 +42,10 @@ We also make it possible for LLMs to make decisions in SMAC tasks, which make it
 
 If you use the LLM-PySC2 environment or LLM-SMAC tasks in your research, 
 please cite our [github pager](https://github.com/NKAI-Decision-Team/LLM-PySC2) or 
-LLM StarCraft II Paper after preprint paper published. 
-You can also contact us by e-mail [2120230524@mail.nankai.edu.cn]() or [734162621@qq.com]() temporarily.
+[LLM StarCraft II Pre-Print Paper](https://arxiv.org/abs/2411.05348) after preprint paper published. 
+You can also contact us by e-mail [2120230524@mail.nankai.edu.cn]() or [734162621@qq.com]().
+
+Arxiv paper: https://arxiv.org/abs/2411.05348 (Citation: https://ui.adsabs.harvard.edu/abs/2024arXiv241105348L/exportcitation)
 
 ## Quick Start Guide
 

@@ -1,0 +1,1 @@
+{"0": "Actions:\n\tTeam Adept-1:\n\t\t<Move_Screen([52,32])>\n\t\t<Ability_AdeptPhaseShift_Minimap([46,48])>\n\tTeam WarpPrism-1:\n\t\t<Morph_WarpPrismPhasingMode()>\n\t\t<Move_Minimap([46,48])>"}

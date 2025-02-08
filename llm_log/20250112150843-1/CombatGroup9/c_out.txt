@@ -1,0 +1,12 @@
+{"0": "**Communication:**\n`<MessageTo(Commander, '''Warp Prisms 1 and 2 deploying Stalkers to scout minimap locations [30, 40] and [25, 35] respectively.  Will report back in 15 seconds.''' )>`\n`<MessageTo(CombatGroup1, '''Two Stalkers deploying for scouting.  Awaiting further instructions.''' )>`"}
+{"1": "**Communication:**"}
+{"2": "**Communication:**"}
+{"3": "## Communication:\n`<MessageTo(Developer, '''Warp Prism units 1 and 2 are ready and awaiting deployment orders.  All units are at 100% health and operational.''' )>`"}
+{"4": "**Communication:**\n`<MessageTo(Developer, '''Warp Prisms moving to [64,64] as requested. Awaiting reinforcement orders.''' )>`"}
+{"5": "**Communication:**\n`<MessageTo(CombatGroup1, '''Warp Prism support en route to your location at [64,64].  Awaiting your orders.''' )>`"}
+{"6": "**Communication:**\n`<MessageTo(Developer, '''Warp Prism teams moving to minimap location [64, 64] as requested. ETA approximately 10 seconds.''' )>`\n`<MessageTo(Commander, '''Warp Prism deployment to [64, 64] commencing.  Objective: Support Warp Gate operations and provide unit mobility.  ETA approximately 10 seconds.''' )>`"}
+{"7": "**Communication:**\n2. `<MessageTo(CombatGroup0, '''Fall back to Nexus.  Roach attack imminent.''' )>`"}
+{"8": "**Communication:**\n`<MessageTo(CombatGroup0, '''Warp Prism 1 and 2 are establishing Phasing Mode near Pylon 0x100d40001.  Reinforcements will warp in there in approximately 10 seconds.''' )>`\n`<MessageTo(Developer, '''Request immediate repair of Warp Prisms 0x100bc0001 and 0x100880001.  Both are taking heavy fire.''' )>`\n`<MessageTo(Commander, '''Requesting immediate deployment of additional Zealots and Stalkers to minimap location [64,64] to reinforce the frontline.  Deployment should occur in 10 seconds to coincide with the arrival of existing reinforcements.  Objective: Secure the area and push back the Zerg advance.''' )>`"}
+{"9": ""}
+{"10": "**Communication:**"}
+{"11": "## Communication: (Additional Communication)\n`<MessageTo(Developer, '''Request immediate production of additional Warp Prisms and Stalkers.  Current situation is critical.''' )>`: This message is sent to the Developer to ensure that reinforcements are being produced to address the ongoing threat.  The request for additional Warp Prisms is crucial for maintaining the ability to warp in units and respond to future attacks."}

@@ -1,0 +1,6 @@
+{"0": "Actions:\n\tTeam Disruptor-1 Actions:\n\t\t<Move_Minimap([32, 32])>\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}
+{"1": "Actions:\n\tTeam Disruptor-1 Actions:\n\t\t<No_Operation()>\n\t\t<Ability_PurificationNova_Attack_Unit(0x100600001)>\n\tTeam is at the target location.  If the previous move completed, this will be redundant but harmless.  If not, this will continue the movement.:"}
+{"2": "Actions:\n\tTeam Disruptor-1 Actions:\n\t\t<Ability_PurificationNova_Attack_Unit(0x100600001)>\n\t\t<Ability_PurificationNova_Attack_Unit(0x100b80001)>\n\t\t<Hold_Position()>"}
+{"3": "Actions:\n\tTeam Disruptor-1 Actions:\n\t\t<Ability_PurificationNova_Attack_Unit(0x100680001)>\n\t\t<Ability_PurificationNova_Attack_Unit(0x100100001)>\n\t\t<Hold_Position()>"}
+{"4": "Actions:\n\t\t<Ability_PurificationNova_Attack_Unit(0x100680001)>\n\t\t<Ability_PurificationNova_Attack_Unit(0x100100001)>\n\t\t<Hold_Position()>"}
+{"5": "Actions:\n\t\t<Ability_PurificationNova_Attack_Unit(0x100680001)>\n\t\t<Hold_Position()>\n\t\t<No_Operation()>"}

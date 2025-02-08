@@ -1,0 +1,63 @@
+Metadata-Version: 2.2
+Name: llm-pysc2
+Version: 0.1
+Summary: LLM Starcraft II environment and library for training agents.
+Home-page: 
+Author: NKAI
+Author-email: 734162621@qq.com
+License: Apache License, Version 2.0
+Keywords: StarCraft AI
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+License-File: LICENSE
+Requires-Dist: absl-py>=0.1.0
+Requires-Dist: deepdiff
+Requires-Dist: dm_env
+Requires-Dist: enum34
+Requires-Dist: mock
+Requires-Dist: mpyq
+Requires-Dist: numpy>=1.10
+Requires-Dist: portpicker>=1.2.0
+Requires-Dist: protobuf==3.20.0
+Requires-Dist: openai==0.28
+Requires-Dist: pygame
+Requires-Dist: requests
+Requires-Dist: s2clientprotocol>=4.10.1.75800.0
+Requires-Dist: s2protocol
+Requires-Dist: sk-video
+Requires-Dist: websocket-client
+Requires-Dist: loguru
+Requires-Dist: pillow
+Requires-Dist: llamaapi
+Requires-Dist: zhipuai
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: keywords
+Dynamic: license
+Dynamic: requires-dist
+Dynamic: summary
+
+LLM-PySC2 - LLM StarCraft II Learning Environment
+
+LLM-PySC2 is NKAI Decision Team and NUDT Decision Team's Python component of the StarCraft II 
+LLM Decision Environment. It exposes Deepmind's PySC2 Learning Environment API as a Python LLM 
+Environment. This is a collaboration between NKAI and NUDT to develop StarCraft II into a rich 
+environment for LLM research. LLM-PySC2 provides an interface for LLM agents to interact with 
+StarCraft 2, getting textual or multimodal observations and textual actions.
+
+Consider that we have not yet publish our paper, if you use the LLM-PySC2 environment or 
+LLM-SMAC tasks in your research, please cite the LLM StarCraft II github page temporarily. 
+
+Read the README for more information.
+

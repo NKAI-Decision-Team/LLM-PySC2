@@ -1,0 +1,37 @@
+----------------------------------------------------------------------------------------------------
+CombatGroup9;   loop0;   step296;   [   Success  ]  FunctionCall(function=<_Functions.Morph_WarpPrismPhasingMode_quick: 329>, arguments=[[<Queued.now: 0>]])
+CombatGroup9;   loop0;   step297;   [   Success  ]  FunctionCall(function=<_Functions.Load_screen: 287>, arguments=[[<Queued.queued: 1>], [93, 69]])
+CombatGroup9;   loop0;   step298;   [   Success  ]  FunctionCall(function=<_Functions.Load_screen: 287>, arguments=[[<Queued.queued: 1>], [101, 69]])
+CombatGroup9;   loop0;   step302;   [   Success  ]  FunctionCall(function=<_Functions.Morph_WarpPrismPhasingMode_quick: 329>, arguments=[[<Queued.now: 0>]])
+CombatGroup9;   loop0;   step303;   [   Success  ]  FunctionCall(function=<_Functions.Load_screen: 287>, arguments=[[<Queued.queued: 1>], [74, 69]])
+CombatGroup9;   loop0;   step304;   [   Success  ]  FunctionCall(function=<_Functions.Load_screen: 287>, arguments=[[<Queued.queued: 1>], [82, 45]])
+----------------------------------------------------------------------------------------------------
+CombatGroup9;   loop1;   step482;   [   Success  ]  FunctionCall(function=<_Functions.Morph_WarpPrismTransportMode_quick: 330>, arguments=[[<Queued.now: 0>]])
+CombatGroup9;   loop1;   step486;   [   Success  ]  FunctionCall(function=<_Functions.Morph_WarpPrismTransportMode_quick: 330>, arguments=[[<Queued.now: 0>]])
+----------------------------------------------------------------------------------------------------
+CombatGroup9;   loop2;   step708;   [   Success  ]  FunctionCall(function=<_Functions.Load_screen: 287>, arguments=[[<Queued.now: 0>], [104, 67]])
+CombatGroup9;   loop2;   step709;   [   Success  ]  FunctionCall(function=<_Functions.Load_screen: 287>, arguments=[[<Queued.queued: 1>], [81, 64]])
+----------------------------------------------------------------------------------------------------
+CombatGroup9;   loop3;   step965;   [   Success  ]  FunctionCall(function=<_Functions.Morph_WarpPrismPhasingMode_quick: 329>, arguments=[[<Queued.now: 0>]])
+CombatGroup9;   loop3;   step966;   [Invalid Func]  Move_minimap 
+CombatGroup9;   loop3;   step966;   [Invalid Args]  Load_screen ['queued', 'cannot find unit 0x101c00001 on screen'] 
+CombatGroup9;   loop3;   step969;   [   Success  ]  FunctionCall(function=<_Functions.UnloadAllAt_screen: 516>, arguments=[[<Queued.now: 0>], [66, 62]])
+CombatGroup9;   loop3;   step970;   [   Success  ]  FunctionCall(function=<_Functions.Move_minimap: 332>, arguments=[[<Queued.queued: 1>], [21.0, 31.0]])
+CombatGroup9;   loop3;   step971;   [   Success  ]  FunctionCall(function=<_Functions.Morph_WarpPrismPhasingMode_quick: 329>, arguments=[[<Queued.queued: 1>]])
+----------------------------------------------------------------------------------------------------
+CombatGroup9;   loop4;   step1139;   [   Success  ]  FunctionCall(function=<_Functions.Morph_WarpPrismTransportMode_quick: 330>, arguments=[[<Queued.now: 0>]])
+CombatGroup9;   loop4;   step1140;   [   Success  ]  FunctionCall(function=<_Functions.Move_minimap: 332>, arguments=[[<Queued.queued: 1>], [21.0, 31.0]])
+CombatGroup9;   loop4;   step1144;   [   Success  ]  FunctionCall(function=<_Functions.Morph_WarpPrismTransportMode_quick: 330>, arguments=[[<Queued.now: 0>]])
+----------------------------------------------------------------------------------------------------
+CombatGroup9;   loop5;   step1366;   [   Success  ]  FunctionCall(function=<_Functions.Move_minimap: 332>, arguments=[[<Queued.now: 0>], [30.0, 45.0]])
+CombatGroup9;   loop5;   step1367;   [   Success  ]  FunctionCall(function=<_Functions.HoldPosition_quick: 274>, arguments=[[<Queued.queued: 1>]])
+CombatGroup9;   loop5;   step1371;   [Invalid Func]  Morph_WarpPrismTransportMode_quick 
+CombatGroup9;   loop5;   step1371;   [   Success  ]  FunctionCall(function=<_Functions.Move_minimap: 332>, arguments=[[<Queued.now: 0>], [30.0, 45.0]])
+CombatGroup9;   loop5;   step1372;   [   Success  ]  FunctionCall(function=<_Functions.HoldPosition_quick: 274>, arguments=[[<Queued.queued: 1>]])
+----------------------------------------------------------------------------------------------------
+CombatGroup9;   loop6;   step1587;   [   Success  ]  FunctionCall(function=<_Functions.Morph_WarpPrismPhasingMode_quick: 329>, arguments=[[<Queued.now: 0>]])
+CombatGroup9;   loop6;   step1588;   [Invalid Args]  Load_screen ['queued', '(66, 52) is not alliance'] 
+CombatGroup9;   loop6;   step1588;   [Invalid Args]  Load_screen ['queued', '(62, 43) is not alliance'] 
+CombatGroup9;   loop6;   step1591;   [Invalid Args]  Load_screen ['now', '(61, 68) is not alliance'] 
+CombatGroup9;   loop6;   step1591;   [   Success  ]  FunctionCall(function=<_Functions.Move_minimap: 332>, arguments=[[<Queued.queued: 1>], [35.0, 40.0]])
+----------------------------------------------------------------------------------------------------

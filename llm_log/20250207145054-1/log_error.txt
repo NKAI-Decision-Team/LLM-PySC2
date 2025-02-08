@@ -1,0 +1,10 @@
+20250207145054
+2025-02-07 14:50:58.539 | ERROR    | llm_pysc2.lib.llm_client:deepseek_query_runtime:89 - [ID 1] CombatGroup10 Error in deepseek_query_runtime: 'str' object has no attribute 'get'
+2025-02-07 14:51:56.596 | ERROR    | llm_pysc2.lib.llm_client:query:195 - [ID 1] CombatGroup10 LLM query runtime error
+2025-02-07 14:51:56.596 | ERROR    | llm_pysc2.lib.llm_client:query:216 - [ID 1] CombatGroup10 Error when calling the OpenAI API: CombatGroup10 LLM query runtime error
+2025-02-07 14:51:59.715 | ERROR    | llm_pysc2.lib.llm_client:deepseek_query_runtime:89 - [ID 1] CombatGroup10 Error in deepseek_query_runtime: 'str' object has no attribute 'get'
+2025-02-07 14:52:57.759 | ERROR    | llm_pysc2.lib.llm_client:query:195 - [ID 1] CombatGroup10 LLM query runtime error
+2025-02-07 14:52:57.770 | ERROR    | llm_pysc2.lib.llm_client:query:216 - [ID 1] CombatGroup10 Error when calling the OpenAI API: CombatGroup10 LLM query runtime error
+2025-02-07 14:53:02.311 | ERROR    | llm_pysc2.lib.llm_client:deepseek_query_runtime:89 - [ID 1] CombatGroup10 Error in deepseek_query_runtime: 'str' object has no attribute 'get'
+2025-02-07 14:54:00.272 | ERROR    | llm_pysc2.lib.llm_client:query:195 - [ID 1] CombatGroup10 LLM query runtime error
+2025-02-07 14:54:00.272 | ERROR    | llm_pysc2.lib.llm_client:query:216 - [ID 1] CombatGroup10 Error when calling the OpenAI API: CombatGroup10 LLM query runtime error

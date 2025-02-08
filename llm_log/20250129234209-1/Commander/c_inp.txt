@@ -1,0 +1,10 @@
+{"0": ""}
+{"1": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tScout sent to map center and [16,16] minimap coordinates.  Reporting back in 7 seconds."}
+{"2": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tWarp Prism WarpPrism-1 moving to minimap location [35, 50] at 0:08. Awaiting further instructions."}
+{"3": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tAdept units engaging in early harassment at minimap location [33,33]. Requesting further strategic direction after initial scouting."}
+{"4": ""}
+{"5": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tRequesting intel on enemy presence and composition near minimap coordinates [33, 34].  Adept units are moving to engage. Time: 0:21\n\tFrom CombatGroup9: \n\t\tWarp Prism 0x100300001 completing phasing at [45, 55] minimap. Awaiting further instructions."}
+{"6": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tAdepts scouting towards map center [40, 40].  Will report findings in 10 seconds."}
+{"7": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tAdepts engaging enemy Spawning Pool and Queen at minimap location [10, 10] at 0:29.  Requesting further instructions after scouting the area.\n\tFrom CombatGroup9: \n\t\tTime: 0:29. Warp Prism-1 engaging Zerg Hatchery at minimap [42, 53]. Requesting further instructions after repositioning to minimap [45, 55].  Awaiting unit deployment for transport."}
+{"8": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tAdept units engaging Zerg Spawning Pools at [37, 31] and [41, 32] on the minimap. Requesting support after Spawning Pools are destroyed.\n\tFrom CombatGroup9: \n\t\tRequesting unit transport assignment.  Enemy Cocoon cluster detected at minimap [44, 54].  Awaiting orders."}
+{"9": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tTime: 0:37.  Engaging Zerg Queen at minimap [30,30]. One Adept at 36% health. Requesting backup if situation deteriorates.\n\tFrom CombatGroup9: \n\t\tTime: 0:38. Warp Prism-1 encountered a large cluster of Cocoons near minimap [44, 54].  Requesting further instructions."}

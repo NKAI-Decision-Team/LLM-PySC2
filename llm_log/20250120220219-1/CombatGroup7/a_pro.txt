@@ -1,0 +1,6 @@
+{"0": "Actions:\n\tTeam Adept-1 Actions:\n\t\t<Hold_Position()>\n\t\t<Ability_AdeptPhaseShift_Minimap([25, 35])>\n\t\t<Move_Minimap([25, 35])>"}
+{"1": "Actions:\n\tTeam AdeptPhase-1 Actions:\n\tTeam Adept-1, we wait for any information before taking action.:\n\tTeam Adept-1.:\n\t\t<Move_Minimap([25, 35])>"}
+{"2": "Actions:\n\tTeam Adept-1 Actions:\n\t\t<Hold_Position()>\n\t\t<Move_Minimap([28,38])>"}
+{"3": ""}
+{"4": ""}
+{"5": ""}

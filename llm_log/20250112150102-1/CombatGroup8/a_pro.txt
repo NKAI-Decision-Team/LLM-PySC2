@@ -1,0 +1,9 @@
+{"0": "Actions:\n\t\t<Move_Minimap([52, 32])>\n\t\t<Hold_Position()>\n\t\t<No_Operation()>"}
+{"1": "Actions:\n\tTeam Phoenix-1 Actions:\n\t\t<Ability_GravitonBeam_Unit(0x100240001)>\n\t\t<Move_Minimap([52, 32])>\n\t\t<Hold_Position()>"}
+{"2": "Actions:\n\tTeam Phoenix-1 Actions:\n\t\t<Stop()>\n\t\t<Move_Minimap([52, 32])>\n\t\t<No_Operation()>"}
+{"3": "Actions:\n\tTeam Phoenix-1 Actions:\n\t\t<Ability_GravitonBeam_Unit(0x100240001)>\n\t\t<Move_Minimap([48, 30])>\n\t\t<Move_Minimap([52, 32])>"}
+{"4": "Actions:\n\t\t<No_Operation()>\n\t\t<Move_Minimap([45, 28])>\n\t\t<Move_Minimap([52, 32])>"}
+{"5": "Actions:\n\tTeam towards the target location.  The path will need to be carefully chosen to avoid the enemy units.:\n\tTeam to move to a safer position before taking further actions.  It's important to observe the enemy's reaction to the movement in step 1.:\n\t\t<No_Operation()>"}
+{"6": "Actions:\n\tTeam slightly away from the immediate threat of the drones and the Hatchery, providing a buffer zone.  The chosen location is a compromise between safety and proximity to the final destination.:\n\tTeam to assess the situation after the initial retreat.  It gives time to observe enemy reactions and plan the next move.:\n\tTeam proceeds to the final objective.:"}
+{"7": "Actions:\n\tTeam Phoenix-1 Actions:\n\t\t<Move_Minimap([52, 32])>\n\t\t<Hold_Position()>\n\t\t<Move_Minimap([52, 32])>"}
+{"8": "Actions:\n\tTeam Phoenix-1 Actions:\n\t\t<Hold_Position()>\n\tTeam towards the target minimap location.  The slight adjustment from the previous [52,32] is negligible.:\n\t\t<No_Operation()>"}

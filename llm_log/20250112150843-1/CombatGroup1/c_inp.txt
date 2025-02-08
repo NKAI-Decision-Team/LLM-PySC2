@@ -1,0 +1,7 @@
+{"0": ""}
+{"1": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tTwo Stalkers deploying for scouting.  Awaiting further instructions."}
+{"2": "\n\nCommunication information:\n\tFrom Developer: \n\t\tPlease provide details on the reported Stalker redundancy.  Specify unit tags and locations."}
+{"3": "\n\nCommunication information:\n\tFrom Developer: \n\t\tMaintain defensive position and provide support to CombatGroup0.  Focus on restraining enemy units. Time: 0:13."}
+{"4": "\n\nCommunication information:\n\tFrom Developer: \n\t\tMove Stalkers to [64,64] near Pylon 0x1001c0001.  Harass and restrain enemy forces."}
+{"5": "\n\nCommunication information:\n\tFrom CombatGroup0: \n\t\tZealot teams moving to support your position near [33,35].  Will hold near [64,64] minimap."}
+{"6": "\n\nCommunication information:\n\tFrom Developer: \n\t\tWarp Gate established near [64,64] minimap.  Prepare for coordinated attack/defense.\n\tFrom CombatGroup9: \n\t\tWarp Prism support en route to your location at [64,64].  Awaiting your orders."}

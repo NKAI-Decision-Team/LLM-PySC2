@@ -1,0 +1,9 @@
+{"0": "Actions:\n\tTeam Stalker-3 Actions:\n\t\t<Move_Minimap([15, 30])>\n\t\t<No_Operation()>"}
+{"1": "Actions:\n\tTeam Stalker-1:\n\t\t<Attack_Unit(0x100d00001)>\n\t\t<Ability_Blink_Screen([76, 84])>\n\t\t<Move_Screen([65, 70])>\n\tTeam Stalker-2:\n\t\t<Attack_Unit(0x100e00001)>\n\t\t<No_Operation()>\n\t\t<No_Operation()>\n\tTeam Stalker-3:\n\t\t<No_Operation()>\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}
+{"2": "Actions:\n\tTeam Stalker-2:\n\t\t<Attack_Unit(0x100e00001)>\n\t\t<Attack_Unit(0x100d00001)>\n\t\t<Hold_Position()>\n\tTeam Stalker-3:\n\t\t<Attack_Unit(0x1011c0001)>\n\t\t<Attack_Unit(0x1003c0001)>\n\t\t<Hold_Position()>"}
+{"3": "Actions:\n\tTeam Stalker-3 Actions:\n\t\t<Attack_Unit(0x100a80001)>\n\t\t<Attack_Unit(0x100b40001)>\n\t\t<Hold_Position()>"}
+{"4": "Actions:\n\t\t<Hold_Position()>\n\t\t<Attack_Unit(0x100a80001)>\n\t\t<Attack_Unit(0x100b40001)>"}
+{"5": "Actions:\n\t\t<Attack_Unit(0x1007c0001)>\n\t\t<Attack_Unit(0x100040001)>\n\t\t<Hold_Position()>"}
+{"6": "Actions:\n\t\t<Hold_Position()>\n\t\t<Move_Minimap([25, 38])>\n\t\t<Attack_Unit(0x100600001)>"}
+{"7": "Actions:\n\t\t<Select_Unit_Blink_Screen(0x100d80001, [57, 59])>\n\t\t<Ability_Blink_Screen([60, 23])>\n\t\t<Attack_Unit(0x102200001)>"}
+{"8": "Actions:\n\t\t<Hold_Position()>\n\t\t<Move_Minimap([25, 31])>"}

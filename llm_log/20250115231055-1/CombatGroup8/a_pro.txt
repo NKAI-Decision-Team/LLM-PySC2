@@ -1,0 +1,6 @@
+{"0": "Actions:\n\tTeam towards the target minimap location.  This is the primary action to achieve the objective.:\n\tTeam to pause and reassess the situation before continuing.:\n\t\t<No_Operation()>"}
+{"1": "Actions:\n\tTeam Phoenix-1 Actions:\n\tTeam to move towards the target minimap location.  This is the primary action to achieve the objective.:\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}
+{"2": "Actions:\n\tTeam Phoenix-1 Actions:\n\t\t<Move_Minimap([35, 30])>\n\t\t<Move_Minimap([52, 32])>\n\t\t<Hold_Position()>\n\t\t<No_Operation()>"}
+{"3": "Actions:\n\tTeam Phoenix-1 Actions:\n\t\t<Move_Minimap([44, 30])>\n\t\t<Hold_Position()>\n\t\t<Move_Minimap([52, 32])>"}
+{"4": "Actions:\n\tTeam Phoenix-1 Actions:\n\t\t<Move_Minimap([48,30])>\n\t\t<Move_Minimap([52, 32])>\n\t\t<No_Operation()>"}
+{"5": "Actions:\n\tTeam Phoenix-1 Actions:\n\t\t<Move_Minimap([48, 30])>\n\tTeam to assess the situation and ensure the Spore Crawler doesn't attack before continuing the movement.:\n\t\t<Move_Minimap([52, 32])>"}

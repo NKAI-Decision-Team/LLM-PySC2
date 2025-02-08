@@ -1,0 +1,7 @@
+{"0": "Actions:\n\tTeam towards the objective.:\n\tTeam encounters an enemy, this action can be replaced with a more appropriate defensive action.  Alternatively, this could be replaced with a more tactical spread-out movement command if the game allows for individual unit control beyond the current action set.:\n\tTeam encounters an enemy, this could be replaced with an attack or defensive maneuver.:"}
+{"1": "Actions:\n\tTeam Phoenix-1 Actions:\n\tTeam towards the objective.  The spread of the Phoenix units is minimal, so a more precise movement command isn't necessary at this stage.:\n\t\t<No_Operation()>\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}
+{"2": "Actions:\n\tTeam Phoenix-1 Actions:\n\t\t<Move_Minimap([35,31])>\n\t\t<Move_Minimap([45,32])>\n\t\t<Move_Minimap([52,32])>"}
+{"3": "Actions:\n\tTeam Phoenix-1 Actions:\n\t\t<Ability_GravitonBeam_Unit(0x100240001)>\n\t\t<Move_Minimap([45, 32])>\n\t\t<Move_Minimap([52, 32])>"}
+{"4": "Actions:\n\t\t<Ability_GravitonBeam_Unit(0x100540001)>\n\t\t<Move_Minimap([52, 32])>\n\t\t<No_Operation()>"}
+{"5": "Actions:\n\t\t<Move_Screen([80, 70])>\n\t\t<Attack_Unit(0x101380001)>\n\t\t<Ability_GravitonBeam_Unit(0x100540001)>"}
+{"6": "Actions:\n\t\t<Ability_GravitonBeam_Unit(0x100540001)>\n\t\t<Attack_Unit(0x100540001)>\n\t\t<Attack_Unit(0x101380001)>"}

@@ -1,0 +1,4 @@
+20250120220219
+2025-01-20 22:02:45.068 | ERROR    | llm_pysc2.agents.llm_pysc2_agent:get_func_a:379 - [ID 1] Error in CombatGroup7 get_func_a(): list index out of range
+2025-01-20 22:02:49.756 | ERROR    | llm_pysc2.agents.llm_pysc2_agent:get_func_a:379 - [ID 1] Error in CombatGroup7 get_func_a(): invalid literal for int() with base 16: '0xXXXXXXX'
+2025-01-20 22:02:54.602 | ERROR    | llm_pysc2.agents.llm_pysc2_agent:get_func_a:379 - [ID 1] Error in CombatGroup7 get_func_a(): invalid literal for int() with base 16: '0xXXXXXXXX'

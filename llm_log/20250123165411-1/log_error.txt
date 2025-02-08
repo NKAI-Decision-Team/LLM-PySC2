@@ -1,0 +1,5 @@
+20250123165411
+2025-01-23 16:55:44.087 | ERROR    | llm_pysc2.lib.llm_client:query:180 - [ID 1] CombatGroup7 LLM query runtime error
+2025-01-23 16:55:44.087 | ERROR    | llm_pysc2.lib.llm_client:query:201 - [ID 1] CombatGroup7 Error when calling the OpenAI API: CombatGroup7 LLM query runtime error
+2025-01-23 16:55:44.246 | ERROR    | llm_pysc2.lib.llm_client:query:180 - [ID 1] CombatGroup9 LLM query runtime error
+2025-01-23 16:55:44.246 | ERROR    | llm_pysc2.lib.llm_client:query:201 - [ID 1] CombatGroup9 Error when calling the OpenAI API: CombatGroup9 LLM query runtime error

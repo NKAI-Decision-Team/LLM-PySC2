@@ -1,0 +1,6 @@
+----------------------------------------------------------------------------------------------------
+CombatGroup10;   loop0;   step38;   [   Success  ]  FunctionCall(function=<_Functions.Move_screen: 331>, arguments=[[<Queued.now: 0>], [52, 32]])
+CombatGroup10;   loop0;   step39;   [   Success  ]  FunctionCall(function=<_Functions.Effect_AdeptPhaseShift_minimap: 547>, arguments=[[<Queued.queued: 1>], [52.0, 32.0]])
+CombatGroup10;   loop0;   step43;   [   Success  ]  FunctionCall(function=<_Functions.Morph_WarpPrismPhasingMode_quick: 329>, arguments=[[<Queued.now: 0>]])
+CombatGroup10;   loop0;   step44;   [Invalid Func]  Move_minimap 
+----------------------------------------------------------------------------------------------------

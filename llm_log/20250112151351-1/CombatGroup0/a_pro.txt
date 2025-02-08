@@ -1,0 +1,7 @@
+{"1": "Actions:\n\t\t<Hold_Position()>\n\t\t<No_Operation()>"}
+{"2": "Actions:\n\t\t<Hold_Position()>\n\t\t<No_Operation()>"}
+{"3": "Actions:\n\t\t<Move_Screen( [85, 37] )>\n\t\t<Hold_Position()>\n\t\t<No_Operation()>"}
+{"4": "Actions:\n\t\t<Move_Screen([85, 37])>\n\t\t<Hold_Position()>\n\t\t<No_Operation()>"}
+{"5": "Actions:\n\tTeam Zealot-2 Actions:\n\t\t<Hold_Position()>\n\t\t<No_Operation()>"}
+{"6": "Actions:\n\tTeam Zealot-2 Actions:\n\t\t<Hold_Position()>\n\t\t<Move_Minimap([18, 25])>"}
+{"7": "Actions:\n\tTeam Zealot-2 Actions:\n\t\t<No_Operation()>\n\t\t<Attack_Unit(0x1002c0009)>\n\t\t<Hold_Position()>"}

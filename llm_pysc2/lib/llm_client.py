@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# import google.generativeai as genai
+# from google import genai
 from llamaapi import LlamaAPI
 from zhipuai import ZhipuAI
 import openai
@@ -74,9 +74,27 @@ def glm4v_query_runtime(self, ):
   self.query_token_out = llm_response.usage.completion_tokens
   self.llm_response = llm_response.choices[0].message.content
 
+def deepseek_query_runtime(self, ):
+    try:
+        llm_response = openai.ChatCompletion.create(
+            model=self.model_name,
+            messages=self.messages,
+            temperature=self.temperature
+        )
+        # Handle token counting if available
+        self.query_token_in = llm_response.usage.prompt_tokens if hasattr(llm_response, 'usage') else 0
+        self.query_token_out = llm_response.usage.completion_tokens if hasattr(llm_response, 'usage') else 0
+        self.llm_response = llm_response.choices[0].message.content
+    except Exception as e:
+        logger.error(f"[ID {self.log_id}] {self.agent_name} Error in deepseek_query_runtime: {str(e)}")
+        raise
+
 # def gemini_query_runtime(self, ):
 #   self.llm_response = self.model.generate_content(
-#     messages=self.messages, generation_config=genai.types.GenerationConfig(temperature=self.temperature)).text
+#     self.messages[-1]["content"],
+#     generation_config=genai.types.GenerationConfig(temperature=self.temperature)
+#   ).text
+
 
 # def qwen2_query_runtime(self, ):
 #   llm_response = openai.ChatCompletion.create(
@@ -253,11 +271,18 @@ class GlmClient(GptClient):
     self.client = ZhipuAI(api_key=self.api_key)
     logger.info(f"[ID {self.log_id}] {self.agent_name} {self.model_name} GlmClient initialized")
 
+class DeepSeekClient(GptClient):
+    def __init__(self, name, log_id, config):
+        super(DeepSeekClient, self).__init__(name, log_id, config)
+        self.query_runtime = deepseek_query_runtime
+        self.client = openai
+
 # class GeminiClient(GptClient):
 #   def __init__(self, name, log_id, config):
-#     super(GeminiClient).__init__(self, name, log_id, config)
+#     super(GeminiClient,self).__init__( name, log_id, config)
 #     self.query_runtime = gemini_query_runtime
 #     self.model = genai.GenerativeModel(config.model_name)
+#     genai.configure(api_key=config.api_key)
 
 # class QWen2Client(GptClient):
 #   def __init__(self, name, log_id, config):
@@ -268,7 +293,7 @@ class GlmClient(GptClient):
 # for config's auto check
 vision_model_names = [
   'gpt-4o', 'gpt-4-1106-vision-preview', 'gpt-4v-1106', 'gpt-4v-0409',
-  'glm-4v', 'glm-4v-plus'
+  'glm-4v', 'glm-4v-plus','gemini-1.5-flash'
 ]
 video_model_names = []
 
@@ -305,10 +330,16 @@ FACTORY = {
   'glm-4-flash': GlmClient,
   'glm-4-flashx': GlmClient,
 
-  # 'glm-4v': GlmClient,
-  # 'glm-4v-plus': GlmClient,
+  'deepseek-chat': DeepSeekClient,
+  'deepseek-reasoner': DeepSeekClient,
+  'deepseek-r1-distill-llama-8b': DeepSeekClient,
 
-  # 'qwen2.5-7b-instruct': QWen2Client,
-  # 'qwen2:72b': QWen2Client,  # debug for LAN LLM
-  # 'gemini': GeminiClient,
+  # 'gemini-1.5-flash':GeminiClient,
+
+  # # 'glm-4v': GlmClient,
+  # # 'glm-4v-plus': GlmClient,
+
+  # # 'qwen2.5-7b-instruct': QWen2Client,
+  # # 'qwen2:72b': QWen2Client,  # debug for LAN LLM
+  #  'gemini': GeminiClient,
 }

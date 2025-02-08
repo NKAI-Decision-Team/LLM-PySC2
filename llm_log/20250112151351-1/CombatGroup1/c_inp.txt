@@ -1,0 +1,6 @@
+{"0": ""}
+{"1": "\n\nCommunication information:\n\tFrom Developer: \n\t\tDeploying 8 Zealots near Pylon 0x1004c0001 for immediate frontline support.  Maintain defensive posture and await further instructions.\n\tFrom CombatGroup9: \n\t\tTwo Warp Prisms, each carrying two Stalkers, are preparing for deployment.  Standby for further instructions."}
+{"2": "\n\nCommunication information:\n\tFrom Developer: \n\t\tProvide cover for CombatGroup0's advance.  Prioritize enemy ranged units."}
+{"3": "\n\nCommunication information:\n\tFrom Developer: \n\t\tMaintain defensive position and provide support to CombatGroup0 as needed.  Focus on ranged attacks and area denial."}
+{"4": "\n\nCommunication information:\n\tFrom CombatGroup0: \n\t\tZealot-1 deployed near Pylon 0x1001c0001.  No enemy sightings yet.\n\tFrom CombatGroup9: \n\t\tRetreat to base immediately.  Warp Prism 2 is disengaging."}
+{"5": "\n\nCommunication information:\n\tFrom CombatGroup0: \n\t\tAcknowledged request for cover fire.  One Zealot en route to reinforce your position near [85, 37]. Awaiting arrival of main force.\n\tFrom CombatGroup9: \n\t\tWarp Prisms are en route to assist with Stalker repositioning.  Awaiting your instructions on drop-off location."}

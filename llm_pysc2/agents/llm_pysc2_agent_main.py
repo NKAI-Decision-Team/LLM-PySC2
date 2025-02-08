@@ -198,6 +198,7 @@ class MainAgent(base_agent.BaseAgent):
   def _all_agent_executing_finished(self):
     for agent_name in self.AGENT_NAMES:
       agent = self.agents[agent_name]
+      
       if agent.enable and agent.executing_times == self.main_loop_step:
         return False
     return True

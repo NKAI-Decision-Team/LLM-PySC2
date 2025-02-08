@@ -1,0 +1,398 @@
+----------------------------------------------------------------------------------------------------
+Developer;   loop0;   step237;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop0;   step238;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(16.5625), np.float64(41.96170774647887)]])
+Developer;   loop0;   step239;   [Invalid Args]  TrainWarp_Zealot_screen ['now', 'cannot find unit 0x100000001 on screen'] 
+Developer;   loop0;   step239;   [Invalid Args]  TrainWarp_Zealot_screen ['queued', 'cannot find unit 0x100000001 on screen'] 
+Developer;   loop0;   step239;   [Invalid Args]  TrainWarp_Zealot_screen ['queued', 'cannot find unit 0x100000001 on screen'] 
+Developer;   loop0;   step239;   [Invalid Args]  TrainWarp_Zealot_screen ['queued', 'cannot find unit 0x100000001 on screen'] 
+Developer;   loop0;   step239;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop0;   step240;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(16.5625), np.float64(41.96170774647887)]])
+Developer;   loop0;   step241;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [86, 80]])
+Developer;   loop0;   step242;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [45, 76]])
+Developer;   loop0;   step243;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [52, 69]])
+Developer;   loop0;   step244;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [48, 73]])
+Developer;   loop0;   step245;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop0;   step246;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(16.5625), np.float64(41.96170774647887)]])
+Developer;   loop0;   step247;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [52, 69]])
+Developer;   loop0;   step248;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [64, 90]])
+Developer;   loop0;   step249;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [64, 90]])
+Developer;   loop0;   step250;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [86, 80]])
+Developer;   loop0;   step251;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop0;   step252;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(16.5625), np.float64(41.96170774647887)]])
+Developer;   loop0;   step253;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [52, 69]])
+Developer;   loop0;   step254;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [79, 73]])
+Developer;   loop0;   step255;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [45, 76]])
+Developer;   loop0;   step256;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [52, 69]])
+Developer;   loop0;   step257;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop0;   step258;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(16.5625), np.float64(41.96170774647887)]])
+Developer;   loop0;   step259;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [75, 69]])
+Developer;   loop0;   step260;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [75, 69]])
+Developer;   loop0;   step261;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [75, 69]])
+Developer;   loop0;   step262;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [86, 80]])
+Developer;   loop0;   step263;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop0;   step264;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(16.5625), np.float64(41.96170774647887)]])
+Developer;   loop0;   step265;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [71, 65]])
+Developer;   loop0;   step266;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [86, 80]])
+Developer;   loop0;   step267;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [75, 69]])
+Developer;   loop0;   step268;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [45, 76]])
+Developer;   loop0;   step269;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop0;   step270;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(16.5625), np.float64(41.96170774647887)]])
+Developer;   loop0;   step271;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [64, 90]])
+Developer;   loop0;   step272;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [64, 90]])
+Developer;   loop0;   step273;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [82, 76]])
+Developer;   loop0;   step274;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [64, 90]])
+Developer;   loop0;   step275;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop0;   step276;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(16.5625), np.float64(41.96170774647887)]])
+Developer;   loop0;   step277;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [82, 76]])
+Developer;   loop0;   step278;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [75, 69]])
+Developer;   loop0;   step279;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [82, 76]])
+Developer;   loop0;   step280;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [64, 90]])
+Developer;   loop0;   step281;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop0;   step282;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(16.5625), np.float64(41.96170774647887)]])
+Developer;   loop0;   step283;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.now: 0>], [82, 76]])
+Developer;   loop0;   step284;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.now: 0>], [45, 76]])
+Developer;   loop0;   step285;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.now: 0>], [64, 90]])
+Developer;   loop0;   step286;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.now: 0>], [48, 73]])
+----------------------------------------------------------------------------------------------------
+Developer;   loop1;   step468;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop1;   step469;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(26.5625), np.float64(57.96170774647887)]])
+Developer;   loop1;   step470;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.now: 0>], [36, 5]])
+Developer;   loop1;   step471;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [79, 42]])
+Developer;   loop1;   step472;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [86, 80]])
+Developer;   loop1;   step473;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [45, 39]])
+Developer;   loop1;   step474;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop1;   step475;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(26.5625), np.float64(57.96170774647887)]])
+Developer;   loop1;   step476;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [71, 50]])
+Developer;   loop1;   step477;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [86, 80]])
+Developer;   loop1;   step478;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [48, 58]])
+Developer;   loop1;   step479;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [79, 42]])
+Developer;   loop1;   step480;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop1;   step481;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(20.5625), np.float64(57.96170774647887)]])
+Developer;   loop1;   step482;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [47, 42]])
+Developer;   loop1;   step483;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [52, 46]])
+Developer;   loop1;   step484;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [56, 50]])
+Developer;   loop1;   step485;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop1;   step485;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop1;   step486;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(20.5625), np.float64(57.96170774647887)]])
+Developer;   loop1;   step487;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop1;   step487;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop1;   step487;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop1;   step487;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop1;   step487;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop1;   step488;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(26.5625), np.float64(37.96170774647887)]])
+Developer;   loop1;   step489;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop1;   step489;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop1;   step489;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop1;   step489;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop1;   step489;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop1;   step490;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(26.5625), np.float64(37.96170774647887)]])
+Developer;   loop1;   step491;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop1;   step491;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop1;   step491;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop1;   step491;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop1;   step491;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop1;   step492;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(20.5625), np.float64(37.96170774647887)]])
+Developer;   loop1;   step493;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop1;   step493;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop1;   step493;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop1;   step493;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop1;   step493;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop1;   step494;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(20.5625), np.float64(37.96170774647887)]])
+Developer;   loop1;   step495;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop1;   step495;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop1;   step495;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop1;   step495;   [Invalid Func]  TrainWarp_Zealot_screen 
+----------------------------------------------------------------------------------------------------
+Developer;   loop2;   step691;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop2;   step692;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(20.5625), np.float64(57.96170774647887)]])
+Developer;   loop2;   step693;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop2;   step693;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop2;   step693;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop2;   step693;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop2;   step693;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop2;   step694;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(20.5625), np.float64(57.96170774647887)]])
+Developer;   loop2;   step695;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop2;   step695;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop2;   step695;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop2;   step695;   [Invalid Func]  TrainWarp_Zealot_screen 
+----------------------------------------------------------------------------------------------------
+Developer;   loop3;   step914;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop3;   step915;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(20.5625), np.float64(57.96170774647887)]])
+Developer;   loop3;   step916;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.now: 0>], [10, 5]])
+Developer;   loop3;   step917;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [56, 50]])
+Developer;   loop3;   step918;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [45, 76]])
+Developer;   loop3;   step919;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [86, 80]])
+Developer;   loop3;   step920;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop3;   step921;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(20.5625), np.float64(57.96170774647887)]])
+Developer;   loop3;   step922;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [45, 76]])
+Developer;   loop3;   step923;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [48, 58]])
+Developer;   loop3;   step924;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [56, 50]])
+Developer;   loop3;   step925;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [48, 73]])
+Developer;   loop3;   step926;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop3;   step927;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(20.5625), np.float64(57.96170774647887)]])
+Developer;   loop3;   step928;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [56, 50]])
+Developer;   loop3;   step929;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [82, 76]])
+Developer;   loop3;   step930;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [48, 73]])
+Developer;   loop3;   step931;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [48, 58]])
+Developer;   loop3;   step932;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop3;   step933;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(20.5625), np.float64(57.96170774647887)]])
+Developer;   loop3;   step934;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [64, 42]])
+Developer;   loop3;   step935;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [53, 58]])
+Developer;   loop3;   step936;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [48, 58]])
+Developer;   loop3;   step937;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [48, 73]])
+Developer;   loop3;   step938;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop3;   step939;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(20.5625), np.float64(57.96170774647887)]])
+Developer;   loop3;   step940;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [48, 42]])
+Developer;   loop3;   step941;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [52, 46]])
+Developer;   loop3;   step942;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [48, 42]])
+Developer;   loop3;   step943;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [85, 58]])
+Developer;   loop3;   step944;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop3;   step945;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(20.5625), np.float64(57.96170774647887)]])
+Developer;   loop3;   step946;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [86, 80]])
+Developer;   loop3;   step947;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [48, 73]])
+Developer;   loop3;   step948;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [86, 80]])
+Developer;   loop3;   step949;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [64, 47]])
+Developer;   loop3;   step950;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop3;   step951;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(20.5625), np.float64(57.96170774647887)]])
+Developer;   loop3;   step952;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop3;   step952;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop3;   step952;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop3;   step952;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop3;   step952;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop3;   step953;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(20.5625), np.float64(57.96170774647887)]])
+Developer;   loop3;   step954;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop3;   step954;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop3;   step954;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop3;   step954;   [Invalid Func]  TrainWarp_Zealot_screen 
+----------------------------------------------------------------------------------------------------
+Developer;   loop4;   step1131;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop4;   step1132;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(32.5625), np.float64(47.96170774647887)]])
+Developer;   loop4;   step1133;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1133;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1133;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1133;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1133;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop4;   step1134;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(32.5625), np.float64(47.96170774647887)]])
+Developer;   loop4;   step1135;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1135;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1135;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1135;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1135;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop4;   step1136;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(32.5625), np.float64(47.96170774647887)]])
+Developer;   loop4;   step1137;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1137;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1137;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1137;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1137;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop4;   step1138;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(32.5625), np.float64(47.96170774647887)]])
+Developer;   loop4;   step1139;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1139;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1139;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1139;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1139;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop4;   step1140;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(32.5625), np.float64(47.96170774647887)]])
+Developer;   loop4;   step1141;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1141;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1141;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1141;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1141;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop4;   step1142;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(32.5625), np.float64(47.96170774647887)]])
+Developer;   loop4;   step1143;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1143;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1143;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1143;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1143;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop4;   step1144;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(32.5625), np.float64(47.96170774647887)]])
+Developer;   loop4;   step1145;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1145;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1145;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1145;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1145;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop4;   step1146;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(32.5625), np.float64(47.96170774647887)]])
+Developer;   loop4;   step1147;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1147;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1147;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop4;   step1147;   [Invalid Func]  TrainWarp_Zealot_screen 
+----------------------------------------------------------------------------------------------------
+Developer;   loop5;   step1355;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop5;   step1356;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(32.5625), np.float64(47.96170774647887)]])
+Developer;   loop5;   step1357;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1357;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1357;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1357;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1357;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop5;   step1358;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(32.5625), np.float64(47.96170774647887)]])
+Developer;   loop5;   step1359;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1359;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1359;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1359;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1359;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop5;   step1360;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(32.5625), np.float64(47.96170774647887)]])
+Developer;   loop5;   step1361;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1361;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1361;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1361;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1361;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop5;   step1362;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(32.5625), np.float64(47.96170774647887)]])
+Developer;   loop5;   step1363;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1363;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1363;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1363;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1363;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop5;   step1364;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(32.5625), np.float64(47.96170774647887)]])
+Developer;   loop5;   step1365;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.now: 0>], [74, 58]])
+Developer;   loop5;   step1366;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1366;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1366;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1366;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop5;   step1367;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(32.5625), np.float64(47.96170774647887)]])
+Developer;   loop5;   step1368;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [42, 58]])
+Developer;   loop5;   step1369;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [37, 58]])
+Developer;   loop5;   step1370;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [75, 69]])
+Developer;   loop5;   step1371;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [64, 84]])
+Developer;   loop5;   step1372;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop5;   step1373;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(32.5625), np.float64(47.96170774647887)]])
+Developer;   loop5;   step1374;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1374;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1374;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1374;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1374;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop5;   step1375;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(32.5625), np.float64(47.96170774647887)]])
+Developer;   loop5;   step1376;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1376;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1376;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop5;   step1376;   [Invalid Func]  TrainWarp_Zealot_screen 
+----------------------------------------------------------------------------------------------------
+Developer;   loop6;   step1579;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop6;   step1580;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(32.5625), np.float64(47.96170774647887)]])
+Developer;   loop6;   step1581;   [Invalid Args]  TrainWarp_Zealot_screen ['now', 'cannot find unit 0x100d40001 on screen'] 
+Developer;   loop6;   step1581;   [Invalid Args]  TrainWarp_Zealot_screen ['queued', 'cannot find unit 0x100d40001 on screen'] 
+Developer;   loop6;   step1581;   [Invalid Args]  TrainWarp_Zealot_screen ['queued', 'cannot find unit 0x100d40001 on screen'] 
+Developer;   loop6;   step1581;   [Invalid Args]  TrainWarp_Zealot_screen ['queued', 'cannot find unit 0x100d40001 on screen'] 
+Developer;   loop6;   step1581;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop6;   step1582;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(32.5625), np.float64(47.96170774647887)]])
+Developer;   loop6;   step1583;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [56, 50]])
+Developer;   loop6;   step1584;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [48, 58]])
+Developer;   loop6;   step1585;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [74, 58]])
+Developer;   loop6;   step1586;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [45, 39]])
+Developer;   loop6;   step1587;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop6;   step1588;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(26.5625), np.float64(57.96170774647887)]])
+Developer;   loop6;   step1589;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [16, 20]])
+Developer;   loop6;   step1590;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop6;   step1590;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop6;   step1590;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop6;   step1590;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop6;   step1591;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(26.5625), np.float64(57.96170774647887)]])
+Developer;   loop6;   step1592;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop6;   step1592;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop6;   step1592;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop6;   step1592;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop6;   step1592;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop6;   step1593;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(16.5625), np.float64(54.96170774647887)]])
+Developer;   loop6;   step1594;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop6;   step1594;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop6;   step1594;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop6;   step1594;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop6;   step1594;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop6;   step1595;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(16.5625), np.float64(54.96170774647887)]])
+Developer;   loop6;   step1596;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop6;   step1596;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop6;   step1596;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop6;   step1596;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop6;   step1596;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop6;   step1597;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(16.5625), np.float64(41.96170774647887)]])
+Developer;   loop6;   step1598;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop6;   step1598;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop6;   step1598;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop6;   step1598;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop6;   step1598;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop6;   step1599;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(16.5625), np.float64(41.96170774647887)]])
+Developer;   loop6;   step1600;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop6;   step1600;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop6;   step1600;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop6;   step1600;   [Invalid Func]  TrainWarp_Zealot_screen 
+----------------------------------------------------------------------------------------------------
+Developer;   loop7;   step1806;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop7;   step1807;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(20.5625), np.float64(37.96170774647887)]])
+Developer;   loop7;   step1808;   [Invalid Args]  TrainWarp_Zealot_screen ['now', 'cannot find unit 0x100280001 on screen'] 
+Developer;   loop7;   step1808;   [Invalid Args]  TrainWarp_Zealot_screen ['queued', 'cannot find unit 0x100280001 on screen'] 
+Developer;   loop7;   step1808;   [Invalid Args]  TrainWarp_Zealot_screen ['queued', 'cannot find unit 0x100280001 on screen'] 
+Developer;   loop7;   step1808;   [Invalid Args]  TrainWarp_Zealot_screen ['queued', 'cannot find unit 0x100280001 on screen'] 
+Developer;   loop7;   step1808;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop7;   step1809;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(20.5625), np.float64(37.96170774647887)]])
+Developer;   loop7;   step1810;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [64, 90]])
+Developer;   loop7;   step1811;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [64, 74]])
+Developer;   loop7;   step1812;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1812;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1812;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop7;   step1813;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(32.5625), np.float64(47.96170774647887)]])
+Developer;   loop7;   step1814;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1814;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1814;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1814;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1814;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop7;   step1815;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(32.5625), np.float64(47.96170774647887)]])
+Developer;   loop7;   step1816;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [45, 39]])
+Developer;   loop7;   step1817;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [82, 39]])
+Developer;   loop7;   step1818;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [56, 50]])
+Developer;   loop7;   step1819;   [   Success  ]  FunctionCall(function=<_Functions.TrainWarp_Zealot_screen: 510>, arguments=[[<Queued.queued: 1>], [80, 58]])
+Developer;   loop7;   step1820;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop7;   step1821;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(16.5625), np.float64(41.96170774647887)]])
+Developer;   loop7;   step1822;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1822;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1822;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1822;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1822;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop7;   step1823;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(16.5625), np.float64(41.96170774647887)]])
+Developer;   loop7;   step1824;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1824;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1824;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1824;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1824;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop7;   step1825;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(26.5625), np.float64(37.96170774647887)]])
+Developer;   loop7;   step1826;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1826;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1826;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1826;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1826;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop7;   step1827;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(26.5625), np.float64(37.96170774647887)]])
+Developer;   loop7;   step1828;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1828;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1828;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1828;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1828;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop7;   step1829;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(16.5625), np.float64(54.96170774647887)]])
+Developer;   loop7;   step1830;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1830;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1830;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1830;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1830;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop7;   step1831;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(16.5625), np.float64(54.96170774647887)]])
+Developer;   loop7;   step1832;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1832;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1832;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1832;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1832;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop7;   step1833;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(26.5625), np.float64(57.96170774647887)]])
+Developer;   loop7;   step1834;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1834;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1834;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1834;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1834;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop7;   step1835;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(26.5625), np.float64(57.96170774647887)]])
+Developer;   loop7;   step1836;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1836;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1836;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1836;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1836;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop7;   step1837;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(20.5625), np.float64(57.96170774647887)]])
+Developer;   loop7;   step1838;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1838;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1838;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1838;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1838;   [   Success  ]  FunctionCall(function=<_Functions.select_warp_gates: 8>, arguments=[[<SelectAdd.select: 0>]])
+Developer;   loop7;   step1839;   [   Success  ]  FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(20.5625), np.float64(57.96170774647887)]])
+Developer;   loop7;   step1840;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1840;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1840;   [Invalid Func]  TrainWarp_Zealot_screen 
+Developer;   loop7;   step1840;   [Invalid Func]  TrainWarp_Zealot_screen 

@@ -1,0 +1,15 @@
+{"0": "**Communication:**\n1. `<MessageTo(CombatGroup7, '''Request scouting information.  Focus on enemy base location and composition.  Report back ASAP.''' )>`: This directs the special forces to scout and gather crucial early-game intelligence."}
+{"1": "**Communication:**\n`<MessageTo(CombatGroup7, '''Warp Prism transporting one Adept to minimap [35, 40].  Objective unclear; awaiting further instructions.''' )>`"}
+{"2": "Communication:\n`<MessageTo(CombatGroup7, '''Warp Prism en route to your location at [35, 40] with two Adept units for support. Awaiting further instructions.''' )>`"}
+{"3": "Communication:"}
+{"4": "**Communication:**\n`<MessageTo(Commander, '''Warp Prism 0x100300001 moving to [35, 40] to support CombatGroup7's scouting and harassment mission. ETA: 5 seconds.''' )>`"}
+{"5": "**Communication:**"}
+{"6": "**Communication:**\n`<MessageTo(Commander, '''Warp Prism 0x100300001 moving to drop-off point [35, 40] as requested by Combat Group 7.  Awaiting Adept deployment for scouting and harassment mission.  Time: 0:29.''' )>`"}
+{"7": "**Communication:**\n`<MessageTo(Commander, '''Warp Prism 0x100300001 deploying Adepts to [35, 40] minimap at 0:33 for scouting and harassment.  Awaiting Adept arrival.''' )>`: This informs the Commander of the WP's actions, providing crucial context for overall strategic awareness.  The Commander can then adjust macro decisions accordingly."}
+{"8": "**Communication:**\n`<MessageTo(Commander, '''Warp Prism 1 reporting.  Moving to drop-off point [35,40] as per CombatGroup7 request.  Awaiting Adept arrival for transport and scout/harass mission.  ETA: Unknown, pending Adept arrival.''' )>`"}
+{"9": "**Communication:**\n`<MessageTo(Commander, '''Warp Prism 0x100300001 deploying Adepts to [35, 40] at 0:41 for scouting and harassment of enemy base.  Awaiting Adept arrival.''' )>`"}
+{"10": "**Communication:**\n`<MessageTo(Commander, '''Warp Prism 0x100300001 deploying to minimap [35, 40] for Adept drop-off.  Objective: scout and harass enemy base. ETA: approximately 10 seconds.''' )>`"}
+{"11": "**Communication:**\n`<MessageTo(Commander, '''Warp Prism 0x100300001 deploying Adepts to minimap coordinates [35, 40] at 0:50. Objective: scout and harass enemy base.  Awaiting Adept arrival.''' )>`"}
+{"12": "**Communication:**\n`<MessageTo(Commander, '''Warp Prism 0x100300001 deploying Adepts to minimap location [35, 40] at 0:54 for scouting and harassment.  Will move to the location after drop-off.''' )>`"}
+{"13": "**Communication:**\n`<MessageTo(Commander, '''Warp Prism 0x100300001 moving to [35, 40] to pick up Adepts for harassment/scout mission at approximately 0:58.  Will report back after unit loading.''')>`"}
+{"14": "**Communication:**\n`<MessageTo(Commander, '''Warp Prism 0x100300001 deploying Adepts to [35, 40] at 1:02. Objective: scout and harass enemy base.  Awaiting Adept arrival.''' )>`"}

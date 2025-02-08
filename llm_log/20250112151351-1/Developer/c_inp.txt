@@ -1,0 +1,8 @@
+{"0": ""}
+{"1": ""}
+{"2": ""}
+{"3": ""}
+{"4": "\n\nCommunication information:\n\tFrom CombatGroup0: \n\t\tZealot-1 reporting.  Zealot moving to Pylon 0x1001c0001 as instructed. Awaiting further orders.\n\tFrom CombatGroup9: \n\t\tWarp Prism 2 sustained damage. Requesting repair units to be prepared."}
+{"5": "\n\nCommunication information:\n\tIn Channel-1: "}
+{"6": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tWarp Prism 2 reports minor damage. Location: [29, 45] on minimap. Awaiting assessment and potential repair unit dispatch."}
+{"7": ""}

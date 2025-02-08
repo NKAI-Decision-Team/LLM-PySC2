@@ -1,0 +1,23 @@
+20250115231151
+2025-01-15 23:12:24.397 | ERROR    | llm_pysc2.agents.main_agent_funcs:main_agent_func4:1351 - [ID 1] main_agent_func4: head unit of tag 4295229441 not found, unit_f is None
+2025-01-15 23:12:24.398 | ERROR    | llm_pysc2.agents.main_agent_funcs:main_agent_func4:1374 - [ID 1] main_agent_func4: Something wrong
+2025-01-15 23:12:24.398 | ERROR    | llm_pysc2.agents.main_agent_funcs:main_agent_func4:1375 - [ID 1]                   self.unit_selected_tag_list = [np.int64(4301258753), np.int64(4295229441), np.int64(4299161601)]
+2025-01-15 23:12:24.398 | ERROR    | llm_pysc2.agents.main_agent_funcs:main_agent_func4:1376 - [ID 1]                   len(self.unit_selected_tag_list) = 3
+2025-01-15 23:12:24.399 | ERROR    | llm_pysc2.agents.main_agent_funcs:main_agent_func4:1377 - [ID 1]                   self.temp_head_unit_tag = 4295229441
+2025-01-15 23:12:24.399 | ERROR    | llm_pysc2.agents.main_agent_funcs:main_agent_func4:1378 - [ID 1]                   self.temp_curr_unit_tag = 4299161601
+2025-01-15 23:12:24.401 | ERROR    | llm_pysc2.agents.main_agent_funcs:main_agent_func4:1379 - [ID 1]                   self.temp_head_unit = [        78          1         15          0        200          0
+        100         31          0        255          1          1
+         80         49          5          0          3          1
+          0          0          0          0          0          0
+          0          9          1        547          0 4295229441
+          0          0          0          0          1          1
+          0          0          0          0          0          0
+          0          0          0          0]
+2025-01-15 23:12:24.401 | ERROR    | llm_pysc2.agents.main_agent_funcs:main_agent_func4:1380 - [ID 1]                   self.temp_curr_unit = [        78          1         72          0        153          0
+        100        153          0        195          1          1
+         81         50          6          0          3          1
+          0          0          0          0          0          0
+          0          0          2          4        547 4299161601
+          0          0          0          0          1          1
+          0          0          0          0          0          0
+          0          0          0          0]

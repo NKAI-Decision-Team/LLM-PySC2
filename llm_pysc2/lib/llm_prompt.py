@@ -142,6 +142,8 @@ Actions:
   Communications:
     <MessageTo(Commander, '''xxxxxxxxxx''')>
     <MessageTo(CombatGroup4, '''xxxxxxxxxx''')>
+  
+  You must include 'Communications:' at the start of your communications for it to be recongnized.
 """
       self.eip += \
 """

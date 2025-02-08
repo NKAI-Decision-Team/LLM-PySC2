@@ -1,0 +1,12 @@
+{"0": ""}
+{"1": ""}
+{"2": ""}
+{"3": ""}
+{"4": ""}
+{"5": ""}
+{"6": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tWarp Prism en route to [20, 30] minimap coordinates. Awaiting further instructions."}
+{"7": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tWarp Prism moving to support your operation at [25, 30].  Awaiting your report on enemy presence."}
+{"8": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tReport on enemy presence at target location.  Warp Prism en route for extraction if needed."}
+{"9": ""}
+{"10": ""}
+{"11": ""}

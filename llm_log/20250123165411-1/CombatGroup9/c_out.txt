@@ -1,0 +1,9 @@
+{"0": ""}
+{"1": "Communication:\n1. `<MessageTo(Commander, '''Warp Prism 0x100300001 deploying to minimap location [35, 50] at 0:08.  Awaiting unit loading.''' )>`:  Inform the Commander of the deployment.  This provides context for the Warp Prism's movement."}
+{"2": "Communication:  The above actions include communication to both the Commander and CombatGroup7 to clarify objectives and receive orders.  Further actions will depend on their responses."}
+{"3": "Communication:"}
+{"4": "Communication:"}
+{"5": "**Communication:**\n1. `<MessageTo(Commander, '''Requesting immediate support.  Engaging enemy Cocoon cluster at screen coordinates [75, 18].  Time: 0:25.  Requesting follow-up attack after transport arrival.''' )>`: This informs the Commander of the situation and requests backup.  The message provides crucial information for coordination.**Reasoning for Actions and Communication:**"}
+{"6": "Communication:\n`<MessageTo(Commander, '''Requesting immediate reinforcements to [45, 49] minimap coordinates.  Enemy Hatchery detected with numerous Cocoon units.  Need support to eliminate threat.''' )>`"}
+{"7": "**Communication:**\n1. `<MessageTo(Commander, '''0:33 - Warp Prism-1 under attack near [45, 48] minimap.  Requesting immediate support and further instructions.  Enemy: Hatchery, 2 Queens, numerous Cocoons.''' )>`: This informs the Commander of the situation and requests assistance."}
+{"8": "Communication:"}

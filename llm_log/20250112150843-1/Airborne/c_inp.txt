@@ -1,0 +1,3 @@
+{"9": ""}
+{"10": "\n\nCommunication information:\n\tFrom Developer: \n\t\tMaintain Warp Prism stability.  Focus on keeping 0x100bc0001 and 0x100880001 operational.  Report on their status regularly.\n\tFrom CombatGroup0: \n\t\tPrepare for immediate warp-in of reinforcements near Pylon 0x100d40001. Focus fire on enemy Queens and Ravagers after arrival."}
+{"11": "\n\nCommunication information:\n\tFrom Developer: \n\t\tPrepare for potential airborne engagements.  Maintain situational awareness.\n\tFrom CombatGroup0: \n\t\tRequest immediate Warp Prism support at minimap [26, 31].  Focus on protecting Warp Prisms 0x100bc0001 and 0x100880001."}

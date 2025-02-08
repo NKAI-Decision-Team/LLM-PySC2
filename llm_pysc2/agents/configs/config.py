@@ -33,9 +33,12 @@ class AgentConfig:
   def __init__(self):
 
     self.race = 'protoss'
-    self.model_name = 'YOUR-MODEL-NAME'       # 'gpt-3.5-turbo'
-    self.api_base = 'YOUR-API-BASE'           # 'https://hk.xty.app/v1'
-    self.api_key = 'YOUR-API-KEY'             # 'xxxxxxxxxxxxxxxxxxxxxxxx....'
+    # self.model_name = 'gemini-1.5-flash'       # 'gpt-3.5-turbo'
+    # self.api_base = 'https://generativelanguage.googleapis.com'           # 'https://hk.xty.app/v1'
+    # self.api_key = 'AIzaSyDy_kSOwr_GEPpPQSVZOevhYE68zyFrUcY'     # 'xxxxxxxxxxxxxxxxxxxxxxxx....'
+    self.model_name = 'deepseek-r1-distill-llama-8b'
+    self.api_base = 'http://localhost:1234/v1'
+    self.api_key = 'lm-studio'         
     self.temperature = 0.1
 
     self.basic_prompt = 'default'
@@ -46,7 +49,7 @@ class AgentConfig:
     self.ENABLE_INIT_STEPS = True
     self.ENABLE_AUTO_WORKER_MANAGE = True
     self.ENABLE_AUTO_WORKER_TRAINING = True
-    self.ENABLE_COMMUNICATION = False
+    self.ENABLE_COMMUNICATION = True
 
     self.ENABLE_IMAGE_RGB = False
     self.ENABLE_IMAGE_FEATURE = False
@@ -653,6 +656,66 @@ class ProtossAgentConfig(AgentConfig):
            'game_group': -1, 'select_type': 'select'},
         ],
         'action': {
+          units.Protoss.WarpPrism: PROTOSS_BASIC_ACTION_3 + [
+            {'name': 'Morph_WarpPrismPhasingMode', 'arg': [],
+             'func': [(329, F.Morph_WarpPrismPhasingMode_quick, ('queued'))]},
+            {'name': 'Load_Unit', 'arg': ['tag'], 'func': [(287, F.Load_screen, ('queued', 'screen_tag'))]},
+            {'name': 'Unload_Screen', 'arg': ['screen'],
+             'func': [(516, F.UnloadAllAt_screen, ('queued', 'screen'))]},
+          ],
+          units.Protoss.WarpPrismPhasing: [
+            {'name': 'Wait_For_Unit_Warp', 'arg': [], 'func': [(0, F.no_op, ())]},
+            {'name': 'Morph_WarpPrismTransportMode', 'arg': [],
+             'func': [(330, F.Morph_WarpPrismTransportMode_quick, ('queued'))]},
+          ],
+        },
+      },
+      
+      'CombatGroup10': {
+        'describe': "Protoss special force commander, controls Adept, DarkTemplar and WarpPrism. "
+                    "Responsible for infiltrating the enemy's rear and disrupt economic production, sometimes "
+                    "collecting reconnaissance infomation, participating in frontline combat.",
+        'llm': {
+          'basic_prompt': self.basic_prompt,
+          'translator_o': self.translator_o,
+          'translator_a': self.translator_a,
+          'img_fea': self.ENABLE_IMAGE_FEATURE,
+          'img_rgb': self.ENABLE_IMAGE_RGB,
+          'model_name': self.model_name,
+          'api_base': self.api_base,
+          'api_key': self.api_key,
+        },
+        'team': [
+          {'name': 'Adept-1', 'unit_type': [units.Protoss.Adept],
+           'game_group': -1, 'select_type': 'select_all_type'},
+          {'name': 'AdeptPhase-1', 'unit_type': [units.Protoss.AdeptPhaseShift],
+           'game_group': -1, 'select_type': 'select_all_type'},
+          {'name': 'DarkTemplar-1', 'unit_type': [units.Protoss.DarkTemplar],
+           'game_group': -1, 'select_type': 'select_all_type'},
+          {'name': 'WarpPrism', 'unit_type': [units.Protoss.WarpPrism, units.Protoss.WarpPrismPhasing],
+           'game_group': -1, 'select_type': 'select'},
+          # {'name': 'DarkTemplar-2', 'unit_type': [units.Protoss.DarkTemplar],
+          #  'game_group': -1, 'select_type': 'select_all_type'},  # more than one select_all_type not currently supported
+        ],
+        'action': {
+          units.Protoss.AdeptPhaseShift: PROTOSS_BASIC_ACTION_3,
+          units.Protoss.Adept: PROTOSS_BASIC_ACTION_2 + [
+            {'name': 'Ability_AdeptPhaseShift_Screen', 'arg': ['screen'],
+             'func': [(177, F.Effect_AdeptPhaseShift_screen, ('queued', 'screen'))]},
+            {'name': 'Ability_AdeptPhaseShift_Minimap', 'arg': ['minimap'],
+             'func': [(547, F.Effect_AdeptPhaseShift_minimap, ('queued', 'minimap'))]},
+            {'name': 'Ability_CancelPhaseShift', 'arg': [], 'func': [(141, F.Cancel_AdeptPhaseShift_quick, ('queued'))]},
+          ],
+          units.Protoss.DarkTemplar: PROTOSS_BASIC_ACTION_2 + [
+            {'name': 'Ability_ShadowStride_Unit', 'arg': ['tag'],
+             'func': [(182, F.Effect_ShadowStride_screen, ('queued', 'screen_tag'))]},
+            {'name': 'Morph_Archon', 'arg': [],
+             'func': [(296, F.Morph_Archon_quick, ('queued'))]},
+            {'name': 'Select_Two_Unit_Morph_Archon', 'arg': ['tag', 'tag'],
+             'func': [(3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
+                      (3, F.select_rect, ('add', 'screen1_tag2', 'screen2_tag2')),  # screen1/2_tag2 not realized yet
+                      (296, F.Morph_Archon_quick, ('queued'))]},
+          ],
           units.Protoss.WarpPrism: PROTOSS_BASIC_ACTION_3 + [
             {'name': 'Morph_WarpPrismPhasingMode', 'arg': [],
              'func': [(329, F.Morph_WarpPrismPhasingMode_quick, ('queued'))]},

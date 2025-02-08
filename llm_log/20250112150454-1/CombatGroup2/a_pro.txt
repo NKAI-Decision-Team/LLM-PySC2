@@ -1,0 +1,4 @@
+{"0": "Actions:\n\tTeam Colossus-1 Actions:\n\t\t<Hold_Position()>\n\t\t<Move_Minimap([32, 32])>\n\t\t<No_Operation()>"}
+{"1": "Actions:\n\t\t<No_Operation()>\n\t\t<Move_Minimap([32, 32])>\n\t\t<Attack_Unit(0x100580001)>"}
+{"2": "Actions:\n\t\t<Attack_Unit(0x1009c0001)>\n\t\t<Attack_Unit(0x101000001)>\n\t\t<Hold_Position()>"}
+{"3": "Actions:\n\t\t<Hold_Position()>\n\t\t<Attack_Unit(0x1009c0001)>\n\t\t<Move_Screen([85, 75])>"}

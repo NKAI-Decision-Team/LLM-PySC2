@@ -1,0 +1,105 @@
+20250207144535
+2025-02-07 14:45:35.531 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent Airborne successfully initialized!
+2025-02-07 14:45:35.533 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent Builder successfully initialized!
+2025-02-07 14:45:35.534 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent Commander successfully initialized!
+2025-02-07 14:45:35.536 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent Developer successfully initialized!
+2025-02-07 14:45:35.537 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent Defender successfully initialized!
+2025-02-07 14:45:35.539 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent CombatGroup0 successfully initialized!
+2025-02-07 14:45:35.544 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent CombatGroup1 successfully initialized!
+2025-02-07 14:45:35.546 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent CombatGroup2 successfully initialized!
+2025-02-07 14:45:35.547 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent CombatGroup3 successfully initialized!
+2025-02-07 14:45:35.549 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent CombatGroup4 successfully initialized!
+2025-02-07 14:45:35.551 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent CombatGroup5 successfully initialized!
+2025-02-07 14:45:35.554 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent CombatGroup6 successfully initialized!
+2025-02-07 14:45:35.555 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent CombatGroup7 successfully initialized!
+2025-02-07 14:45:35.560 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent CombatGroup8 successfully initialized!
+2025-02-07 14:45:35.562 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent CombatGroup9 successfully initialized!
+2025-02-07 14:45:35.564 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent CombatGroup10 successfully initialized!
+2025-02-07 14:45:35.564 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:__init__:59 - [ID 1] Main Agent successfully initialized!
+2025-02-07 14:45:35.578 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 1 -------------------------------------------------- ----------
+2025-02-07 14:45:35.581 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:230 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), 0]])
+2025-02-07 14:45:35.593 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 2 -------------------------------------------------- ----------
+2025-02-07 14:45:35.595 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:230 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), 0]])
+2025-02-07 14:45:35.603 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 3 -------------------------------------------------- ----------
+2025-02-07 14:45:35.607 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:230 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), 0]])
+2025-02-07 14:45:35.614 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 4 -------------------------------------------------- ----------
+2025-02-07 14:45:35.617 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:230 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), 0]])
+2025-02-07 14:45:35.628 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 5 -------------------------------------------------- ----------
+2025-02-07 14:45:35.631 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:230 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(3.1428571428571423)]])
+2025-02-07 14:45:35.638 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 6 -------------------------------------------------- ----------
+2025-02-07 14:45:35.640 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:230 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(9.19047619047619)]])
+2025-02-07 14:45:35.646 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 7 -------------------------------------------------- ----------
+2025-02-07 14:45:35.649 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:230 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(15.238095238095237)]])
+2025-02-07 14:45:35.656 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 8 -------------------------------------------------- ----------
+2025-02-07 14:45:35.659 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:230 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(21.285714285714285)]])
+2025-02-07 14:45:35.666 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 9 -------------------------------------------------- ----------
+2025-02-07 14:45:35.679 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:230 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(27.285714285714285)]])
+2025-02-07 14:45:35.688 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 10 -------------------------------------------------- ----------
+2025-02-07 14:45:35.690 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:230 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(33.285714285714285)]])
+2025-02-07 14:45:35.696 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 11 -------------------------------------------------- ----------
+2025-02-07 14:45:35.701 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:230 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(39.285714285714285)]])
+2025-02-07 14:45:35.707 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 12 -------------------------------------------------- ----------
+2025-02-07 14:45:35.709 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:230 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(43.176339285714285)]])
+2025-02-07 14:45:35.717 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 13 -------------------------------------------------- ----------
+2025-02-07 14:45:35.719 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:230 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(45.566964285714285)]])
+2025-02-07 14:45:35.726 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 14 -------------------------------------------------- ----------
+2025-02-07 14:45:35.728 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:230 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(46.973214285714285)]])
+2025-02-07 14:45:35.736 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 15 -------------------------------------------------- ----------
+2025-02-07 14:45:35.738 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:230 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(47.863839285714285)]])
+2025-02-07 14:45:35.748 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 16 -------------------------------------------------- ----------
+2025-02-07 14:45:35.751 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:230 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(48.520089285714285)]])
+2025-02-07 14:45:35.758 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 17 -------------------------------------------------- ----------
+2025-02-07 14:45:35.762 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:230 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(49.02008928571428)]])
+2025-02-07 14:45:35.770 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 18 -------------------------------------------------- ----------
+2025-02-07 14:45:35.772 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:230 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(49.02008928571428)]])
+2025-02-07 14:45:35.779 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 19 -------------------------------------------------- ----------
+2025-02-07 14:45:35.784 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:236 - [ID 1] main_agent_func1: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(33.5625), np.float64(48.02008928571428)]])
+2025-02-07 14:45:35.792 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 20 -------------------------------------------------- ----------
+2025-02-07 14:45:35.797 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:236 - [ID 1] main_agent_func1: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(33.5625), np.float64(48.02008928571428)]])
+2025-02-07 14:45:35.806 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 21 -------------------------------------------------- ----------
+2025-02-07 14:45:35.811 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:236 - [ID 1] main_agent_func1: Func Call FunctionCall(function=<_Functions.select_point: 2>, arguments=[[<SelectPointAct.select: 0>], [64, 66]])
+2025-02-07 14:45:35.828 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 22 -------------------------------------------------- ----------
+2025-02-07 14:45:35.832 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:236 - [ID 1] main_agent_func1: Func Call FunctionCall(function=<_Functions.Move_screen: 331>, arguments=[[<Queued.now: 0>], [64, 66]])
+2025-02-07 14:45:35.843 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 23 -------------------------------------------------- ----------
+2025-02-07 14:45:35.855 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:236 - [ID 1] main_agent_func1: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(45.5625), np.float64(26.020089285714278)]])
+2025-02-07 14:45:35.878 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 24 -------------------------------------------------- ----------
+2025-02-07 14:45:35.881 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:236 - [ID 1] main_agent_func1: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(45.5625), np.float64(26.020089285714278)]])
+2025-02-07 14:45:35.888 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 25 -------------------------------------------------- ----------
+2025-02-07 14:45:35.892 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:236 - [ID 1] main_agent_func1: Func Call FunctionCall(function=<_Functions.select_point: 2>, arguments=[[<SelectPointAct.select: 0>], [66, 67]])
+2025-02-07 14:45:35.906 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 26 -------------------------------------------------- ----------
+2025-02-07 14:45:35.917 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:236 - [ID 1] main_agent_func1: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(33.5625), np.float64(49.02008928571428)]])
+2025-02-07 14:45:35.933 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 27 -------------------------------------------------- ----------
+2025-02-07 14:45:35.937 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:236 - [ID 1] main_agent_func1: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(33.5625), np.float64(49.02008928571428)]])
+2025-02-07 14:45:35.945 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 28 -------------------------------------------------- ----------
+2025-02-07 14:45:35.947 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:236 - [ID 1] main_agent_func1: Func Call FunctionCall(function=<_Functions.select_point: 2>, arguments=[[<SelectPointAct.select: 0>], [64, 66]])
+2025-02-07 14:45:35.957 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 29 -------------------------------------------------- ----------
+2025-02-07 14:45:35.960 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:236 - [ID 1] main_agent_func1: Func Call FunctionCall(function=<_Functions.Move_screen: 331>, arguments=[[<Queued.now: 0>], [64, 71]])
+2025-02-07 14:45:35.969 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 30 -------------------------------------------------- ----------
+2025-02-07 14:45:35.980 | SUCCESS  | llm_pysc2.lib.llm_communicate:communication_info_transmission:70 - [ID 1] 7.0 All LLMAgent get communication message
+2025-02-07 14:45:35.980 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:303 - [ID 1] 7.0 Main Loop Lock! Ignore outer-loop actions. 
+2025-02-07 14:45:36.221 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:408 - [ID 1] 7.1.5.1 Agent CombatGroup10: Func Call: FunctionCall(function=<_Functions.select_point: 2>, arguments=[[<SelectPointAct.select_all_type: 2>], [64, 71]])
+2025-02-07 14:45:36.230 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 31 -------------------------------------------------- ----------
+2025-02-07 14:45:36.269 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:361 - [ID 1] 7.1.4 Func Call: FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(45.5625), np.float64(26.020089285714278)]])
+2025-02-07 14:45:36.282 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 32 -------------------------------------------------- ----------
+2025-02-07 14:45:36.300 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:361 - [ID 1] 7.1.4 Func Call: FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(45.5625), np.float64(26.020089285714278)]])
+2025-02-07 14:45:36.307 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 33 -------------------------------------------------- ----------
+2025-02-07 14:45:36.317 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:395 - [ID 1] 7.1.5.1 Agent CombatGroup10: Func Call: FunctionCall(function=<_Functions.select_point: 2>, arguments=[[<SelectPointAct.select: 0>], [66, 67]])
+2025-02-07 14:45:36.325 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 34 -------------------------------------------------- ----------
+2025-02-07 14:45:36.363 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:query:303 - [ID 1] LLMAgent CombatGroup10: Start waiting for response
+2025-02-07 14:45:36.363 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:351 - [ID 1] 7.2 All Agent waiting for response
+2025-02-07 14:45:36.365 | SUCCESS  | llm_pysc2.lib.llm_client:query:177 - [ID 1] CombatGroup10 Start calling llm api!
+2025-02-07 14:45:51.337 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:626 - [ID 1] Reach MAX_LLM_WAITING_TIME! CombatGroup10 Call no_op()
+2025-02-07 14:45:57.735 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:627 - [ID 1] Func Call: FunctionCall(function=<_Functions.no_op: 0>, arguments=[])
+2025-02-07 14:45:57.743 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:224 - [ID 1] ---------- -------------------------------------------------- Step 35 -------------------------------------------------- ----------
+2025-02-07 14:46:36.472 | ERROR    | llm_pysc2.lib.llm_client:query:188 - [ID 1] CombatGroup10 LLM query runtime error
+2025-02-07 14:46:36.472 | ERROR    | llm_pysc2.lib.llm_client:query:209 - [ID 1] CombatGroup10 Error when calling the OpenAI API: CombatGroup10 LLM query runtime error
+2025-02-07 14:46:38.355 | SUCCESS  | llm_pysc2.lib.llm_client:query:177 - [ID 1] CombatGroup10 Start calling llm api!
+2025-02-07 14:47:38.358 | ERROR    | llm_pysc2.lib.llm_client:query:188 - [ID 1] CombatGroup10 LLM query runtime error
+2025-02-07 14:47:38.358 | ERROR    | llm_pysc2.lib.llm_client:query:209 - [ID 1] CombatGroup10 Error when calling the OpenAI API: CombatGroup10 LLM query runtime error
+2025-02-07 14:47:40.393 | SUCCESS  | llm_pysc2.lib.llm_client:query:177 - [ID 1] CombatGroup10 Start calling llm api!
+2025-02-07 14:48:40.475 | ERROR    | llm_pysc2.lib.llm_client:query:188 - [ID 1] CombatGroup10 LLM query runtime error
+2025-02-07 14:48:40.476 | ERROR    | llm_pysc2.lib.llm_client:query:209 - [ID 1] CombatGroup10 Error when calling the OpenAI API: CombatGroup10 LLM query runtime error
+2025-02-07 14:48:44.598 | SUCCESS  | llm_pysc2.lib.llm_client:query:177 - [ID 1] CombatGroup10 Start calling llm api!
+2025-02-07 14:49:44.660 | ERROR    | llm_pysc2.lib.llm_client:query:188 - [ID 1] CombatGroup10 LLM query runtime error
+2025-02-07 14:49:44.660 | ERROR    | llm_pysc2.lib.llm_client:query:209 - [ID 1] CombatGroup10 Error when calling the OpenAI API: CombatGroup10 LLM query runtime error
+2025-02-07 14:49:53.069 | SUCCESS  | llm_pysc2.lib.llm_client:query:177 - [ID 1] CombatGroup10 Start calling llm api!

@@ -1,0 +1,7 @@
+{"0": "Actions:\n\tTeam Adept-1 Actions:\n\t\t<Ability_AdeptPhaseShift_Minimap([52, 32])>\n\t\t<Move_Minimap([52, 32])>\n\t\t<Hold_Position()>"}
+{"1": "Actions:\n\tTeam Adept-1:\n\t\t<Ability_AdeptPhaseShift_Minimap([52, 32])>\n\t\t<No_Operation()>\n\t\t<No_Operation()>\n\tTeam AdeptPhase-1:\n\t\t<Stop()>\n\t\t<Move_Minimap([45, 32])>\n\t\t<Move_Minimap([52, 32])>\n\tTeam Adept-1 uses the phase shift for a quick, stealthy approach. T:"}
+{"2": "Actions:\n\tTeam Adept-1:\n\t\t<Ability_AdeptPhaseShift_Minimap([52, 32])>\n\t\t<Hold_Position()>\n\t\t<Move_Minimap([52, 32])>\n\tTeam AdeptPhase-1 (assuming this is a separate unit or a reference to the psionic image):\n\t\t<Move_Minimap([52, 32])>\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}
+{"3": "Actions:\n\tTeam Adept-1:\n\t\t<Ability_AdeptPhaseShift_Minimap([40, 56])>\n\t\t<Attack_Unit(0x101100001)>\n\t\t<Attack_Unit(0x1011c0001)>"}
+{"4": "Actions:\n\tTeam Adept-1:\n\t\t<Attack_Unit(0x101100001)>\n\t\t<Attack_Unit(0x101240001)>\n\t\t<Move_Screen([28, 80])>\n\tTeam AdeptPhase-1:\n\t\t<Ability_AdeptPhaseShift_Minimap([52, 32])>\n\t\t<No_Operation()>\n\t\t<Move_Minimap([52, 32])>"}
+{"5": "Actions:\n\tTeam Adept-1 Actions:\n\t\t<Attack_Unit(0x101400001)>\n\t\t<Move_Screen([80, 40])>\n\t\t<Stop()>"}
+{"6": "Actions:\n\t\t<Ability_AdeptPhaseShift_Screen([75, 20])>\n\t\t<Attack_Unit(0x1012c0001)>\n\t\t<Attack_Unit(0x1013c0001)>"}

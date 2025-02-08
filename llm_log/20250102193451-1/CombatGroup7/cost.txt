@@ -1,0 +1,4 @@
+{"0": "time=2.00, ave_time=2.00, token_in=0, ave_token_in=0.00, token_out=0, ave_token_out = 0.00"}
+{"1": "time=3.88, ave_time=2.94, token_in=0, ave_token_in=0.00, token_out=0, ave_token_out = 0.00"}
+{"2": "time=2.44, ave_time=2.77, token_in=0, ave_token_in=0.00, token_out=0, ave_token_out = 0.00"}
+{"3": "time=2.55, ave_time=2.72, token_in=0, ave_token_in=0.00, token_out=0, ave_token_out = 0.00"}

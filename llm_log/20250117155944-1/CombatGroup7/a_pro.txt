@@ -1,0 +1,5 @@
+{"0": "Actions:\n\tTeam Adept-1 Actions:\n\t\t<Ability_AdeptPhaseShift_Minimap([40,31])>\n\t\t<Ability_AdeptPhaseShift_Minimap([52,32])>\n\t\t<Hold_Position()>"}
+{"1": "Actions:\n\tTeam Adept-1:\n\t\t<Ability_AdeptPhaseShift_Minimap([40,31])>\n\t\t<Ability_AdeptPhaseShift_Minimap([52,32])>\n\t\t<Hold_Position()>\n\tTeam AdeptPhase-1:\n\tTeam Adept-1's approach.:\n\t\t<Move_Minimap([52, 32])>\n\tTeam Adept-1.:"}
+{"2": "Actions:\n\t\t<Ability_AdeptPhaseShift_Minimap([52, 32])>\n\t\t<Ability_AdeptPhaseShift_Minimap([52, 32])>\n\t\t<Hold_Position()>"}
+{"3": "Actions:\n\t\t<Ability_AdeptPhaseShift_Minimap([52, 32])>\n\t\t<Hold_Position()>\n\t\t<Move_Minimap([52, 32])>"}
+{"4": "Actions:\n\tTeam AdeptPhase-1 Actions:\n\t\t<Move_Minimap([51, 31])>\n\t\t<Move_Minimap([52, 32])>\n\t\t<Hold_Position()>"}

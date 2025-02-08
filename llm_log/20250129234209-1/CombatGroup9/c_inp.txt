@@ -1,0 +1,10 @@
+{"0": ""}
+{"1": ""}
+{"2": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tAdept units are returning to base after scouting attempt.  No significant enemy information gathered yet.  Continuing to scout."}
+{"3": ""}
+{"4": ""}
+{"5": ""}
+{"6": ""}
+{"7": ""}
+{"8": ""}
+{"9": ""}

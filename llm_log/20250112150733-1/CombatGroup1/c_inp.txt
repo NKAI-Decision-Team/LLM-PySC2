@@ -1,0 +1,5 @@
+{"0": ""}
+{"1": "\n\nCommunication information:\n\tFrom CombatGroup3: \n\t\tMaintain defensive perimeter around Mothership.  Focus on ground threats."}
+{"2": "\n\nCommunication information:\n\tFrom CombatGroup3: \n\t\t0:09 - Proceed to minimap location [25, 30] for flanking support. Focus on enemy ground units."}
+{"3": "\n\nCommunication information:\n\tFrom CombatGroup3: \n\t\tMaintaining air superiority.  Focus fire on Corruptors.  Awaiting further ground unit reports."}
+{"4": "\n\nCommunication information:\n\tFrom CombatGroup3: \n\t\tMaintain pressure on ground units.  We are focusing fire on enemy air units, expect a breakthrough soon."}

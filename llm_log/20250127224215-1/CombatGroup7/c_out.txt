@@ -1,0 +1,3 @@
+{"0": "**Communication:**\n`<MessageTo(Commander, '''Adept scouting party deployed to minimap coordinates [30, 40] and [25, 35] at 0:04.  Awaiting further instructions after scouting.''' )>`"}
+{"1": "**Communication:**\n1. `<MessageTo(CombatGroup9, '''Adept Phase Shift scouting underway. Targeting minimap coordinates [30, 40].  Awaiting results.''' )>`:  Inform CombatGroup9 of the scouting operation."}
+{"2": "**Communication:**\n`<MessageTo(CombatGroup9, '''Confirm drop-off location [35, 40].  Adepts will regroup there.  Objective: scout and harass enemy base.''' )>`"}

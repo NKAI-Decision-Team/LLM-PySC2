@@ -1,0 +1,5 @@
+{"0": ""}
+{"1": "\n\nCommunication information:\n\tFrom CombatGroup3: \n\t\tMothership, prepare defensive abilities.  Standby for potential enemy harassment."}
+{"2": ""}
+{"3": ""}
+{"4": ""}

@@ -1,0 +1,15 @@
+{"0": ""}
+{"1": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tAdept scouting party deployed to minimap coordinates [30, 40] and [25, 35] at 0:04.  Awaiting further instructions after scouting."}
+{"2": ""}
+{"3": ""}
+{"4": ""}
+{"5": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tWarp Prism 0x100300001 moving to [35, 40] to support CombatGroup7's scouting and harassment mission. ETA: 5 seconds."}
+{"6": ""}
+{"7": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tWarp Prism 0x100300001 moving to drop-off point [35, 40] as requested by Combat Group 7.  Awaiting Adept deployment for scouting and harassment mission.  Time: 0:29."}
+{"8": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tWarp Prism 0x100300001 deploying Adepts to [35, 40] minimap at 0:33 for scouting and harassment.  Awaiting Adept arrival."}
+{"9": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tWarp Prism 1 reporting.  Moving to drop-off point [35,40] as per CombatGroup7 request.  Awaiting Adept arrival for transport and scout/harass mission.  ETA: Unknown, pending Adept arrival."}
+{"10": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tWarp Prism 0x100300001 deploying Adepts to [35, 40] at 0:41 for scouting and harassment of enemy base.  Awaiting Adept arrival."}
+{"11": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tWarp Prism 0x100300001 deploying to minimap [35, 40] for Adept drop-off.  Objective: scout and harass enemy base. ETA: approximately 10 seconds."}
+{"12": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tWarp Prism 0x100300001 deploying Adepts to minimap coordinates [35, 40] at 0:50. Objective: scout and harass enemy base.  Awaiting Adept arrival."}
+{"13": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tWarp Prism 0x100300001 deploying Adepts to minimap location [35, 40] at 0:54 for scouting and harassment.  Will move to the location after drop-off."}
+{"14": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tWarp Prism 0x100300001 moving to [35, 40] to pick up Adepts for harassment/scout mission at approximately 0:58.  Will report back after unit loading."}

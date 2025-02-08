@@ -20,7 +20,7 @@ class ConfigPysc2_Harass(ProtossAgentConfig):
   def __init__(self):
     super(ConfigPysc2_Harass, self).__init__()
     self.AGENTS_ALWAYS_DISABLE = [
-      'Airborne', 'Builder', 'Commander', 'Developer', 'Defender', 'CombatGroup4',
+      'Airborne', 'Builder', 'Commander', 'Developer', 'Defender', 'CombatGroup4','CombatGroup7','CombatGroup9',
     ]
     self.ENABLE_INIT_STEPS = False
     self.ENABLE_AUTO_WORKER_MANAGE = False

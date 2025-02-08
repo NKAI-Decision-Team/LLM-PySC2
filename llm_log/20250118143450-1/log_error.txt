@@ -1,0 +1,2 @@
+20250118143450
+2025-01-18 14:35:11.004 | ERROR    | llm_pysc2.agents.llm_pysc2_agent:get_func_a:379 - [ID 1] Error in CombatGroup8 get_func_a(): list index out of range

@@ -1,0 +1,15 @@
+{"0": ""}
+{"1": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tAdept scouting ahead.  Awaiting further instructions."}
+{"2": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tAdept units moving to position [80, 80]. Awaiting further instructions."}
+{"3": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tRequesting situational awareness.  Report enemy presence and location."}
+{"4": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tScout sent to [20, 30] on minimap.  Awaiting further instructions."}
+{"5": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tRequesting situational awareness and enemy positions.  Adept units are deploying."}
+{"6": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tAdepts moving to [25,30] on minimap for harassment.  Requesting situational awareness for enemy presence in that area."}
+{"7": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tAdepts teleporting to [20, 30].  Engage any detected enemy units."}
+{"8": ""}
+{"9": ""}
+{"10": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tAdepts are positioned near the Warp Prism.  Awaiting further instructions."}
+{"11": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tRequest Warp Prism support at minimap location [25, 35].  Adept Phase Shift completed."}
+{"12": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tRequesting scouting information near [70,70] on the screen.  Adept units ready to engage if enemy units are spotted."}
+{"13": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tRequesting scouting information near [70,70] on the screen.  Adept units ready to engage if enemy units are spotted."}
+{"14": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tRequesting scouting information near [70,70] on the screen.  Adept units ready to engage if enemy units are spotted."}

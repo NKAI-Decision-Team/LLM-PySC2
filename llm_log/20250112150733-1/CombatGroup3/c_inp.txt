@@ -1,0 +1,6 @@
+{"0": ""}
+{"1": ""}
+{"2": "\n\nCommunication information:\n\tFrom CombatGroup1: \n\t\tStalker squads engaging ground units.  Requesting air support on Brood Lord if needed."}
+{"3": "\n\nCommunication information:\n\tFrom CombatGroup1: \n\t\tAcknowledged flanking request.  Team Stalker-1 and Stalker-2 are engaging enemy ground units near [60,70].  Team Stalker-3 will provide support as needed."}
+{"4": "\n\nCommunication information:\n\tFrom CombatGroup1: \n\t\tRequesting ground support.  Enemy Hydralisks and Broodlords advancing.  Stalker-3 has a critically low health unit."}
+{"5": "\n\nCommunication information:\n\tFrom CombatGroup1: \n\t\tStalker-2 engaging BroodLord.  Focusing on ground units after.  Requesting air support if BroodLord proves difficult."}

@@ -1,0 +1,6 @@
+{"0": "Actions:\n\t\t<Ability_AdeptPhaseShift_Minimap([52, 32])>\n\t\t<No_Operation()>\n\t\t<Hold_Position()>"}
+{"1": "Actions:\n\tTeam Adept-1:\n\t\t<Move_Minimap([52, 32])>\n\t\t<No_Operation()>\n\t\t<No_Operation()>\n\tTeam AdeptPhase-1:\n\t\t<No_Operation()>\n\t\t<Move_Minimap([52, 32])>\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}
+{"2": "Actions:\n\tTeam Adept-1:\n\t\t<Attack_Unit(0x1013c0001)>\n\t\t<Move_Minimap([52, 32])>"}
+{"3": "Actions:\n\tTeam Adept-1 Actions:\n\t\t<Ability_AdeptPhaseShift_Minimap([40, 69])>\n\t\t<Attack_Unit(0x101240001)>\n\t\t<Attack_Unit(0x101400001)>"}
+{"4": "Actions:\n\tTeam Adept-1:\n\t\t<Stop()>\n\t\t<Move_Minimap([51, 31])>\n\t\t<No_Operation()>\n\tTeam AdeptPhase-1:\n\t\t<Move_Minimap([52, 32])>\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}
+{"5": "Actions:\n\tTeam Adept-1 Actions:\n\t\t<Attack_Unit(0x101340001)>\n\t\t<Move_Screen([90, 40])>\n\t\t<No_Operation()>"}

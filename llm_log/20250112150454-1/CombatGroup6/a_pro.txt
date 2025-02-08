@@ -1,0 +1,6 @@
+{"0": "Actions:\n\t\t<Ability_GuardianShield()>\n\tTeam to the target minimap location.:\n\t\t<No_Operation()>"}
+{"1": "Actions:\n\tTeam to the target minimap location.:\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}
+{"2": "Actions:\n\tTeam towards the target location.:\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}
+{"3": "Actions:\n\tTeam Sentry-1 Actions:\n\t\t<Ability_GuardianShield()>\n\t\t<Move_Minimap([30, 35])>\n\t\t<Hold_Position()>"}
+{"4": "Actions:\n\tTeam Sentry-1 Actions:\n\t\t<Attack_Unit(0x100740001)>\n\t\t<Ability_ForceField_Screen([105, 75])>\n\t\t<Move_Minimap([30, 35])>"}
+{"5": "Actions:\n\tTeam Sentry-1 Actions:\n\t\t<Ability_GuardianShield()>\n\t\t<Attack_Unit(0x100740001)>\n\t\t<Hold_Position()>"}

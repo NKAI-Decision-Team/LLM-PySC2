@@ -1,0 +1,7 @@
+{"0": "**Communication:**\n`<MessageTo(Developer, '''Possible data duplication detected between Stalker-1 and Stalker-2 unit compositions and locations. Please investigate.''' )>`"}
+{"1": "**Communication:**"}
+{"2": "**Communication:**"}
+{"3": "**Communication:**\n`<MessageTo(CombatGroup0, '''Stalker units engaging enemy forces near [33,35] minimap coordinates. Providing support and suppressing enemy advance.''' )>`\n`<MessageTo(Developer, '''Requesting assessment of enemy composition and potential reinforcements.  Current focus is on containing enemy push near [33, 35] and [35, 26] minimap coordinates.''' )>`"}
+{"4": "**Communication:**\n1. `<MessageTo(Developer, '''Requesting Warp Gate construction near [64,64] to facilitate rapid reinforcement and quicker response to enemy movements.''' )>` (This addresses the long-term strategic goal)\n2. `<MessageTo(CombatGroup9, '''Team Stalker-1 and 3 are regrouping at [64,64] near the Pylon. Requesting air support if enemy units pursue.''' )>` (This coordinates with air support for potential pursuit)"}
+{"5": "## Communication:\n`<MessageTo(CombatGroup0, '''Requesting immediate support.  Enemy concentration is high near [33,35] minimap.  Focus fire on Queens.''')>`"}
+{"6": "## Communication:"}

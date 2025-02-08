@@ -22,7 +22,7 @@ class MainAgentLLMPysc2(MainAgent):
     config = ConfigPysc2_Harass()
     for team in config.AGENTS['CombatGroup8']['team']:
       team['task'] = [
-        {'time': None, 'pos': [52, 32], 'info': "Go to minimap coordinate [52, 32], and try to avoid been detected or attacked before arrival."},
+        {'time': None, 'pos': [52, 32], 'info': "Kill as much enemy workers as possible near minimap coordinate [52, 32], and try to avoid been detected or attacked before arrival."},
         {'time': None, 'pos': None, 'info': "Kill as much as enemy workers as possible."},
       ]
     super(MainAgentLLMPysc2, self).__init__(config, LLMAgent)

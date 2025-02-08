@@ -1,0 +1,3 @@
+{"9": "Communication:\n1. `<MessageTo(CombatGroup0, '''Request immediate support.  Engaged in heavy combat at minimap [26, 31].  Low on health units.''' )>`\n2. `<MessageTo(CombatGroup9, '''Maintain Warp Prism stability.  Prioritize unit warping in to support.''' )>`"}
+{"10": ""}
+{"11": ""}

@@ -1,0 +1,6 @@
+{"0": ""}
+{"1": "\n\nCommunication information:\n\tFrom CombatGroup3: \n\t\tRequesting orders.  Current position is stable, all units at full health.  Awaiting enemy contact."}
+{"2": "\n\nCommunication information:\n\tFrom CombatGroup3: \n\t\t0:09 - Void Rays, Carriers, and Tempests are moving to minimap location [25, 30] to engage enemy forces.  Requesting Mothership support and CombatGroup1 to provide flanking cover."}
+{"3": ""}
+{"4": "\n\nCommunication information:\n\tFrom CombatGroup1: \n\t\tRequesting assessment of ground situation.  Enemy ground push imminent.  Suggesting a defensive posture near our main base."}
+{"5": "\n\nCommunication information:\n\tFrom CombatGroup3: \n\t\tRequesting immediate mass recall of all units to Nexus at [8, 88] in 10 seconds.  Enemy Broodlords and Hydralisks are pushing hard.  Need to regroup and reassess."}

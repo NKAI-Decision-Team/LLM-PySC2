@@ -1,0 +1,5 @@
+{"0": "Actions:\n\t\t<Hold_Position()>\n\t\t<Ability_TimeWarp_Screen([64,64])>"}
+{"1": "Actions:\n\t\t<Hold_Position()>"}
+{"2": "Actions:\n\t\t<Move_Minimap([25, 35])>"}
+{"3": "Actions:\n\t\t<Move_Minimap([30, 35])>"}
+{"4": "Actions:\n\t\t<Move_Minimap([35, 38])>"}

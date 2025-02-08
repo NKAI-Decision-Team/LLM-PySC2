@@ -1,0 +1,7 @@
+{"1": ""}
+{"2": "\n\nCommunication information:\n\tFrom Developer: \n\t\t0:20 - Deploying Zealots near Pylons 0x1009c0001, 0x1001c0001, 0x100b80001, and 0x100280001.  Provide cover and engage in multi-line combat as needed."}
+{"3": "\n\nCommunication information:\n\tFrom Developer: \n\t\tDeploy all Zealots near the main base. Focus on aggressive early-game pressure."}
+{"4": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tWarp Prisms en route to your location. Prepare for coordinated attack."}
+{"5": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tRequest received.  Currently prioritizing CombatGroup1's request due to proximity. Will assist after reinforcing CombatGroup1."}
+{"6": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tMoving to support CombatGroup1 at [30, 25].  Enemy Queens present at current location."}
+{"7": "\n\nCommunication information:\n\tFrom Developer: \n\t\tMoving additional Zealot reinforcements to your position. Maintain defensive line and prepare for potential engagement."}

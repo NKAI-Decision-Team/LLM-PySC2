@@ -1,0 +1,238 @@
+20250115225428
+2025-01-15 22:54:28.770 | WARNING  | llm_pysc2.agents.configs.config:auto_check:118 - [ID 1] You are using a vision model with image obs, this may cost a lot, be cautious.
+2025-01-15 22:54:28.771 | WARNING  | llm_pysc2.agents.configs.config:wait:27 - [ID 1] Experiment will start with UNSAFE settings in 5 seconds. 
+2025-01-15 22:54:29.789 | WARNING  | llm_pysc2.agents.configs.config:wait:27 - [ID 1] Experiment will start with UNSAFE settings in 4 seconds. 
+2025-01-15 22:54:30.794 | WARNING  | llm_pysc2.agents.configs.config:wait:27 - [ID 1] Experiment will start with UNSAFE settings in 3 seconds. 
+2025-01-15 22:54:31.809 | WARNING  | llm_pysc2.agents.configs.config:wait:27 - [ID 1] Experiment will start with UNSAFE settings in 2 seconds. 
+2025-01-15 22:54:32.830 | WARNING  | llm_pysc2.agents.configs.config:wait:27 - [ID 1] Experiment will start with UNSAFE settings in 1 seconds. 
+2025-01-15 22:54:33.923 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent Airborne successfully initialized!
+2025-01-15 22:54:33.941 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent Builder successfully initialized!
+2025-01-15 22:54:33.944 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent Commander successfully initialized!
+2025-01-15 22:54:33.946 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent Developer successfully initialized!
+2025-01-15 22:54:33.948 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent Defender successfully initialized!
+2025-01-15 22:54:33.955 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent CombatGroup0 successfully initialized!
+2025-01-15 22:54:33.957 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent CombatGroup1 successfully initialized!
+2025-01-15 22:54:33.960 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent CombatGroup2 successfully initialized!
+2025-01-15 22:54:33.962 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent CombatGroup3 successfully initialized!
+2025-01-15 22:54:33.971 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent CombatGroup4 successfully initialized!
+2025-01-15 22:54:33.985 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent CombatGroup5 successfully initialized!
+2025-01-15 22:54:33.987 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent CombatGroup6 successfully initialized!
+2025-01-15 22:54:33.990 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent CombatGroup7 successfully initialized!
+2025-01-15 22:54:33.993 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent CombatGroup8 successfully initialized!
+2025-01-15 22:54:34.000 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:__init__:137 - [ID 1] Agent CombatGroup9 successfully initialized!
+2025-01-15 22:54:34.001 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:__init__:59 - [ID 1] Main Agent successfully initialized!
+2025-01-15 22:54:34.056 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 1 -------------------------------------------------- ----------
+2025-01-15 22:54:34.063 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:229 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), 17]])
+2025-01-15 22:54:34.111 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 2 -------------------------------------------------- ----------
+2025-01-15 22:54:34.132 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:229 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), 17]])
+2025-01-15 22:54:34.156 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 3 -------------------------------------------------- ----------
+2025-01-15 22:54:34.179 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:229 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(24.225)]])
+2025-01-15 22:54:34.200 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 4 -------------------------------------------------- ----------
+2025-01-15 22:54:34.218 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:229 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(31.45)]])
+2025-01-15 22:54:34.241 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 5 -------------------------------------------------- ----------
+2025-01-15 22:54:34.245 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:229 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(38.675)]])
+2025-01-15 22:54:34.268 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 6 -------------------------------------------------- ----------
+2025-01-15 22:54:34.274 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:229 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(43.0578125)]])
+2025-01-15 22:54:34.299 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 7 -------------------------------------------------- ----------
+2025-01-15 22:54:34.312 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:229 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(45.6828125)]])
+2025-01-15 22:54:34.337 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 8 -------------------------------------------------- ----------
+2025-01-15 22:54:34.344 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:229 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(47.065625)]])
+2025-01-15 22:54:34.371 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 9 -------------------------------------------------- ----------
+2025-01-15 22:54:34.376 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:229 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(47.95625)]])
+2025-01-15 22:54:34.402 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 10 -------------------------------------------------- ----------
+2025-01-15 22:54:34.408 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:229 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(48.33125)]])
+2025-01-15 22:54:34.434 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 11 -------------------------------------------------- ----------
+2025-01-15 22:54:34.440 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:229 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(48.70625)]])
+2025-01-15 22:54:34.475 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 12 -------------------------------------------------- ----------
+2025-01-15 22:54:34.478 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:229 - [ID 1] main_agent_func0: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(25.5625), np.float64(48.70625)]])
+2025-01-15 22:54:34.502 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 13 -------------------------------------------------- ----------
+2025-01-15 22:54:34.511 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:235 - [ID 1] main_agent_func1: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(33.5625), np.float64(47.70625)]])
+2025-01-15 22:54:34.542 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 14 -------------------------------------------------- ----------
+2025-01-15 22:54:34.549 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:235 - [ID 1] main_agent_func1: Func Call FunctionCall(function=<_Functions.llm_pysc2_move_camera: 573>, arguments=[[np.float64(33.5625), np.float64(47.70625)]])
+2025-01-15 22:54:34.573 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 15 -------------------------------------------------- ----------
+2025-01-15 22:54:34.580 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:235 - [ID 1] main_agent_func1: Func Call FunctionCall(function=<_Functions.select_point: 2>, arguments=[[<SelectPointAct.select: 0>], [128, 122]])
+2025-01-15 22:54:34.621 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 16 -------------------------------------------------- ----------
+2025-01-15 22:54:34.625 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:235 - [ID 1] main_agent_func1: Func Call FunctionCall(function=<_Functions.Move_screen: 331>, arguments=[[<Queued.now: 0>], [128, 122]])
+2025-01-15 22:54:34.658 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 17 -------------------------------------------------- ----------
+2025-01-15 22:54:34.668 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:235 - [ID 1] main_agent_func1: Func Call FunctionCall(function=<_Functions.select_point: 2>, arguments=[[<SelectPointAct.select: 0>], [128, 112]])
+2025-01-15 22:54:34.703 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 18 -------------------------------------------------- ----------
+2025-01-15 22:54:34.708 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:235 - [ID 1] main_agent_func1: Func Call FunctionCall(function=<_Functions.Move_screen: 331>, arguments=[[<Queued.now: 0>], [128, 122]])
+2025-01-15 22:54:34.737 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 19 -------------------------------------------------- ----------
+2025-01-15 22:54:34.789 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:34.820 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 20 -------------------------------------------------- ----------
+2025-01-15 22:54:34.829 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:34.859 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 21 -------------------------------------------------- ----------
+2025-01-15 22:54:34.871 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:34.893 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 22 -------------------------------------------------- ----------
+2025-01-15 22:54:34.900 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:34.926 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 23 -------------------------------------------------- ----------
+2025-01-15 22:54:34.935 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:34.963 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 24 -------------------------------------------------- ----------
+2025-01-15 22:54:34.973 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:34.997 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 25 -------------------------------------------------- ----------
+2025-01-15 22:54:35.004 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.028 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 26 -------------------------------------------------- ----------
+2025-01-15 22:54:35.035 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.061 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 27 -------------------------------------------------- ----------
+2025-01-15 22:54:35.070 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.095 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 28 -------------------------------------------------- ----------
+2025-01-15 22:54:35.102 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.125 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 29 -------------------------------------------------- ----------
+2025-01-15 22:54:35.132 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.156 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 30 -------------------------------------------------- ----------
+2025-01-15 22:54:35.162 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.186 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 31 -------------------------------------------------- ----------
+2025-01-15 22:54:35.194 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.220 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 32 -------------------------------------------------- ----------
+2025-01-15 22:54:35.227 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.251 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 33 -------------------------------------------------- ----------
+2025-01-15 22:54:35.259 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.284 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 34 -------------------------------------------------- ----------
+2025-01-15 22:54:35.291 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.316 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 35 -------------------------------------------------- ----------
+2025-01-15 22:54:35.323 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.346 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 36 -------------------------------------------------- ----------
+2025-01-15 22:54:35.352 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.377 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 37 -------------------------------------------------- ----------
+2025-01-15 22:54:35.386 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.409 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 38 -------------------------------------------------- ----------
+2025-01-15 22:54:35.415 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.440 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 39 -------------------------------------------------- ----------
+2025-01-15 22:54:35.448 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.474 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 40 -------------------------------------------------- ----------
+2025-01-15 22:54:35.486 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.510 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 41 -------------------------------------------------- ----------
+2025-01-15 22:54:35.519 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.541 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 42 -------------------------------------------------- ----------
+2025-01-15 22:54:35.553 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.578 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 43 -------------------------------------------------- ----------
+2025-01-15 22:54:35.585 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.608 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 44 -------------------------------------------------- ----------
+2025-01-15 22:54:35.614 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.637 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 45 -------------------------------------------------- ----------
+2025-01-15 22:54:35.644 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.667 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 46 -------------------------------------------------- ----------
+2025-01-15 22:54:35.674 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.698 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 47 -------------------------------------------------- ----------
+2025-01-15 22:54:35.705 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.730 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 48 -------------------------------------------------- ----------
+2025-01-15 22:54:35.738 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.761 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 49 -------------------------------------------------- ----------
+2025-01-15 22:54:35.768 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.792 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 50 -------------------------------------------------- ----------
+2025-01-15 22:54:35.799 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.836 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 51 -------------------------------------------------- ----------
+2025-01-15 22:54:35.844 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.869 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 52 -------------------------------------------------- ----------
+2025-01-15 22:54:35.876 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.901 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 53 -------------------------------------------------- ----------
+2025-01-15 22:54:35.909 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.934 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 54 -------------------------------------------------- ----------
+2025-01-15 22:54:35.942 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.965 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 55 -------------------------------------------------- ----------
+2025-01-15 22:54:35.972 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:35.999 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 56 -------------------------------------------------- ----------
+2025-01-15 22:54:36.007 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.033 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 57 -------------------------------------------------- ----------
+2025-01-15 22:54:36.043 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.067 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 58 -------------------------------------------------- ----------
+2025-01-15 22:54:36.073 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.101 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 59 -------------------------------------------------- ----------
+2025-01-15 22:54:36.108 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.132 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 60 -------------------------------------------------- ----------
+2025-01-15 22:54:36.145 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.169 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 61 -------------------------------------------------- ----------
+2025-01-15 22:54:36.176 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.200 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 62 -------------------------------------------------- ----------
+2025-01-15 22:54:36.207 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.229 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 63 -------------------------------------------------- ----------
+2025-01-15 22:54:36.236 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.259 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 64 -------------------------------------------------- ----------
+2025-01-15 22:54:36.266 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.290 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 65 -------------------------------------------------- ----------
+2025-01-15 22:54:36.297 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.321 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 66 -------------------------------------------------- ----------
+2025-01-15 22:54:36.329 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.351 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 67 -------------------------------------------------- ----------
+2025-01-15 22:54:36.357 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.381 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 68 -------------------------------------------------- ----------
+2025-01-15 22:54:36.387 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.411 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 69 -------------------------------------------------- ----------
+2025-01-15 22:54:36.417 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.447 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 70 -------------------------------------------------- ----------
+2025-01-15 22:54:36.455 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.480 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 71 -------------------------------------------------- ----------
+2025-01-15 22:54:36.487 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.511 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 72 -------------------------------------------------- ----------
+2025-01-15 22:54:36.520 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.545 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 73 -------------------------------------------------- ----------
+2025-01-15 22:54:36.552 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.576 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 74 -------------------------------------------------- ----------
+2025-01-15 22:54:36.583 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.610 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 75 -------------------------------------------------- ----------
+2025-01-15 22:54:36.616 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.640 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 76 -------------------------------------------------- ----------
+2025-01-15 22:54:36.647 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.670 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 77 -------------------------------------------------- ----------
+2025-01-15 22:54:36.677 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.702 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 78 -------------------------------------------------- ----------
+2025-01-15 22:54:36.708 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.731 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 79 -------------------------------------------------- ----------
+2025-01-15 22:54:36.739 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.763 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 80 -------------------------------------------------- ----------
+2025-01-15 22:54:36.771 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.797 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 81 -------------------------------------------------- ----------
+2025-01-15 22:54:36.805 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.830 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 82 -------------------------------------------------- ----------
+2025-01-15 22:54:36.837 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.862 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 83 -------------------------------------------------- ----------
+2025-01-15 22:54:36.869 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.892 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 84 -------------------------------------------------- ----------
+2025-01-15 22:54:36.899 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.921 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 85 -------------------------------------------------- ----------
+2025-01-15 22:54:36.928 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.952 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 86 -------------------------------------------------- ----------
+2025-01-15 22:54:36.959 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:36.984 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 87 -------------------------------------------------- ----------
+2025-01-15 22:54:36.994 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:37.020 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 88 -------------------------------------------------- ----------
+2025-01-15 22:54:37.033 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:37.055 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 89 -------------------------------------------------- ----------
+2025-01-15 22:54:37.062 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:37.085 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 90 -------------------------------------------------- ----------
+2025-01-15 22:54:37.091 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:37.113 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 91 -------------------------------------------------- ----------
+2025-01-15 22:54:37.121 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:37.143 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 92 -------------------------------------------------- ----------
+2025-01-15 22:54:37.150 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:37.173 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 93 -------------------------------------------------- ----------
+2025-01-15 22:54:37.180 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:37.201 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 94 -------------------------------------------------- ----------
+2025-01-15 22:54:37.208 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:281 - [ID 1] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()
+2025-01-15 22:54:37.234 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 95 -------------------------------------------------- ----------
+2025-01-15 22:54:37.241 | SUCCESS  | llm_pysc2.lib.llm_communicate:communication_info_transmission:72 - [ID 1] 7.0 All LLMAgent skip communication stage
+2025-01-15 22:54:37.241 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:302 - [ID 1] 7.0 Main Loop Lock! Ignore outer-loop actions. 
+2025-01-15 22:54:37.446 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:407 - [ID 1] 7.1.5.1 Agent CombatGroup7: Func Call: FunctionCall(function=<_Functions.select_point: 2>, arguments=[[<SelectPointAct.select_all_type: 2>], [128, 122]])
+2025-01-15 22:54:37.473 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 96 -------------------------------------------------- ----------
+2025-01-15 22:54:37.510 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:query:303 - [ID 1] LLMAgent CombatGroup7: Start waiting for response
+2025-01-15 22:54:37.510 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:350 - [ID 1] 7.2 All Agent waiting for response
+2025-01-15 22:54:37.559 | SUCCESS  | llm_pysc2.lib.llm_client:query:169 - [ID 1] CombatGroup7 Start calling llm api!
+2025-01-15 22:54:52.491 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:625 - [ID 1] Reach MAX_LLM_WAITING_TIME! CombatGroup7 Call no_op()
+2025-01-15 22:54:52.491 | WARNING  | llm_pysc2.agents.llm_pysc2_agent_main:step:626 - [ID 1] Func Call: FunctionCall(function=<_Functions.no_op: 0>, arguments=[])
+2025-01-15 22:54:52.518 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent_main:step:223 - [ID 1] ---------- -------------------------------------------------- Step 97 -------------------------------------------------- ----------
+2025-01-15 22:55:22.599 | ERROR    | llm_pysc2.lib.llm_client:query:180 - [ID 1] CombatGroup7 LLM query runtime error
+2025-01-15 22:55:22.599 | ERROR    | llm_pysc2.lib.llm_client:query:201 - [ID 1] CombatGroup7 Error when calling the OpenAI API: CombatGroup7 LLM query runtime error
+2025-01-15 22:55:23.646 | SUCCESS  | llm_pysc2.lib.llm_client:query:169 - [ID 1] CombatGroup7 Start calling llm api!
+2025-01-15 22:56:08.714 | ERROR    | llm_pysc2.lib.llm_client:query:180 - [ID 1] CombatGroup7 LLM query runtime error
+2025-01-15 22:56:08.714 | ERROR    | llm_pysc2.lib.llm_client:query:201 - [ID 1] CombatGroup7 Error when calling the OpenAI API: CombatGroup7 LLM query runtime error
+2025-01-15 22:56:11.340 | SUCCESS  | llm_pysc2.lib.llm_client:query:169 - [ID 1] CombatGroup7 Start calling llm api!
+2025-01-15 22:56:56.431 | ERROR    | llm_pysc2.lib.llm_client:query:180 - [ID 1] CombatGroup7 LLM query runtime error
+2025-01-15 22:56:56.431 | ERROR    | llm_pysc2.lib.llm_client:query:201 - [ID 1] CombatGroup7 Error when calling the OpenAI API: CombatGroup7 LLM query runtime error
+2025-01-15 22:57:01.205 | SUCCESS  | llm_pysc2.lib.llm_client:query:169 - [ID 1] CombatGroup7 Start calling llm api!
+2025-01-15 22:57:46.309 | ERROR    | llm_pysc2.lib.llm_client:query:180 - [ID 1] CombatGroup7 LLM query runtime error
+2025-01-15 22:57:46.309 | ERROR    | llm_pysc2.lib.llm_client:query:201 - [ID 1] CombatGroup7 Error when calling the OpenAI API: CombatGroup7 LLM query runtime error
+2025-01-15 22:57:54.425 | SUCCESS  | llm_pysc2.lib.llm_client:query:169 - [ID 1] CombatGroup7 Start calling llm api!
+2025-01-15 22:58:39.466 | ERROR    | llm_pysc2.lib.llm_client:query:180 - [ID 1] CombatGroup7 LLM query runtime error
+2025-01-15 22:58:39.466 | ERROR    | llm_pysc2.lib.llm_client:query:201 - [ID 1] CombatGroup7 Error when calling the OpenAI API: CombatGroup7 LLM query runtime error
+2025-01-15 22:58:39.469 | ERROR    | llm_pysc2.lib.llm_client:query:206 - [ID 1] CombatGroup7 Maximum number of retries reached. The OpenAI API is not responding.
+2025-01-15 22:58:39.470 | SUCCESS  | llm_pysc2.agents.llm_pysc2_agent:query:321 - [ID 1] LLMAgent CombatGroup7: Get response 

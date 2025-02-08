@@ -1,0 +1,7 @@
+{"1": ""}
+{"2": "\n\nCommunication information:\n\tFrom Developer: \n\t\tAdvance to the [location] and secure the area. Focus fire on high-value targets."}
+{"3": "\n\nCommunication information:\n\tFrom Developer: \n\t\tDeploy all units near Pylon 0x100000001.  Focus on securing the immediate area and prepare for potential engagement.  Report back with your status and any enemy sightings.\n\tFrom CombatGroup1: \n\t\tStalker units moving to provide cover.  Awaiting enemy location updates."}
+{"4": "\n\nCommunication information:\n\tFrom Developer: \n\t\tMoving 8 Zealots to Pylon 0x1004c0001 for frontline reinforcement.  Maintain defensive positions and await further orders.\n\tFrom CombatGroup1: \n\t\tStalkers engaging enemy cluster near [80, 40] screen coordinates. Requesting cover fire if possible."}
+{"5": ""}
+{"6": "\n\nCommunication information:\n\tIn Channel-1: \n\t\tFrom Developer: All units, maintain formation and report enemy sightings.\n\tFrom Developer: \n\t\tContinue offensive push. Focus fire on high-value targets. Maintain formation and provide cover for each other."}
+{"7": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tProvide covering fire for Warp Prisms at [33, 36] and [34, 34].  Focus fire on Ravagers."}

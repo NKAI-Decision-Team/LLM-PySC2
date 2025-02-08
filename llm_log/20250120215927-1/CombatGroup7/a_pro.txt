@@ -1,0 +1,13 @@
+{"0": "Actions:\n\t\t<Ability_AdeptPhaseShift_Minimap([25, 35])>\n\t\t<Ability_AdeptPhaseShift_Minimap([30, 30])>\n\t\t<Hold_Position()>"}
+{"1": "Actions:\n\tTeam AdeptPhase-1 Actions:\n\tTeam Adept-1, this continues the Phase Shift strategy to reposition for a better attack angle.  The target location ([30, 30]) is a different area, potentially to cover a wider area and find more enemy workers.:\n\t\t<Move_Minimap([30, 30])>\n\t\t<Hold_Position()>"}
+{"2": "Actions:\n\tTeam Adept-1 Actions:\n\t\t<Move_Minimap([30, 30])>\n\t\t<Hold_Position()>\n\t\t<No_Operation()>"}
+{"3": "Actions:\n\tTeam Adept-1 Actions:\n\t\t<Ability_AdeptPhaseShift_Minimap([35, 35])>\n\t\t<Attack_Unit(0x100980001)>\n\t\t<Attack_Unit(0x100380001)>"}
+{"4": "Actions:\n\tTeam AdeptPhase-1 Actions:\n\t\t<Stop()>\n\tTeam Adept-1, move to a safer location away from the Queen's immediate vicinity.:\n\t\t<No_Operation()>"}
+{"5": "Actions:\n\tTeam Adept-1 Actions:\n\t\t<Move_Minimap([20, 20])>\n\t\t<Hold_Position()>\n\t\t<No_Operation()>"}
+{"6": "Actions:\n\tTeam Adept-1 Actions:\n\t\t<Ability_AdeptPhaseShift_Minimap([15, 15])>\n\t\t<Attack_Unit(0x100380001)>\n\t\t<Hold_Position()>"}
+{"7": "Actions:\n\tTeam AdeptPhase-1 Actions:\n\tTeam Adept-1, move towards a suspected enemy worker location.  This assumes coordination between the two teams isn't possible given the lack of communication in the provided data.:\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}
+{"8": "Actions:\n\tTeam Adept-1 Actions:\n\t\t<Move_Minimap([15, 25])>\n\t\t<No_Operation()>"}
+{"9": "Actions:\n\tTeam Adept-1 Actions:\n\t\t<Ability_AdeptPhaseShift_Minimap([18, 28])>\n\t\t<Ability_AdeptPhaseShift_Minimap([12, 20])>\n\t\t<No_Operation()>"}
+{"10": "Actions:\n\tTeam AdeptPhase-1 Actions:\n\t\t<No_Operation()>\n\tTeam Adept-1, this is a speculative move towards a likely enemy base location.  Adjust based on any available minimap information.:\n\t\t<Attack_Unit(0x101580001)>"}
+{"11": "Actions:\n\tTeam Adept-1 Actions:\n\t\t<Move_Minimap([30, 30])>\n\t\t<Hold_Position()>\n\t\t<No_Operation()>"}
+{"12": "Actions:\n\tTeam Adept-1 Actions:\n\t\t<Ability_AdeptPhaseShift_Minimap([30, 30])>\n\t\t<Attack_Unit(0x100380001)>\n\t\t<Attack_Unit(0x100980001)>"}

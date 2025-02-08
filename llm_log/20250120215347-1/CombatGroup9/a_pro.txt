@@ -1,0 +1,15 @@
+{"0": "Actions:\n\t\t<Hold_Position()>"}
+{"1": "Actions:\n\t\t<Morph_WarpPrismPhasingMode()>\n\t\t<Move_Minimap([35, 45])>"}
+{"2": "Actions:\n\t\t<Morph_WarpPrismTransportMode()>\n\t\t<Wait_For_Unit_Warp()>"}
+{"3": "Actions:\n\t\t<Hold_Position()>"}
+{"4": "Actions:\n\t\t<Morph_WarpPrismPhasingMode()>\n\t\t<Move_Minimap([20, 30])>"}
+{"5": "Actions:\n\t\t<Morph_WarpPrismTransportMode()>\n\t\t<Wait_For_Unit_Warp(0x100300001)>\n\t\t<Move_Minimap([20, 30])>"}
+{"6": "Actions:\n\t\t<Move_Minimap([25, 30])>\n\t\t<Morph_WarpPrismPhasingMode()>"}
+{"7": "Actions:\n\t\t<Move_Minimap([20, 30])>\n\t\t<Morph_WarpPrismPhasingMode()>"}
+{"8": "Actions:\n\t\t<Morph_WarpPrismTransportMode()>\n\t\t<Wait_For_Unit_Warp(0x100300001)>"}
+{"9": "Actions:\n\t\t<Morph_WarpPrismPhasingMode()>\n\t\t<Move_Minimap([30, 40])>"}
+{"10": "Actions:\n\t\t<Morph_WarpPrismTransportMode()>\n\t\t<Wait_For_Unit_Warp(0x100300001)>"}
+{"11": "Actions:\n\t\t<Morph_WarpPrismPhasingMode()>\n\t\t<Load_Unit(0x100380001)>\n\t\t<Load_Unit(0x100980001)>"}
+{"12": "Actions:\n\t\t<Morph_WarpPrismTransportMode()>\n\t\t<Wait_For_Unit_Warp(0x101440001)>\n\t\t<Load_Unit(0x101440001)>"}
+{"13": "Actions:\n\t\t<Load_Unit(0x101680001)>\n\t\t<Move_Screen([70, 70])>"}
+{"14": "Actions:\n\t\t<Morph_WarpPrismPhasingMode()>\n\t\t<Hold_Position()>"}

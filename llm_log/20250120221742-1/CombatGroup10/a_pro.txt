@@ -1,0 +1,8 @@
+{"0": ""}
+{"1": "Actions:\n\tTeam WarpPrism-1 Actions:\n\t\t<No_Operation()>"}
+{"2": "Actions:\n\tTeam WarpPrism-1 Actions:\n\t\t<Move_Minimap([45, 32])>\n\t\t<Load_Unit(0x100380001)>\n\t\t<Load_Unit(0x100980001)>"}
+{"3": "Actions:\n\tTeam WarpPrism-1 Actions:\n\t\t<No_Operation()>\n\t\t<Move_Minimap([52, 32])>\n\t\t<No_Operation()>"}
+{"4": "Actions:\n\tTeam WarpPrism-1 Actions:\n\t\t<No_Operation()>\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}
+{"5": "Actions:\n\tTeam Adept-1:\n\t\t<Attack_Unit(0x101840001)>\n\t\t<Move_Screen([69, 21])>\n\t\t<Hold_Position()>\n\tTeam AdeptPhase-1:\n\t\t<Move_Minimap([52, 32])>\n\t\t<Hold_Position()>\n\t\t<No_Operation()>\n\tTeam WarpPrism-1:\n\t\t<Hold_Position()>\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}
+{"6": "Actions:\n\tTeam Adept-1:\n\t\t<Hold_Position()>\n\t\t<Move_Minimap([10, 50])>\n\t\t<Attack_Unit(0x100340001)>\n\tTeam WarpPrism-1:\n\t\t<Morph_WarpPrismPhasingMode()>\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}
+{"7": "Actions:\n\tTeam Adept-1:\n\t\t<Ability_AdeptPhaseShift_Minimap([10, 50])>\n\t\t<Stop()>\n\t\t<No_Operation()>\n\tTeam WarpPrism-1:\n\t\t<Morph_WarpPrismTransportMode()>\n\t\t<Wait_For_Unit_Warp()>\n\t\t<No_Operation()>\n\t\t<Stop()>"}

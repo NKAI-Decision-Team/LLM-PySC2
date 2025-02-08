@@ -1,0 +1,5 @@
+20250127224215
+2025-01-27 22:43:54.220 | ERROR    | llm_pysc2.lib.llm_client:query:180 - [ID 1] Commander LLM query runtime error
+2025-01-27 22:43:54.220 | ERROR    | llm_pysc2.lib.llm_client:query:201 - [ID 1] Commander Error when calling the OpenAI API: Commander LLM query runtime error
+2025-01-27 22:43:54.426 | ERROR    | llm_pysc2.lib.llm_client:query:180 - [ID 1] CombatGroup9 LLM query runtime error
+2025-01-27 22:43:54.426 | ERROR    | llm_pysc2.lib.llm_client:query:201 - [ID 1] CombatGroup9 Error when calling the OpenAI API: CombatGroup9 LLM query runtime error

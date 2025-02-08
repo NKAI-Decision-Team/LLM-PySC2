@@ -67,13 +67,27 @@ def get_config(task):
       {'time': None, 'pos': None, 'info': "Organize a multiline combat to defeat enemy troops and kill their workers, "
                                           "you should reach all the goals and finish the battle before game time 1:30."},
     ]
+  elif task in [9]:
+    config = ConfigPysc2_Harass()
+    config.ENABLE_COMMUNICATION = True
+    config.MAX_LLM_RUNTIME_ERROR_TIME = 60
+    for agent_name in list(config.AGENTS.keys()):
+      for team in config.AGENTS[agent_name]['team']:
+        team['task'] = [
+          {'time': None, 'pos': [52, 32], 'info': "Kill as much enemy workers as possible near [52, 32] while trying to avoid you adepts being detected."
+                                          "Distract all enemy combat units by moving your warp prism to minimap position [46, 48]."},
+        ]
+    # config.AGENTS['Commander']['team'][0]['task'] = [
+    #   {'time': None, 'pos': [52, 32], 'info': "Kill as much enemy workers as possible near [52, 32] while trying to avoid you adepts being detected."
+    #                                       "Distract all enemy combat units by moving your warp prism to minimap position [46, 48]."},
+    # ]
   else:
     raise AssertionError("wrong task index")
 
   return config
 
 
-task = 1
+task = 9
 level = 1
 map_name = f"pvz_task{task}_level{level}"
 enable_image_rgb = False
@@ -104,7 +118,7 @@ if __name__ == "__main__":
               f"--rgb_screen_size 256 --rgb_minimap_size 64 "
               f"--action_space RGB")
   elif enable_image_feature:  # parallel experiments with feature map obs do not available currently, set --parallel 1
-    os.system(f"python -m pysc2.bin.agent --map {map_name} --agent_race protoss --parallel 1 "
+    os.system(f"python -m pysc2.bin.agent --map {map_name} --agent_race protoss --parallel 1 "  
               f"--agent llm_pysc2.bin.experiment_llm_pysc2.MainAgentLLMPysc2 "
               f"--feature_screen_size 256 --feature_minimap_size 64 "
               f"--rgb_screen_size 0 --rgb_minimap_size 0 "

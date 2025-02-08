@@ -1,0 +1,4 @@
+{"0": "Actions:\n\tTeam WarpPrism-1 Actions:\n\t\t<No_Operation()>\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}
+{"1": "Actions:\n\tTeam WarpPrism-1 Actions:\n\tTeam Adept-1, providing a potential escape route or reinforcement.:\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}
+{"2": "Actions:\n\tTeam WarpPrism-1 Actions:\n\t\t<Morph_WarpPrismPhasingMode()>\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}
+{"3": "Actions:\n\tTeam WarpPrism-1 Actions:\n\t\t<Morph_WarpPrismTransportMode()>\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}

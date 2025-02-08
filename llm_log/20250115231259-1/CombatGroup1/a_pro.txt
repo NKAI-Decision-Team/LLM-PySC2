@@ -1,0 +1,5 @@
+{"0": "Actions:\n\tTeam Stalker-1 Actions:\n\t\t<Attack_Unit(0x101840001)>\n\t\t<Hold_Position()>\n\t\t<No_Operation()>"}
+{"1": "Actions:\n\tTeam Stalker-1 Actions:\n\t\t<Attack_Unit(0x101980001)>\n\t\t<Hold_Position()>\n\t\t<No_Operation()>"}
+{"2": "Actions:\n\tTeam Stalker-1 Actions:\n\t\t<Move_Minimap([85, 50])>\n\t\t<Attack_Unit(0x101800001)>\n\t\t<Hold_Position()>"}
+{"3": ""}
+{"4": "Actions:\n\t\t<Attack_Unit(0x1007c0001)>\n\t\t<Attack_Unit(0x100240001)>\n\t\t<Hold_Position()>"}

@@ -1,0 +1,10 @@
+20250112151351
+2025-01-12 15:14:16.921 | ERROR    | llm_pysc2.agents.llm_pysc2_agent:get_func_a:379 - [ID 1] Error in Developer get_func_a(): list index out of range
+2025-01-12 15:15:16.877 | ERROR    | llm_pysc2.lib.llm_client:query:180 - [ID 1] Developer LLM query runtime error
+2025-01-12 15:15:16.877 | ERROR    | llm_pysc2.lib.llm_client:query:201 - [ID 1] Developer Error when calling the OpenAI API: Developer LLM query runtime error
+2025-01-12 15:15:17.552 | ERROR    | llm_pysc2.lib.llm_client:query:180 - [ID 1] CombatGroup9 LLM query runtime error
+2025-01-12 15:15:17.552 | ERROR    | llm_pysc2.lib.llm_client:query:201 - [ID 1] CombatGroup9 Error when calling the OpenAI API: CombatGroup9 LLM query runtime error
+2025-01-12 15:15:27.762 | ERROR    | llm_pysc2.agents.llm_pysc2_agent_main:step:321 - [ID 1] 7.0 Agent CombatGroup1: status should not exist
+2025-01-12 15:15:28.106 | ERROR    | llm_pysc2.agents.llm_pysc2_agent_main:step:321 - [ID 1] 7.0 Agent Commander: status should not exist
+2025-01-12 15:15:28.122 | ERROR    | llm_pysc2.agents.llm_pysc2_agent_main:step:321 - [ID 1] 7.0 Agent Developer: status should not exist
+2025-01-12 15:15:28.153 | ERROR    | llm_pysc2.agents.llm_pysc2_agent_main:step:321 - [ID 1] 7.0 Agent CombatGroup0: status should not exist

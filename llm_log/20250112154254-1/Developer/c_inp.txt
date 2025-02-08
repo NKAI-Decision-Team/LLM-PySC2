@@ -1,0 +1,8 @@
+{"0": ""}
+{"1": ""}
+{"2": ""}
+{"3": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tRequesting immediate repair of Stalkers 0x100c00001 and 0x1010c0001 after transport."}
+{"4": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tRequesting an update on the readiness of additional units for deployment to [30, 25] minimap."}
+{"5": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tRepair location for Stalkers 0x100c00001 and 0x1010c0001 will be determined after addressing immediate combat needs.  Will provide update shortly."}
+{"6": "\n\nCommunication information:\n\tIn Channel-0: "}
+{"7": ""}

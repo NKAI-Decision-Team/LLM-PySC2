@@ -1,0 +1,13 @@
+{"0": "Actions:\n\tTeam WarpPrism-1 Actions:\n\t\t<No_Operation()>"}
+{"1": "Actions:\n\tTeam WarpPrism-1 Actions:\n\t\t<No_Operation()>"}
+{"2": "Actions:\n\tTeam WarpPrism-1 Actions:\n\t\t<No_Operation()>"}
+{"3": "Actions:\n\tTeam WarpPrism-1 Actions:\n\t\t<Move_Minimap([46, 48])>\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}
+{"4": "Actions:\n\tTeam WarpPrism-1 Actions:\n\t\t<No_Operation()>\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}
+{"5": "Actions:\n\tTeam WarpPrism-1 Actions:\n\t\t<No_Operation()>\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}
+{"6": "Actions:\n\tTeam Adept-1:\n\t\t<Move_Minimap([46, 48])>\n\t\t<Attack_Unit(0x101900001)>\n\t\t<Attack_Unit(0x100340001)>\n\tTeam AdeptPhase-1:\n\tTeam Adept-1.:\n\tTeam Adept-1's Adept is successful in luring the Queens, move the Adept Phase Shift to support the attack on the Drones.:\n\tTeam Adept-1 as needed.:\n\tTeam WarpPrism-1:\n\t\t<Hold_Position()>\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}
+{"7": "Actions:\n\tTeam Adept-1:\n\t\t<Attack_Unit(0x101900001)>\n\t\t<Move_Minimap([52, 32])>\n\t\t<Attack_Unit(0x100ac0001)>"}
+{"8": "Actions:\n\tTeam Adept-1 Actions:\n\t\t<Ability_AdeptPhaseShift_Minimap([46, 48])>\n\t\t<Move_Minimap([52, 32])>\n\t\t<Attack_Unit(0x100ac0001)>"}
+{"9": "Actions:\n\tTeam AdeptPhase-1 Actions:\n\tTeam Adept-1's attack.:\n\t\t<No_Operation()>\n\tTeam Adept-1.:"}
+{"10": "Actions:\n\tTeam Adept-1 Actions:\n\t\t<Attack_Unit(0x100440001)>\n\t\t<Move_Minimap([40, 40])>"}
+{"11": "Actions:\n\tTeam Adept-1 Actions:\n\t\t<Ability_AdeptPhaseShift_Screen([50, 30])>\n\t\t<Move_Minimap([40, 30])>\n\t\t<Hold_Position()>"}
+{"12": "Actions:\n\tTeam AdeptPhase-1 Actions:\n\t\t<Move_Minimap([52, 32])>\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}

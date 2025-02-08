@@ -1,0 +1,9 @@
+{"2": "Actions:\n\tTeam Zealot-2 Actions:\n\t\t<Hold_Position()>\n\tTeam Zealot-2 ready to deploy.  Current location:\n\t\t<No_Operation()>"}
+{"3": "Actions:\n\tTeam Zealot-2 Actions:\n\tTeam towards a slightly more central location on the minimap, coordinating with T:\n\t\t<No_Operation()>"}
+{"4": "Actions:\n\tTeam Zealot-2 Actions:\n\t\t<Move_Minimap([64, 64])>\n\t\t<Hold_Position()>\n\t\t<No_Operation()>"}
+{"5": "Actions:\n\tTeam Zealot-2 Actions:\n\t\t<Hold_Position()>\n\t\t<No_Operation()>"}
+{"6": "Actions:\n\tTeam Zealot-2 Actions:\n\t\t<Move_Minimap([33, 35])>\n\t\t<Attack_Unit(0x100340001)>\n\t\t<No_Operation()>"}
+{"7": "Actions:\n\tTeam Zealot-2 Actions:\n\t\t<Hold_Position()>\n\t\t<Attack_Unit(0x100340001)>\n\t\t<No_Operation()>"}
+{"8": "Actions:\n\t\t<Move_Minimap([10, 10])>\n\t\t<Stop()>"}
+{"9": "Actions:\n\tTeam Zealot-2 Actions:\n\t\t<Stop()>\n\t\t<Hold_Position()>\n\t\t<Attack_Unit(0x1006c0001)>"}
+{"10": "Actions:\n\tTeam Zealot-2 Actions:\n\t\t<Attack_Unit(0x100440001)>\n\tTeam Zealot-1 to arrive.:\n\t\t<No_Operation()>"}

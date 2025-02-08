@@ -1,0 +1,12 @@
+20250207100637
+2025-02-07 10:08:09.186 | ERROR    | llm_pysc2.lib.llm_client:query:188 - [ID 1] CombatGroup10 LLM query runtime error
+2025-02-07 10:08:09.187 | ERROR    | llm_pysc2.lib.llm_client:query:209 - [ID 1] CombatGroup10 Error when calling the OpenAI API: CombatGroup10 LLM query runtime error
+2025-02-07 10:09:11.163 | ERROR    | llm_pysc2.lib.llm_client:query:188 - [ID 1] CombatGroup10 LLM query runtime error
+2025-02-07 10:09:11.163 | ERROR    | llm_pysc2.lib.llm_client:query:209 - [ID 1] CombatGroup10 Error when calling the OpenAI API: CombatGroup10 LLM query runtime error
+2025-02-07 10:10:14.208 | ERROR    | llm_pysc2.lib.llm_client:query:188 - [ID 1] CombatGroup10 LLM query runtime error
+2025-02-07 10:10:14.208 | ERROR    | llm_pysc2.lib.llm_client:query:209 - [ID 1] CombatGroup10 Error when calling the OpenAI API: CombatGroup10 LLM query runtime error
+2025-02-07 10:11:18.531 | ERROR    | llm_pysc2.lib.llm_client:query:188 - [ID 1] CombatGroup10 LLM query runtime error
+2025-02-07 10:11:18.531 | ERROR    | llm_pysc2.lib.llm_client:query:209 - [ID 1] CombatGroup10 Error when calling the OpenAI API: CombatGroup10 LLM query runtime error
+2025-02-07 10:12:26.669 | ERROR    | llm_pysc2.lib.llm_client:query:188 - [ID 1] CombatGroup10 LLM query runtime error
+2025-02-07 10:28:00.323 | ERROR    | llm_pysc2.lib.llm_client:query:209 - [ID 1] CombatGroup10 Error when calling the OpenAI API: CombatGroup10 LLM query runtime error
+2025-02-07 10:28:00.325 | ERROR    | llm_pysc2.lib.llm_client:query:214 - [ID 1] CombatGroup10 Maximum number of retries reached. The OpenAI API is not responding.

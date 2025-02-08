@@ -1,0 +1,5 @@
+{"0": "Actions:\n\t\t<Ability_AdeptPhaseShift_Minimap([30, 35])>\n\t\t<Ability_AdeptPhaseShift_Minimap([25, 25])>\n\t\t<Hold_Position()>"}
+{"1": "Actions:\n\tTeam AdeptPhase-1 Actions:\n\t\t<Move_Minimap([25, 25])>\n\t\t<Stop()>\n\t\t<No_Operation()>"}
+{"2": "Actions:\n\t\t<No_Operation()>\n\t\t<Move_Minimap([25, 25])>\n\t\t<Hold_Position()>"}
+{"3": "Actions:\n\t\t<Ability_AdeptPhaseShift_Screen([100, 100])>\n\t\t<Hold_Position()>\n\t\t<No_Operation()>"}
+{"4": "Actions:\n\tTeam Adept-1:\n\t\t<Move_Minimap([35, 35])>\n\t\t<Attack_Unit(0x100980001)>\n\t\t<Attack_Unit(0x100380001)>\n\tTeam AdeptPhase-1:\n\t\t<Move_Minimap([35, 35])>\n\tTeam at this time, as the AdeptPhaseShifts are already moving.:\n\tTeam at this time.:"}

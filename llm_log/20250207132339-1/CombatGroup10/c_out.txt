@@ -1,0 +1,1 @@
+{"0": "Communications:\n  <MessageTo(Commander, '''WarpPrism is now at [46,48], creating a warp field to distract enemy units. Adept-1 will attack the workers at [52,32].''')>"}

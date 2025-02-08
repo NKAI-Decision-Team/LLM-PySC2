@@ -1,0 +1,10 @@
+{"0": "**Communication:**\n1. `<MessageTo(Commander, '''Scout sent to map center and [16,16] minimap coordinates.  Reporting back in 7 seconds.''' )>`"}
+{"1": "**Communication:**\n`<MessageTo(CombatGroup9, '''Adept units are returning to base after scouting attempt.  No significant enemy information gathered yet.  Continuing to scout.''' )>`"}
+{"2": "**Communication:**\n1. `<MessageTo(Commander, '''Adept units engaging in early harassment at minimap location [33,33]. Requesting further strategic direction after initial scouting.''' )>`"}
+{"3": "**Communication:**"}
+{"4": "**Communication:**\n`<MessageTo(Commander, '''Requesting intel on enemy presence and composition near minimap coordinates [33, 34].  Adept units are moving to engage. Time: 0:21''')>`"}
+{"5": "**Communication:**\n1. `<MessageTo(Commander, '''Adepts scouting towards map center [40, 40].  Will report findings in 10 seconds.''' )>`: Inform the commander of the scouting mission.  This provides transparency and allows for coordinated actions."}
+{"6": "Communication:\n`<MessageTo(Commander, '''Adepts engaging enemy Spawning Pool and Queen at minimap location [10, 10] at 0:29.  Requesting further instructions after scouting the area.''' )>`"}
+{"7": "**Communication:**\n`<MessageTo(Commander, '''Adept units engaging Zerg Spawning Pools at [37, 31] and [41, 32] on the minimap. Requesting support after Spawning Pools are destroyed.''' )>`"}
+{"8": "**Communication:**\n`<MessageTo(Commander, '''Time: 0:37.  Engaging Zerg Queen at minimap [30,30]. One Adept at 36% health. Requesting backup if situation deteriorates.''' )>`"}
+{"9": "**Communication:**\n`<MessageTo(Commander, '''Requesting immediate support at minimap location [31, 29]. Two enemy Queens and a Drone engaging Adepts. One Adept critically injured.  Requesting reinforcements or strategic retreat advice.''' )>`"}

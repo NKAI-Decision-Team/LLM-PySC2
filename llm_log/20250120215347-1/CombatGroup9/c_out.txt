@@ -1,0 +1,15 @@
+{"0": "**Communication:**  (Already included in Actions)"}
+{"1": "Communication:  (Already included in Action 2)"}
+{"2": "Communication:"}
+{"3": ""}
+{"4": "Communication:"}
+{"5": "Communication:\n1. `<MessageTo(CombatGroup7, '''Warp Prism en route to [20, 30] minimap coordinates. Awaiting further instructions.''' )>`: This informs Combat Group 7 of the Warp Prism's status and intended movement, showing responsiveness to their request.  It also opens the door for further coordination."}
+{"6": "**Communication:**\n1. `<MessageTo(CombatGroup7, '''Warp Prism moving to support your operation at [25, 30].  Awaiting your report on enemy presence.''' )>`: This informs Combat Group 7 of the Warp Prism's actions and reinforces the collaborative effort."}
+{"7": "Communication:\n`<MessageTo(CombatGroup7, '''Report on enemy presence at target location.  Warp Prism en route for extraction if needed.''' )>`"}
+{"8": ""}
+{"9": ""}
+{"10": ""}
+{"11": "**Communication:**\n`<MessageTo(CombatGroup7, '''En route to your location.  Adepts loaded.''' )>`"}
+{"12": "**Communication:**\n1. `<MessageTo(CombatGroup7, '''Warp Prism ready to assist with scouting request.  Awaiting further instructions.''' )>`:  Inform Combat Group 7 of the Warp Prism's readiness, while also indicating a need for direction on scouting location and priority."}
+{"13": ""}
+{"14": "Communication:"}

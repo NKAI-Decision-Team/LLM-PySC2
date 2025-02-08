@@ -1,0 +1,8 @@
+{"0": ""}
+{"1": "\n\nCommunication information:\n\tFrom Developer: \n\t\tPrepare Warp Prisms for potential reinforcement or flanking maneuver. Maintain Warp Prism stability."}
+{"2": "\n\nCommunication information:\n\tFrom Developer: \n\t\tMaintain Warp Prism stability near [location]. Prepare to reinforce CombatGroup0 as needed."}
+{"3": "\n\nCommunication information:\n\tFrom Developer: \n\t\tRemain on standby, ready to reinforce CombatGroup0 if necessary.  Maintain Warp Prism stability."}
+{"4": "\n\nCommunication information:\n\tFrom CombatGroup1: \n\t\tRequesting Warp Prism support to reposition Stalkers if necessary."}
+{"5": "\n\nCommunication information:\n\tFrom Developer: \n\t\tWarp Prism 2 sustained damage. Please provide details on the extent of the damage and location.  We will assess the need for repair units.\n\tFrom CombatGroup1: \n\t\tAcknowledged retreat.  Stalker units are disengaging and regrouping at minimap coordinates [30, 45]. Await further instructions."}
+{"6": "\n\nCommunication information:\n\tIn Channel-1: \n\t\tFrom Developer: All units, maintain formation and report enemy sightings.\n\tFrom CombatGroup1: \n\t\tRequest Warp Prism drop-off at minimap coordinates [35, 40].  Prioritize delivering units to this location."}
+{"7": "\n\nCommunication information:\n\tFrom CombatGroup1: \n\t\tRequest Warp Prism drop-off at minimap coordinates [35, 40].  Prioritize delivering units to this location."}

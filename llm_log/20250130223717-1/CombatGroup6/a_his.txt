@@ -1,0 +1,3 @@
+----------------------------------------------------------------------------------------------------
+CombatGroup6;   loop0;   step148;   [   Success  ]  FunctionCall(function=<_Functions.Effect_TimeWarp_screen: 241>, arguments=[[<Queued.now: 0>], [96, 56]])
+CombatGroup6;   loop0;   step149;   [   Success  ]  FunctionCall(function=<_Functions.HoldPosition_quick: 274>, arguments=[[<Queued.queued: 1>]])

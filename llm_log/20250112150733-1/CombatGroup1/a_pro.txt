@@ -1,0 +1,5 @@
+{"0": "Actions:\n\tTeam Stalker-3 Actions:\n\t\t<Hold_Position()>"}
+{"1": "Actions:\n\tTeam Stalker-3 Actions:\n\t\t<Attack_Unit(0x100d00001)>\n\t\t<Attack_Unit(0x100740001)>\n\t\t<Hold_Position()>"}
+{"2": "Actions:\n\tTeam Stalker-1:\n\t\t<Attack_Unit(0x100c00001)>\n\t\t<Attack_Unit(0x100740001)>\n\t\t<Move_Screen([75,70])>\n\tTeam Stalker-2:\n\t\t<Attack_Unit(0x100b40001)>\n\t\t<Attack_Unit(0x100740001)>\n\t\t<Hold_Position()>\n\tTeam Stalker-3:\n\t\t<Attack_Unit(0x100a80001)>\n\t\t<Attack_Unit(0x100e40001)>\n\t\t<Hold_Position()>"}
+{"3": "Actions:\n\tTeam Stalker-2:\n\t\t<Attack_Unit(0x100c00001)>\n\t\t<Attack_Unit(0x100840001)>\n\t\t<Hold_Position()>\n\tTeam Stalker-3:\n\t\t<Select_Unit_Blink_Screen(0x1001c0001, [50,75])>\n\t\t<Attack_Unit(0x100840001)>\n\t\t<Hold_Position()>"}
+{"4": "Actions:\n\tTeam Stalker-2:\n\t\t<Attack_Unit(0x100880001)>\n\t\t<Move_Screen([70,60])>\n\t\t<Hold_Position()>"}

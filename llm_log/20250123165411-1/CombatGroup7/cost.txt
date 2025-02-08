@@ -1,0 +1,15 @@
+{"0": "time=2.09, ave_time=2.09, token_in=0, ave_token_in=0.00, token_out=0, ave_token_out = 0.00"}
+{"1": "time=2.98, ave_time=2.53, token_in=0, ave_token_in=0.00, token_out=0, ave_token_out = 0.00"}
+{"2": "time=2.86, ave_time=2.64, token_in=0, ave_token_in=0.00, token_out=0, ave_token_out = 0.00"}
+{"3": "time=2.78, ave_time=2.68, token_in=0, ave_token_in=0.00, token_out=0, ave_token_out = 0.00"}
+{"4": "time=2.55, ave_time=2.65, token_in=0, ave_token_in=0.00, token_out=0, ave_token_out = 0.00"}
+{"5": "time=2.44, ave_time=2.62, token_in=0, ave_token_in=0.00, token_out=0, ave_token_out = 0.00"}
+{"6": "time=1.87, ave_time=2.51, token_in=0, ave_token_in=0.00, token_out=0, ave_token_out = 0.00"}
+{"7": "time=4.88, ave_time=2.81, token_in=0, ave_token_in=0.00, token_out=0, ave_token_out = 0.00"}
+{"8": "time=3.10, ave_time=2.84, token_in=0, ave_token_in=0.00, token_out=0, ave_token_out = 0.00"}
+{"9": "time=3.43, ave_time=2.90, token_in=0, ave_token_in=0.00, token_out=0, ave_token_out = 0.00"}
+{"10": "time=3.67, ave_time=2.97, token_in=0, ave_token_in=0.00, token_out=0, ave_token_out = 0.00"}
+{"11": "time=3.11, ave_time=2.98, token_in=0, ave_token_in=0.00, token_out=0, ave_token_out = 0.00"}
+{"12": "time=2.99, ave_time=2.98, token_in=0, ave_token_in=0.00, token_out=0, ave_token_out = 0.00"}
+{"13": "time=3.00, ave_time=2.98, token_in=0, ave_token_in=0.00, token_out=0, ave_token_out = 0.00"}
+{"14": "time=2.78, ave_time=2.97, token_in=0, ave_token_in=0.00, token_out=0, ave_token_out = 0.00"}

@@ -1,0 +1,12 @@
+{"0": ""}
+{"1": "\n\nCommunication information:\n\tFrom Developer: \n\t\tHold position, ready for deployment as reinforcements. Maintain Warp Prism stability."}
+{"2": ""}
+{"3": "\n\nCommunication information:\n\tFrom Developer: \n\t\tRemain on standby.  Prepare for potential deployment as reinforcements. Maintain Warp Prism stability. Time: 0:13."}
+{"4": "\n\nCommunication information:\n\tFrom Developer: \n\t\tPrepare Warp Prism for potential reinforcements to the front line at [64,64]. Maintain Warp Prism Phasing stability."}
+{"5": "\n\nCommunication information:\n\tFrom CombatGroup1: \n\t\tTeam Stalker-1 and 3 are regrouping at [64,64] near the Pylon. Requesting air support if enemy units pursue."}
+{"6": "\n\nCommunication information:\n\tFrom Developer: \n\t\tDeploy Warp Prisms near [64,64] minimap to support Warp Gate operations and provide additional mobility."}
+{"7": ""}
+{"8": "\n\nCommunication information:\n\tFrom Developer: \n\t\tMaintain Warp Prism stability.  Prepare for reinforcement deployment to minimap location [64,64] in approximately 10 seconds.  Focus on providing a stable warping field for Zealots and Stalkers.\n\tFrom CombatGroup0: \n\t\tRequest Warp Prism to maintain stable Phasing mode near Pylon 0x100d40001 for incoming reinforcements.  Prioritize keeping the Warp Gate active."}
+{"9": "\n\nCommunication information:\n\tFrom Developer: \n\t\tPrepare for air support.  Remain in WarpPrismPhasing mode near the main force.  Be ready to reinforce CombatGroup0 as needed."}
+{"10": "\n\nCommunication information:\n\tFrom Airborne: \n\t\tMaintain Warp Prism stability.  Prioritize unit warping in to support.\n\tFrom CombatGroup0: \n\t\tMaintain Warp Prism Phasing Mode near Pylon 0x100d40001.  Zealot-1 is en route to reinforce."}
+{"11": "\n\nCommunication information:\n\tFrom Developer: \n\t\tWarpPrism stability is critical.  Prioritize even distribution of warping across pylons. Stalkers are warping in for support.\n\tFrom CombatGroup0: \n\t\tReinforce Team Zealot-2 at minimap [26, 31] immediately. Prioritize protecting Warp Prisms 0x100bc0001 and 0x100880001."}

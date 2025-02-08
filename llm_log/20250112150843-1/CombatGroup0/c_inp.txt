@@ -1,0 +1,9 @@
+{"2": ""}
+{"3": ""}
+{"4": "\n\nCommunication information:\n\tFrom Developer: \n\t\tMove Zealots to [64,64] near Pylon 0x1001c0001. Provide cover for main force.\n\tFrom CombatGroup1: \n\t\tStalker units engaging enemy forces near [33,35] minimap coordinates. Providing support and suppressing enemy advance."}
+{"5": ""}
+{"6": "\n\nCommunication information:\n\tFrom Developer: \n\t\tMaintain position at [64,64] minimap.  Reinforcements are en route.\n\tFrom CombatGroup1: \n\t\tRequesting immediate support.  Enemy concentration is high near [33,35] minimap.  Focus fire on Queens."}
+{"7": "\n\nCommunication information:\n\tFrom Developer: \n\t\tReinforcements of 8 Zealots warping in near Pylon 0x100b80001.  Maintain defensive positions and prepare for potential engagement."}
+{"8": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tFall back to Nexus.  Roach attack imminent."}
+{"9": "\n\nCommunication information:\n\tFrom Developer: \n\t\tAdvance to the [Insert Map Location Here] and secure the area. Focus on early aggression and harass the enemy. Maintain formation and provide cover for each other.\n\tFrom CombatGroup9: \n\t\tWarp Prism 1 and 2 are establishing Phasing Mode near Pylon 0x100d40001.  Reinforcements will warp in there in approximately 10 seconds."}
+{"10": "\n\nCommunication information:\n\tFrom Airborne: \n\t\tRequest immediate support.  Engaged in heavy combat at minimap [26, 31].  Low on health units.\n\tFrom Developer: \n\t\tProvide immediate cover for Warp Prisms 0x100bc0001 and 0x100880001. They are under heavy fire. Prioritize their protection."}

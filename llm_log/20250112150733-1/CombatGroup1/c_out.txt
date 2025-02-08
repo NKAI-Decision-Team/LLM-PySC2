@@ -1,0 +1,5 @@
+{"0": "**Communication:**"}
+{"1": "**Communication:**\n`<MessageTo(CombatGroup3, '''Stalker squads engaging ground units.  Requesting air support on Brood Lord if needed.''' )>`"}
+{"2": "**Communication:**\n`<MessageTo(CombatGroup3, '''Acknowledged flanking request.  Team Stalker-1 and Stalker-2 are engaging enemy ground units near [60,70].  Team Stalker-3 will provide support as needed.''' )>`**Reasoning for Actions and Communication:*** **Communication:**  Clear communication with Combat Group 3 keeps them informed of the ground team's actions and progress.  This coordination is crucial for a successful flanking maneuver."}
+{"3": "**Communication:**\n`<MessageTo(CombatGroup3, '''Requesting ground support.  Enemy Hydralisks and Broodlords advancing.  Stalker-3 has a critically low health unit.''' )>`\n`<MessageTo(Commander, '''Requesting assessment of ground situation.  Enemy ground push imminent.  Suggesting a defensive posture near our main base.''' )>`"}
+{"4": "**Communication:**\n`<MessageTo(CombatGroup3, '''Stalker-2 engaging BroodLord.  Focusing on ground units after.  Requesting air support if BroodLord proves difficult.''' )>`"}

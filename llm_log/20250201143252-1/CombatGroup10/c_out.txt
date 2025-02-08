@@ -1,0 +1,5 @@
+{"0": "**Communication:**\n`<MessageTo(Team Adept-1, '''Enemy worker tag: 0xXXXXYYYYY''')>` (Replace `0xXXXXYYYYY` with the actual tag)."}
+{"1": "**Communication:**"}
+{"2": "**Communication:**"}
+{"3": "**Communication:**\n`<MessageTo(Team Adept-1, '''Focus fire on low health drones first. Avoid detection.''' )>`\n`<MessageTo(Team WarpPrism-1, '''Proceed to distract enemy units at minimap [46, 48].''' )>`"}
+{"4": "**Actions and Communication:****Communication:**"}

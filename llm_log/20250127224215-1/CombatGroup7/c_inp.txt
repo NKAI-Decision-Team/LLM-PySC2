@@ -1,0 +1,3 @@
+{"0": ""}
+{"1": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tRequest scouting information.  Focus on enemy base location and composition.  Report back ASAP."}
+{"2": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tWarp Prism transporting one Adept to minimap [35, 40].  Objective unclear; awaiting further instructions."}

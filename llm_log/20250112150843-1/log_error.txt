@@ -1,0 +1,11 @@
+20250112150843
+2025-01-12 15:09:50.825 | ERROR    | llm_pysc2.lib.llm_client:query:180 - [ID 1] Developer LLM query runtime error
+2025-01-12 15:09:50.825 | ERROR    | llm_pysc2.lib.llm_client:query:201 - [ID 1] Developer Error when calling the OpenAI API: Developer LLM query runtime error
+2025-01-12 15:09:51.126 | ERROR    | llm_pysc2.lib.llm_client:query:180 - [ID 1] CombatGroup0 LLM query runtime error
+2025-01-12 15:09:51.126 | ERROR    | llm_pysc2.lib.llm_client:query:201 - [ID 1] CombatGroup0 Error when calling the OpenAI API: CombatGroup0 LLM query runtime error
+2025-01-12 15:11:16.785 | ERROR    | llm_pysc2.lib.llm_client:query:180 - [ID 1] CombatGroup0 LLM query runtime error
+2025-01-12 15:11:16.785 | ERROR    | llm_pysc2.lib.llm_client:query:201 - [ID 1] CombatGroup0 Error when calling the OpenAI API: CombatGroup0 LLM query runtime error
+2025-01-12 15:12:37.033 | ERROR    | llm_pysc2.lib.llm_client:query:180 - [ID 1] Commander LLM query runtime error
+2025-01-12 15:12:37.550 | ERROR    | llm_pysc2.lib.llm_client:query:180 - [ID 1] Airborne LLM query runtime error
+2025-01-12 15:13:31.065 | ERROR    | llm_pysc2.lib.llm_client:query:201 - [ID 1] Commander Error when calling the OpenAI API: Commander LLM query runtime error
+2025-01-12 15:13:31.068 | ERROR    | llm_pysc2.lib.llm_client:query:201 - [ID 1] Airborne Error when calling the OpenAI API: Airborne LLM query runtime error

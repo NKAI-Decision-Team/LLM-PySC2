@@ -29,7 +29,7 @@ class ConfigSmac_1c3s5z(ProtossAgentConfig):
     # self.MAX_LLM_WAITING_TIME = 10
     # self.MAX_LLM_RUNTIME_ERROR_TIME = 30
     # self.MAX_LLM_DECISION_FREQUENCY = 1
-    # self.MAX_NUM_ACTIONS = 3
+    # self.MAX_NUM_ACTIONS = 3 
 
     self.AGENTS_ALWAYS_DISABLE = []
     self.AGENTS = {

@@ -1,0 +1,19 @@
+----------------------------------------------------------------------------------------------------
+CombatGroup5;   loop0;   step124;   [   Success  ]  FunctionCall(function=<_Functions.Move_minimap: 332>, arguments=[[<Queued.now: 0>], [32.0, 32.0]])
+----------------------------------------------------------------------------------------------------
+CombatGroup5;   loop1;   step226;   [   Success  ]  FunctionCall(function=<_Functions.Effect_PurificationNova_screen: 219>, arguments=[[<Queued.now: 0>], [118, 56]])
+----------------------------------------------------------------------------------------------------
+CombatGroup5;   loop2;   step324;   [   Success  ]  FunctionCall(function=<_Functions.Effect_PurificationNova_screen: 219>, arguments=[[<Queued.now: 0>], [118, 51]])
+CombatGroup5;   loop2;   step325;   [   Success  ]  FunctionCall(function=<_Functions.Effect_PurificationNova_screen: 219>, arguments=[[<Queued.queued: 1>], [118, 43]])
+CombatGroup5;   loop2;   step326;   [   Success  ]  FunctionCall(function=<_Functions.HoldPosition_quick: 274>, arguments=[[<Queued.queued: 1>]])
+----------------------------------------------------------------------------------------------------
+CombatGroup5;   loop3;   step413;   [Invalid Func]  Effect_PurificationNova_screen 
+CombatGroup5;   loop3;   step413;   [Invalid Func]  Effect_PurificationNova_screen 
+CombatGroup5;   loop3;   step413;   [   Success  ]  FunctionCall(function=<_Functions.HoldPosition_quick: 274>, arguments=[[<Queued.now: 0>]])
+----------------------------------------------------------------------------------------------------
+CombatGroup5;   loop4;   step499;   [Invalid Func]  Effect_PurificationNova_screen 
+CombatGroup5;   loop4;   step499;   [Invalid Func]  Effect_PurificationNova_screen 
+CombatGroup5;   loop4;   step499;   [   Success  ]  FunctionCall(function=<_Functions.HoldPosition_quick: 274>, arguments=[[<Queued.now: 0>]])
+----------------------------------------------------------------------------------------------------
+CombatGroup5;   loop5;   step572;   [Invalid Func]  Effect_PurificationNova_screen 
+CombatGroup5;   loop5;   step572;   [   Success  ]  FunctionCall(function=<_Functions.HoldPosition_quick: 274>, arguments=[[<Queued.now: 0>]])

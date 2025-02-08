@@ -1,0 +1,4 @@
+{"0": "Actions:\n\t\t<Ability_AdeptPhaseShift_Minimap([40, 30])>\n\t\t<Ability_AdeptPhaseShift_Minimap([52, 32])>\n\t\t<Move_Minimap([52, 32])>"}
+{"1": "Actions:\n\tTeam AdeptPhase-1 Actions:\n\tTeam Adept-1, this creates a phase shift image to reposition away from the immediate threat.:\n\t\t<Move_Minimap([52, 32])>\n\t\t<No_Operation()>"}
+{"2": "Actions:\n\tTeam Adept-1 Actions:\n\t\t<No_Operation()>\n\t\t<Hold_Position()>\n\t\t<Move_Minimap([52, 32])>"}
+{"3": "Actions:\n\tTeam Adept-1 Actions:\n\t\t<Ability_AdeptPhaseShift_Minimap([50, 32])>\n\t\t<Move_Minimap([52, 32])>\n\t\t<Hold_Position()>"}

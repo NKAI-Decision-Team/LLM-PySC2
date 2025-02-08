@@ -1,0 +1,34 @@
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+CombatGroup10;   loop1;   step198;   [   Success  ]  FunctionCall(function=<_Functions.Effect_AdeptPhaseShift_screen: 177>, arguments=[[<Queued.now: 0>], [69, 21]])
+CombatGroup10;   loop1;   step199;   [   Success  ]  FunctionCall(function=<_Functions.Move_minimap: 332>, arguments=[[<Queued.queued: 1>], [52.0, 32.0]])
+CombatGroup10;   loop1;   step200;   [Invalid Args]  Attack_screen ['queued', 'cannot find unit 0x0 on screen'] 
+----------------------------------------------------------------------------------------------------
+CombatGroup10;   loop2;   step298;   [   Success  ]  FunctionCall(function=<_Functions.Move_minimap: 332>, arguments=[[<Queued.now: 0>], [64, 21.0]])
+CombatGroup10;   loop2;   step302;   [   Success  ]  FunctionCall(function=<_Functions.Move_minimap: 332>, arguments=[[<Queued.now: 0>], [45.0, 32.0]])
+CombatGroup10;   loop2;   step303;   [Invalid Args]  Load_screen ['queued', 'cannot find unit 0x100380001 on screen'] 
+CombatGroup10;   loop2;   step303;   [Invalid Args]  Load_screen ['queued', 'cannot find unit 0x100980001 on screen'] 
+----------------------------------------------------------------------------------------------------
+CombatGroup10;   loop3;   step386;   [   Success  ]  FunctionCall(function=<_Functions.Move_minimap: 332>, arguments=[[<Queued.now: 0>], [52.0, 32.0]])
+CombatGroup10;   loop3;   step387;   [   Success  ]  FunctionCall(function=<_Functions.Attack_screen: 12>, arguments=[[<Queued.queued: 1>], [115, 88]])
+CombatGroup10;   loop3;   step391;   [   Success  ]  FunctionCall(function=<_Functions.Move_minimap: 332>, arguments=[[<Queued.now: 0>], [52.0, 32.0]])
+----------------------------------------------------------------------------------------------------
+CombatGroup10;   loop4;   step480;   [   Success  ]  FunctionCall(function=<_Functions.Effect_AdeptPhaseShift_minimap: 547>, arguments=[[<Queued.now: 0>], [64, 21.0]])
+CombatGroup10;   loop4;   step481;   [Invalid Args]  Attack_screen ['queued', 'cannot find unit 0x101840001 on screen'] 
+----------------------------------------------------------------------------------------------------
+CombatGroup10;   loop5;   step577;   [   Success  ]  FunctionCall(function=<_Functions.Attack_screen: 12>, arguments=[[<Queued.now: 0>], [50, 61]])
+CombatGroup10;   loop5;   step578;   [   Success  ]  FunctionCall(function=<_Functions.Move_screen: 331>, arguments=[[<Queued.queued: 1>], [69, 21]])
+CombatGroup10;   loop5;   step579;   [   Success  ]  FunctionCall(function=<_Functions.HoldPosition_quick: 274>, arguments=[[<Queued.queued: 1>]])
+CombatGroup10;   loop5;   step583;   [   Success  ]  FunctionCall(function=<_Functions.Move_minimap: 332>, arguments=[[<Queued.now: 0>], [52.0, 32.0]])
+CombatGroup10;   loop5;   step584;   [   Success  ]  FunctionCall(function=<_Functions.HoldPosition_quick: 274>, arguments=[[<Queued.queued: 1>]])
+CombatGroup10;   loop5;   step588;   [   Success  ]  FunctionCall(function=<_Functions.HoldPosition_quick: 274>, arguments=[[<Queued.now: 0>]])
+----------------------------------------------------------------------------------------------------
+CombatGroup10;   loop6;   step666;   [   Success  ]  FunctionCall(function=<_Functions.HoldPosition_quick: 274>, arguments=[[<Queued.now: 0>]])
+CombatGroup10;   loop6;   step667;   [   Success  ]  FunctionCall(function=<_Functions.Move_minimap: 332>, arguments=[[<Queued.queued: 1>], [10.0, 50.0]])
+CombatGroup10;   loop6;   step668;   [   Success  ]  FunctionCall(function=<_Functions.Attack_screen: 12>, arguments=[[<Queued.queued: 1>], [30, 66]])
+CombatGroup10;   loop6;   step672;   [   Success  ]  FunctionCall(function=<_Functions.Morph_WarpPrismPhasingMode_quick: 329>, arguments=[[<Queued.now: 0>]])
+----------------------------------------------------------------------------------------------------
+CombatGroup10;   loop7;   step760;   [   Success  ]  FunctionCall(function=<_Functions.Effect_AdeptPhaseShift_minimap: 547>, arguments=[[<Queued.now: 0>], [10.0, 50.0]])
+CombatGroup10;   loop7;   step761;   [   Success  ]  FunctionCall(function=<_Functions.Stop_quick: 453>, arguments=[[<Queued.now: 0>]])
+CombatGroup10;   loop7;   step765;   [   Success  ]  FunctionCall(function=<_Functions.Morph_WarpPrismTransportMode_quick: 330>, arguments=[[<Queued.now: 0>]])
+CombatGroup10;   loop7;   step766;   [   Success  ]  FunctionCall(function=<_Functions.Stop_quick: 453>, arguments=[[<Queued.now: 0>]])

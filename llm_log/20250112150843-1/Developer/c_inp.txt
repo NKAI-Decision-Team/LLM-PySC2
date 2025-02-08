@@ -1,0 +1,12 @@
+{"0": ""}
+{"1": "\n\nCommunication information:\n\tFrom CombatGroup1: \n\t\tPossible data duplication detected between Stalker-1 and Stalker-2 unit compositions and locations. Please investigate."}
+{"2": ""}
+{"3": ""}
+{"4": "\n\nCommunication information:\n\tFrom CombatGroup1: \n\t\tRequesting assessment of enemy composition and potential reinforcements.  Current focus is on containing enemy push near [33, 35] and [35, 26] minimap coordinates.\n\tFrom CombatGroup9: \n\t\tWarp Prism units 1 and 2 are ready and awaiting deployment orders.  All units are at 100% health and operational."}
+{"5": "\n\nCommunication information:\n\tFrom CombatGroup0: \n\t\tZealot teams en route to [64,64] minimap per your order. Awaiting further instructions.\n\tFrom CombatGroup1: \n\t\tRequesting Warp Gate construction near [64,64] to facilitate rapid reinforcement and quicker response to enemy movements.\n\tFrom CombatGroup9: \n\t\tWarp Prisms moving to [64,64] as requested. Awaiting reinforcement orders."}
+{"6": ""}
+{"7": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tWarp Prism teams moving to minimap location [64, 64] as requested. ETA approximately 10 seconds."}
+{"8": ""}
+{"9": "\n\nCommunication information:\n\tFrom CombatGroup9: \n\t\tRequest immediate repair of Warp Prisms 0x100bc0001 and 0x100880001.  Both are taking heavy fire."}
+{"10": ""}
+{"11": ""}

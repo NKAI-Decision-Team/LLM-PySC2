@@ -1,0 +1,13 @@
+{"0": ""}
+{"1": ""}
+{"2": ""}
+{"3": ""}
+{"4": ""}
+{"5": ""}
+{"6": ""}
+{"7": ""}
+{"8": ""}
+{"9": ""}
+{"10": ""}
+{"11": "Actions:\n\t\t<Morph_WarpPrismPhasingMode()>\n\t\t<Move_Minimap([35, 50])>\n\t\t<Hold_Position()>"}
+{"12": "Actions:\n\tTeam WarpPrism-1 Actions:\n\t\t<Morph_WarpPrismTransportMode()>\n\t\t<Move_Minimap([35, 50])>\n\t\t<Wait_For_Unit_Warp()>\n\t\t<Hold_Position()>"}

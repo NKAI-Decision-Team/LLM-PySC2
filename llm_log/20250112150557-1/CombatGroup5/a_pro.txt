@@ -1,0 +1,3 @@
+{"0": "Actions:\n\tTeam HighTemplar-1 Actions:\n\t\t<Stop()>\n\t\t<Move_Minimap([32, 32])>\n\t\t<No_Operation()>"}
+{"1": "Actions:\n\t\t<Ability_PsiStorm_Screen([110, 55])>\n\tTeam towards the objective.:\n\tTeam to continue moving and assess the situation after the initial engagement.  Further actions can be taken based on the outcome of the Psionic Storm and the remaining enemy units.:"}
+{"2": "Actions:\n\tTeam HighTemplar-1 Actions:\n\t\t<No_Operation()>\n\t\t<Move_Minimap([32, 32])>\n\t\t<Hold_Position()>\n\t\t<No_Operation()>"}

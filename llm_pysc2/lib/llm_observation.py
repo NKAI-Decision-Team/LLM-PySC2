@@ -92,7 +92,7 @@ def get_img_obs_fea(self, obs):
     # 绘制水平网格线
     for y in y_positions:
         pygame.draw.line(surf.surf, colors.white, (0, y), (img_width, y), 1)
-    # 尝试加载字体
+    # 尝试加载字体ww
     try:
         font = pygame.font.SysFont('arial', 12)
     except IOError:

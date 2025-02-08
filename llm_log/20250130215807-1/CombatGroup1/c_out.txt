@@ -1,0 +1,9 @@
+{"0": "**Communication:**  The communications focus on requesting information and coordinating with the appropriate commanders (Commander for strategic overview, CombatGroup3 for air support coordination, and CombatGroup6 for tactical support).  This ensures efficient use of the available forces and prevents conflicting orders."}
+{"1": "## Communication:\n`<MessageTo(CombatGroup3, '''Stalker-1 engaging Zerg forces near [75, 80]. Requesting air support to eliminate Broodlords and Corruptors.''' )>`\n`<MessageTo(Commander, '''Requesting assessment of overall Zerg position and potential counter-attack strategies.  Stalker-1 requires immediate support.''' )>`"}
+{"2": "**Communication:**\n`<MessageTo(CombatGroup3, '''Stalker squads engaging enemy units near minimap [25, 38] and [18, 30].  Enemy Vipers and Corruptors observed.''' )>`"}
+{"3": "**Communication:**"}
+{"4": "**Communication:**\n1. `<MessageTo(CombatGroup3, '''Acknowledged. Stalkers holding position near Nexus, awaiting your arrival at minimap [25, 38].  Will focus fire on high-priority targets as they appear.''' )>`"}
+{"5": "Communication:\n`<MessageTo(CombatGroup3, '''Stalkers engaging low-health Brood Lords.  Maintaining position to provide cover for Void Rays and Carriers.''' )>`"}
+{"6": "**Communication:**"}
+{"7": "Communication:"}
+{"8": "Communication:"}

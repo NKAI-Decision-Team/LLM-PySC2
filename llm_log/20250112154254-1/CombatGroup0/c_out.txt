@@ -1,0 +1,7 @@
+{"1": "**Communication:**"}
+{"2": "**Communication:**\n`<MessageTo(Commander, '''0:28 - Requesting strategic assessment of enemy position and potential threats near minimap coordinates [18, 28].  Zealot-1 deploying to provide cover and engage in multi-line combat as directed by Developer at 0:20.  Zealot-2 awaiting further orders and Warp Gate deployment support.''' )>` (Informs the Commander of the situation and requests strategic guidance.)"}
+{"3": "**Communication:**\n1. `<MessageTo(CombatGroup9, '''Requesting Warp Prism support at location [118, 87] to reinforce the engagement against enemy Roaches. Maintain Warp Prism Phasing mode for continuous unit warping.''' )>`\n2. `<MessageTo(Commander, '''0:40 - Initiating early-game attack on enemy Roach group near [120, 87]. Requesting mass recall if the enemy responds with overwhelming force.''' )>`"}
+{"4": "**Communication:**\n`<MessageTo(CombatGroup9, '''Request status update on Warp Prism deployment and enemy location. Awaiting your arrival for coordinated attack.''' )>`"}
+{"5": "**Communication:**\n`<MessageTo(Commander, '''Requesting orders.  Team Zealot-1 and Team Zealot-2 are ready for deployment.  Awaiting strategic objectives and deployment location.''' )>`"}
+{"6": "**Communication:**\n`<MessageTo(CombatGroup9, '''Acknowledged. Team Zealot-1 and Team Zealot-2 deploying to [30, 25] to engage enemy Queens.  Awaiting further instructions.''' )>`**Reasoning for Actions and Communication:**"}
+{"7": ""}

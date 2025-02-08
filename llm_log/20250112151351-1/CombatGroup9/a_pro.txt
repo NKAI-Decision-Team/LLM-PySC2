@@ -1,0 +1,8 @@
+{"0": "Actions:\n\tTeam WarpPrism-2 Actions:\n\t\t<Morph_WarpPrismPhasingMode()>\n\t\t<Load_Unit(0x100e00001)>\n\t\t<Load_Unit(0x100ec0001)>"}
+{"1": "Actions:\n\tTeam WarpPrism-2 Actions:\n\t\t<Morph_WarpPrismTransportMode()>\n\t\t<Wait_For_Unit_Warp()>"}
+{"2": "Actions:\n\tTeam WarpPrism-2 Actions:\n\t\t<Wait_For_Unit_Warp()>\n\t\t<Load_Unit(0x100a00001)>\n\t\t<Load_Unit(0x101180001)>"}
+{"3": "Actions:\n\tTeam WarpPrism-2 Actions:\n\t\t<Unload_Screen([66,62])>\n\t\t<Move_Minimap([21, 31])>\n\t\t<Morph_WarpPrismPhasingMode()>"}
+{"4": "Actions:\n\tTeam WarpPrism-2 Actions:\n\t\t<Wait_For_Unit_Warp()>\n\t\t<Morph_WarpPrismTransportMode()>\n\t\t<Wait_For_Unit_Warp()>"}
+{"5": "Actions:\n\tTeam WarpPrism-2 Actions:\n\t\t<Morph_WarpPrismTransportMode()>\n\t\t<Move_Minimap([30, 45])>\n\t\t<Hold_Position()>"}
+{"6": "Actions:\n\tTeam WarpPrism-2 Actions:\n\t\t<Load_Unit(0x100480001)>\n\t\t<Move_Minimap([35, 40])>\n\t\t<No_Operation()>"}
+{"7": ""}

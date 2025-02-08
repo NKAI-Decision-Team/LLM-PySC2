@@ -1,0 +1,31 @@
+----------------------------------------------------------------------------------------------------
+CombatGroup8;   loop0;   step98;   [   Success  ]  FunctionCall(function=<_Functions.HoldPosition_quick: 274>, arguments=[[<Queued.now: 0>]])
+----------------------------------------------------------------------------------------------------
+CombatGroup8;   loop1;   step189;   [   Success  ]  FunctionCall(function=<_Functions.Move_minimap: 332>, arguments=[[<Queued.now: 0>], [52.0, 32.0]])
+----------------------------------------------------------------------------------------------------
+CombatGroup8;   loop2;   step285;   [   Success  ]  FunctionCall(function=<_Functions.Move_minimap: 332>, arguments=[[<Queued.now: 0>], [45.0, 30.0]])
+CombatGroup8;   loop2;   step286;   [   Success  ]  FunctionCall(function=<_Functions.Move_minimap: 332>, arguments=[[<Queued.queued: 1>], [52.0, 32.0]])
+CombatGroup8;   loop2;   step287;   [   Success  ]  FunctionCall(function=<_Functions.HoldPosition_quick: 274>, arguments=[[<Queued.queued: 1>]])
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+CombatGroup8;   loop4;   step471;   [   Success  ]  FunctionCall(function=<_Functions.select_rect: 3>, arguments=[[<SelectAdd.select: 0>], [76, 67], [80, 71]])
+CombatGroup8;   loop4;   step472;   [   Success  ]  FunctionCall(function=<_Functions.Effect_GravitonBeam_screen: 196>, arguments=[[<Queued.now: 0>], [56, 75]])
+CombatGroup8;   loop4;   step476;   [   Success  ]  FunctionCall(function=<_Functions.Effect_GravitonBeam_screen: 196>, arguments=[[<Queued.queued: 1>], [63, 72]])
+CombatGroup8;   loop4;   step477;   [Invalid Args]  Attack_screen ['queued', '(67, 62) is alliance'] 
+----------------------------------------------------------------------------------------------------
+CombatGroup8;   loop5;   step565;   [   Success  ]  FunctionCall(function=<_Functions.Effect_GravitonBeam_screen: 196>, arguments=[[<Queued.now: 0>], [72, 69]])
+CombatGroup8;   loop5;   step566;   [Invalid Args]  Attack_screen ['queued', '(67, 62) is alliance'] 
+CombatGroup8;   loop5;   step566;   [Invalid Args]  Attack_screen ['queued', '(63, 72) is alliance'] 
+----------------------------------------------------------------------------------------------------
+CombatGroup8;   loop6;   step659;   [   Success  ]  FunctionCall(function=<_Functions.Effect_GravitonBeam_screen: 196>, arguments=[[<Queued.now: 0>], [70, 69]])
+CombatGroup8;   loop6;   step660;   [   Success  ]  FunctionCall(function=<_Functions.Effect_GravitonBeam_screen: 196>, arguments=[[<Queued.queued: 1>], [70, 69]])
+CombatGroup8;   loop6;   step661;   [Invalid Args]  Attack_screen ['queued', '(67, 62) is alliance'] 
+CombatGroup8;   loop6;   step661;   [Invalid Args]  Attack_screen ['queued', '(70, 70) is alliance'] 
+----------------------------------------------------------------------------------------------------
+CombatGroup8;   loop7;   step753;   [   Success  ]  FunctionCall(function=<_Functions.Effect_GravitonBeam_screen: 196>, arguments=[[<Queued.now: 0>], [67, 62]])
+CombatGroup8;   loop7;   step754;   [   Success  ]  FunctionCall(function=<_Functions.Effect_GravitonBeam_screen: 196>, arguments=[[<Queued.queued: 1>], [50, 71]])
+CombatGroup8;   loop7;   step755;   [Invalid Args]  Attack_screen ['queued', '(67, 62) is alliance'] 
+----------------------------------------------------------------------------------------------------
+CombatGroup8;   loop8;   step847;   [   Success  ]  FunctionCall(function=<_Functions.Effect_GravitonBeam_screen: 196>, arguments=[[<Queued.now: 0>], [37, 71]])
+CombatGroup8;   loop8;   step848;   [Invalid Args]  Attack_screen ['queued', '(67, 62) is alliance'] 
+CombatGroup8;   loop8;   step848;   [Invalid Args]  Attack_screen ['queued', '(37, 70) is alliance'] 

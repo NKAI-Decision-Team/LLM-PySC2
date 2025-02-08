@@ -1,0 +1,12 @@
+{"0": "**Communication:**\n1. `<MessageTo(CombatGroup9, '''Adept scouting ahead.  Awaiting further instructions.''' )>`: Inform CombatGroup9 of the scouting action. This keeps them aware of the team's actions and allows for coordinated play later."}
+{"1": "**Communication:**\n`<MessageTo(CombatGroup9, '''Adept units moving to position [80, 80]. Awaiting further instructions.''' )>`"}
+{"2": "**Communication:**\n1. `<MessageTo(CombatGroup9, '''Requesting situational awareness.  Report enemy presence and location.''')>` (Gather information about the broader battlefield situation from CombatGroup9.)"}
+{"3": "Communication:\n`<MessageTo(CombatGroup9, '''Scout sent to [20, 30] on minimap.  Awaiting further instructions.''' )>`: Inform CombatGroup9 of the scouting action. This keeps them aware of the team's actions and allows for coordinated play later."}
+{"4": "**Communication:**\n`<MessageTo(CombatGroup9, '''Requesting situational awareness and enemy positions.  Adept units are deploying.''')>` (This informs CombatGroup9 of the Adept units' actions and requests information to better coordinate actions)."}
+{"5": "**Communication:**\n1. `<MessageTo(CombatGroup9, '''Adepts moving to [25,30] on minimap for harassment.  Requesting situational awareness for enemy presence in that area.''' )>`: This informs CombatGroup9 of the Adepts' actions and requests information about potential enemy units."}
+{"6": "**Communication:**\n`<MessageTo(CombatGroup9, '''Adepts teleporting to [20, 30].  Engage any detected enemy units.''' )>`"}
+{"7": ""}
+{"8": ""}
+{"9": "**Communication:**\n`<MessageTo(CombatGroup9, '''Adepts are positioned near the Warp Prism.  Awaiting further instructions.''' )>`"}
+{"10": "**Communication:**\n1. `<MessageTo(CombatGroup9, '''Request Warp Prism support at minimap location [25, 35].  Adept Phase Shift completed.''' )>`: Inform CombatGroup9 of the Adept Phase Shift's completion and request support at the new location."}
+{"11": "**Communication:**\n1. **<MessageTo(CombatGroup9, '''Requesting scouting information near [70,70] on the screen.  Adept units ready to engage if enemy units are spotted.''' )>** This requests information from CombatGroup9 to help determine the best target for the Adept units.  This is crucial before committing to an attack."}

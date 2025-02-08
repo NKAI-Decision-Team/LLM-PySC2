@@ -1,0 +1,10 @@
+{"0": "**Communication:**\n1. `<MessageTo(CombatGroup7, '''Request scouting information.  Focus on enemy base location and composition.  Report back ASAP.''' )>`: This directs the special forces to scout and provide crucial early-game information."}
+{"1": "Communication:\n1. `<MessageTo(Commander, '''Warp Prism WarpPrism-1 moving to minimap location [35, 50] at 0:08. Awaiting further instructions.''' )>`: Inform the Commander of the movement and request further orders.  This provides context for the Commander's macro decisions."}
+{"2": "**Communication:**  The communication actions are integrated into the action plan above.  No further communication is needed at this time given the lack of immediate objectives."}
+{"3": "Communication:"}
+{"4": "Communication:\n1. `<MessageTo(Commander, '''Warp Prism 0x100300001 completing phasing at [45, 55] minimap. Awaiting further instructions.''' )>`: This informs the Commander of the Prism's status and location, requesting further orders.  The Commander can provide context for the move order and subsequent actions."}
+{"5": "**Communication:**"}
+{"6": "Communication:\n`<MessageTo(Commander, '''Time: 0:29. Warp Prism-1 engaging Zerg Hatchery at minimap [42, 53]. Requesting further instructions after repositioning to minimap [45, 55].  Awaiting unit deployment for transport.''' )>`"}
+{"7": "Communication:\n`<MessageTo(Commander, '''Requesting unit transport assignment.  Enemy Cocoon cluster detected at minimap [44, 54].  Awaiting orders.''' )>`"}
+{"8": "Communication:\n`<MessageTo(Commander, '''Time: 0:38. Warp Prism-1 encountered a large cluster of Cocoons near minimap [44, 54].  Requesting further instructions.''' )>`"}
+{"9": "**Communication:**\n1. `<MessageTo(Commander, '''Requesting immediate support at minimap location [45, 55].  Enemy Cocoon cluster detected.  Requesting reinforcements or alternative tactical objectives.''' )>`"}

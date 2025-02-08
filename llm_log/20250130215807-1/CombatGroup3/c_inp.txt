@@ -1,0 +1,9 @@
+{"0": ""}
+{"1": ""}
+{"2": "\n\nCommunication information:\n\tFrom CombatGroup1: \n\t\tStalker-1 engaging Zerg forces near [75, 80]. Requesting air support to eliminate Broodlords and Corruptors."}
+{"3": "\n\nCommunication information:\n\tFrom CombatGroup1: \n\t\tStalker squads engaging enemy units near minimap [25, 38] and [18, 30].  Enemy Vipers and Corruptors observed."}
+{"4": ""}
+{"5": "\n\nCommunication information:\n\tFrom CombatGroup1: \n\t\tAcknowledged. Stalkers holding position near Nexus, awaiting your arrival at minimap [25, 38].  Will focus fire on high-priority targets as they appear."}
+{"6": "\n\nCommunication information:\n\tFrom CombatGroup1: \n\t\tStalkers engaging low-health Brood Lords.  Maintaining position to provide cover for Void Rays and Carriers."}
+{"7": ""}
+{"8": ""}

@@ -1,0 +1,15 @@
+{"0": "Actions:\n\t\t<Ability_AdeptPhaseShift_Minimap([32, 32])>\n\t\t<Hold_Position()>\n\t\t<No_Operation()>"}
+{"1": "Actions:\n\tTeam Adept-1:\n\t\t<No_Operation()>\n\t\t<Hold_Position()>\n\t\t<Move_Minimap([25, 30])>\n\tTeam AdeptPhase-1:\n\t\t<No_Operation()>\n\t\t<Hold_Position()>\n\t\t<Move_Minimap([30, 32])>"}
+{"2": "Actions:\n\tTeam Adept-1:\n\t\t<Hold_Position()>\n\t\t<Move_Minimap([25, 30])>\n\t\t<No_Operation()>"}
+{"3": "Actions:\n\tTeam Adept-1:\n\t\t<Ability_AdeptPhaseShift_Minimap([28, 32])>\n\t\t<Move_Minimap([25, 30])>\n\t\t<Hold_Position()>"}
+{"4": "Actions:\n\tTeam Adept-1:\n\t\t<No_Operation()>\n\t\t<Move_Minimap([28, 32])>\n\t\t<Hold_Position()>\n\tTeam AdeptPhase-1:\n\t\t<No_Operation()>\n\t\t<Move_Minimap([28, 32])>\n\t\t<Hold_Position()>"}
+{"5": "Actions:\n\tTeam Adept-1:\n\t\t<Move_Minimap([28, 32])>\n\t\t<Hold_Position()>\n\t\t<No_Operation()>"}
+{"6": "Actions:\n\tTeam Adept-1:\n\t\t<Hold_Position()>\n\t\t<No_Operation()>\n\t\t<Ability_AdeptPhaseShift_Minimap([28,33])>"}
+{"7": "Actions:\n\tTeam Adept-1:\n\t\t<No_Operation()>\n\t\t<Move_Minimap([28, 33])>\n\t\t<Attack_Unit(0x101b80003)>\n\tTeam AdeptPhase-1:\n\t\t<No_Operation()>\n\t\t<Hold_Position()>\n\t\t<Move_Minimap([28, 33])>"}
+{"8": "Actions:\n\tTeam Adept-1:\n\t\t<Move_Minimap([28, 33])>\n\t\t<Attack_Unit(0x101b80003)>\n\t\t<No_Operation()>"}
+{"9": "Actions:\n\tTeam Adept-1:\n\t\t<Ability_AdeptPhaseShift_Minimap([28, 33])>\n\t\t<Attack_Unit(0x101b80003)>\n\t\t<Hold_Position()>"}
+{"10": "Actions:\n\tTeam Adept-1:\n\t\t<No_Operation()>\n\t\t<Ability_AdeptPhaseShift_Minimap([28, 33])>\n\t\t<Attack_Unit(0x101b80003)>\n\tTeam AdeptPhase-1:\n\t\t<No_Operation()>\n\t\t<Hold_Position()>\n\t\t<No_Operation()>"}
+{"11": "Actions:\n\tTeam Adept-1:\n\t\t<Ability_AdeptPhaseShift_Minimap([28, 33])>\n\t\t<Move_Minimap([30, 35])>\n\t\t<Attack_Unit(0x101b80003)>"}
+{"12": "Actions:\n\tTeam Adept-1:\n\t\t<No_Operation()>\n\t\t<Move_Minimap([30, 35])>"}
+{"13": "Actions:\n\tTeam Adept-1:\n\t\t<Ability_AdeptPhaseShift_Minimap([35, 38])>\n\t\t<Move_Minimap([32, 36])>\n\t\t<Hold_Position()>"}
+{"14": "Actions:\n\tTeam Adept-1:\n\t\t<No_Operation()>\n\t\t<Move_Minimap([32, 36])>\n\t\t<Attack_Unit(0x100380001)>\n\tTeam AdeptPhase-1:\n\t\t<No_Operation()>\n\t\t<Hold_Position()>\n\t\t<Move_Minimap([32, 36])>"}

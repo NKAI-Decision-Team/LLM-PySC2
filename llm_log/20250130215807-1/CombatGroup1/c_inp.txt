@@ -1,0 +1,9 @@
+{"0": ""}
+{"1": "\n\nCommunication information:\n\tFrom CombatGroup3: \n\t\tMaintain defensive formation around the main force.  Focus on providing cover for the Void Rays and Carriers."}
+{"2": "\n\nCommunication information:\n\tFrom CombatGroup3: \n\t\tMaintain defensive perimeter around main force at minimap [23, 34]. Report any enemy sightings immediately."}
+{"3": "\n\nCommunication information:\n\tFrom CombatGroup3: \n\t\tAir support arriving.  Prioritize eliminating Corruptors."}
+{"4": "\n\nCommunication information:\n\tFrom CombatGroup3: \n\t\tVoid Rays and Tempests are moving to support your position at minimap [25, 38]. Focus fire on high-priority targets."}
+{"5": "\n\nCommunication information:\n\tFrom CombatGroup3: \n\t\tProvide cover for VoidRays and Carriers. Focus on enemy Hydralisks harassing our flanks."}
+{"6": "\n\nCommunication information:\n\tFrom CombatGroup3: \n\t\tMaintain position at minimap [25, 38]. Focus fire on remaining BroodLords after the high-priority targets are eliminated."}
+{"7": "\n\nCommunication information:\n\tFrom CombatGroup3: \n\t\tMaintain position and focus fire on any enemy units attempting to flank.  We are engaging the main Hydralisk cluster."}
+{"8": ""}

@@ -1,0 +1,9 @@
+{"0": "Actions:\n\tTeam towards the target minimap location.:\n\t\t<Hold_Position()>\n\t\t<No_Operation()>"}
+{"1": "Actions:\n\tTeam Phoenix-1 Actions:\n\t\t<Move_Minimap([52, 32])>\n\t\t<No_Operation()>\n\t\t<No_Operation()>"}
+{"2": "Actions:\n\tTeam Phoenix-1 Actions:\n\t\t<Move_Minimap([45, 30])>\n\t\t<Move_Minimap([52, 32])>\n\t\t<Hold_Position()>"}
+{"3": ""}
+{"4": "Actions:\n\tTeam Phoenix-1 Actions:\n\t\t<Select_Unit_Ability_GravitonBeam_Unit(0x100400001, 0x101440001)>\n\t\t<Ability_GravitonBeam_Unit(0x100040001, 0x101340001)>\n\t\t<Attack_Unit(0x1005c0001, 0x101380001)>"}
+{"5": "Actions:\n\tTeam Phoenix-1 Actions:\n\t\t<Ability_GravitonBeam_Unit(0x100400001, 0x101340001)>\n\t\t<Attack_Unit(0x1005c0001, 0x101380001)>\n\t\t<Attack_Unit(0x100040001, 0x101340001)>"}
+{"6": "Actions:\n\t\t<Ability_GravitonBeam_Unit(0x100400001, 0x101340001)>\n\t\t<Ability_GravitonBeam_Unit(0x100400001, 0x1012c0001)>\n\t\t<Attack_Unit(0x1005c0001, 0x1012c0001)>\n\t\t<Attack_Unit(0x100400001, 0x1012c0001)>"}
+{"7": "Actions:\n\t\t<Ability_GravitonBeam_Unit(0x1005c0001, 0x101340001)>\n\t\t<Ability_GravitonBeam_Unit(0x100400001, 0x101240001)>\n\t\t<Attack_Unit(0x1005c0001, 0x101340001)>"}
+{"8": "Actions:\n\t\t<Ability_GravitonBeam_Unit(0x100400001, 0x101200001)>\n\t\t<Attack_Unit(0x1005c0001, 0x101340001)>\n\t\t<Attack_Unit(0x100400001, 0x101280001)>"}

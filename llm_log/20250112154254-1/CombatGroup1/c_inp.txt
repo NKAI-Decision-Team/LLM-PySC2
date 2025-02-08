@@ -1,0 +1,4 @@
+{"0": ""}
+{"1": "\n\nCommunication information:\n\tFrom Developer: \n\t\tReinforcements of approximately 33 Zealots warping in near Pylon 0x100000001. Provide cover and hold the line."}
+{"2": ""}
+{"7": "\n\nCommunication information:\n\tFrom Developer: \n\t\tMaintain defensive positions near the main base, providing support to CombatGroup0.\n\tFrom CombatGroup9: \n\t\tWarp Prisms en route to your location.  Unloading near [70,70] screen."}

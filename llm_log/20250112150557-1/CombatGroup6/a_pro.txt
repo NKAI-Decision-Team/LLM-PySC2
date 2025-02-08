@@ -1,0 +1,3 @@
+{"0": "Actions:\n\tTeam Sentry-1 Actions:\n\t\t<Ability_GuardianShield()>\n\t\t<Move_Minimap([32, 32])>\n\t\t<No_Operation()>"}
+{"1": "Actions:\n\tTeam Sentry-1 Actions:\n\t\t<Ability_GuardianShield()>\n\t\t<Move_Minimap([32, 32])>\n\t\t<No_Operation()>"}
+{"2": "Actions:\n\tTeam during the movement to the designated location.:\n\tTeam towards the objective.:\n\tTeam to continue moving and assess the situation once they arrive at the target location.:"}

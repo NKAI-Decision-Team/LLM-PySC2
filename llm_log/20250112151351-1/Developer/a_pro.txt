@@ -1,0 +1,8 @@
+{"0": "Actions:\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>"}
+{"1": ""}
+{"2": "Actions:\n\t\t<Warp_Zealot_Near(0x100000001)>"}
+{"3": "Actions:\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>"}
+{"4": "Actions:\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>"}
+{"5": "Actions:\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>"}
+{"6": "Actions:\n\t\t<Warp_Zealot_Near(0x1004c0001)>"}
+{"7": "Actions:\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>\n\t\t<Warp_Zealot_Near(0x1004c0001)>"}

@@ -1,0 +1,15 @@
+{"0": "Actions:\n\t\t<Morph_WarpPrismPhasingMode()>\n\t\t<Move_Minimap([35, 40])>\n\t\t<No_Operation()>"}
+{"1": "Actions:\n\t\t<Morph_WarpPrismTransportMode()>\n\t\t<Wait_For_Unit_Warp(0x101b80001)>\n\t\t<Move_Minimap([35, 40])>"}
+{"2": "Actions:\n\tTeam WarpPrism-1 Actions:\n\t\t<Load_Unit(0x100380001)>\n\t\t<Load_Unit(0x100980001)>\n\t\t<Move_Minimap([35, 40])>"}
+{"3": "Actions:\n\tTeam WarpPrism-1 Actions:\n\t\t<Hold_Position()>\n\t\t<Move_Minimap([35, 40])>\n\t\t<Morph_WarpPrismPhasingMode()>"}
+{"4": "Actions:\n\tTeam WarpPrism-1 Actions:\n\t\t<Morph_WarpPrismTransportMode()>\n\t\t<Move_Minimap([35, 40])>\n\t\t<Wait_For_Unit_Warp()>"}
+{"5": "Actions:\n\tTeam WarpPrism-1:\n\tTeam WarpPrism-1:\n\tTeam WarpPrism-1:"}
+{"6": "Actions:\n\tTeam WarpPrism-1:\n\tTeam WarpPrism-1:\n\tTeam WarpPrism-1:"}
+{"7": "Actions:\n\tTeam WarpPrism-1:\n\t\t<Move_Minimap([35, 40])>\n\t\t<Morph_WarpPrismPhasingMode()>"}
+{"8": "Actions:\n\tTeam WarpPrism-1:\n\t\t<Wait_For_Unit_Warp()>\n\t\t<Morph_WarpPrismTransportMode()>\n\t\t<Wait_For_Unit_Warp()>"}
+{"9": "Actions:\n\tTeam WarpPrism-1:\n\t\t<Move_Minimap([35, 40])>\n\t\t<Morph_WarpPrismPhasingMode()>\n\t\t<Wait_For_Unit_Warp()>"}
+{"10": "Actions:\n\tTeam WarpPrism-1:\n\t\t<Morph_WarpPrismTransportMode()>\n\t\t<Move_Minimap([35, 40])>\n\t\t<Wait_For_Unit_Warp()>"}
+{"11": "Actions:\n\tTeam WarpPrism-1:\n\t\t<Move_Minimap([35, 40])>\n\t\t<Wait_For_Unit_Warp()>\n\t\t<No_Operation()>"}
+{"12": "Actions:\n\tTeam WarpPrism-1:\n\t\t<Wait_For_Unit_Warp()>\n\t\t<Morph_WarpPrismPhasingMode()>\n\t\t<Move_Minimap([35, 40])>"}
+{"13": "Actions:\n\tTeam WarpPrism-1:\n\t\t<Morph_WarpPrismTransportMode()>\n\t\t<Move_Minimap([35, 40])>\n\t\t<Wait_For_Unit_Warp()>"}
+{"14": "Actions:\n\tTeam WarpPrism-1:\n\t\t<Move_Minimap([35, 40])>\n\t\t<Wait_For_Unit_Warp()>\n\t\t<No_Operation()>"}

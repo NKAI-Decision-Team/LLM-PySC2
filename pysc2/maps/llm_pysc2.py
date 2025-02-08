@@ -23,6 +23,7 @@ llm_pysc2_maps = [
   "pvz_task6_level1",
   "pvz_task7_level1",
   "pvz_task8_level1",
+  "pvz_task9_level1",
 
   "pvz_task1_level2",
   "pvz_task2_level2",

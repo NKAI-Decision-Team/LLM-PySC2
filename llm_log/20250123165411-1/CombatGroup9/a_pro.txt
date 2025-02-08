@@ -1,0 +1,9 @@
+{"0": "Actions:\n\t\t<Morph_WarpPrismPhasingMode()>\n\t\t<Move_Minimap([35, 50])>"}
+{"1": "Actions:\n\t\t<Morph_WarpPrismTransportMode()>\n\t\t<Wait_For_Unit_Warp(0x100300001)>\n\t\t<Move_Minimap([35, 50])>"}
+{"2": "Actions:\n\t\t<Hold_Position()>"}
+{"3": "Actions:\n\t\t<Move_Minimap([45, 55])>"}
+{"4": "Actions:\n\t\t<Morph_WarpPrismPhasingMode()>\n\t\t<Move_Screen([88, 27])>"}
+{"5": "Actions:\n\t\t<Morph_WarpPrismTransportMode()>\n\t\t<Move_Screen([75, 18])>\n\t\t<Wait_For_Unit_Warp()>"}
+{"6": "Actions:\n\t\t<Morph_WarpPrismPhasingMode()>\n\t\t<Load_Unit(0x100a80001)>\n\t\t<Move_Minimap([50, 40])>"}
+{"7": "Actions:\n\t\t<Morph_WarpPrismTransportMode()>\n\t\t<Move_Minimap([50, 40])>\n\t\t<Wait_For_Unit_Warp()>"}
+{"8": "Actions:\n\t\t<Morph_WarpPrismPhasingMode()>\n\t\t<Hold_Position()>"}

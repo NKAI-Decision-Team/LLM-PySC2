@@ -1,0 +1,15 @@
+{"0": ""}
+{"1": ""}
+{"2": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tAdept Phase Shift scouting underway. Targeting minimap coordinates [30, 40].  Awaiting results."}
+{"3": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tConfirm drop-off location [35, 40].  Adepts will regroup there.  Objective: scout and harass enemy base."}
+{"4": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tConfirm drop-off location [35, 40].  Adepts will regroup there.  Objective: scout and harass enemy base."}
+{"5": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tConfirm drop-off location [35, 40].  Adepts will regroup there.  Objective: scout and harass enemy base."}
+{"6": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tConfirm drop-off location [35, 40].  Adepts will regroup there.  Objective: scout and harass enemy base."}
+{"7": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tConfirm drop-off location [35, 40].  Adepts will regroup there.  Objective: scout and harass enemy base."}
+{"8": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tConfirm drop-off location [35, 40].  Adepts will regroup there.  Objective: scout and harass enemy base."}
+{"9": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tConfirm drop-off location [35, 40].  Adepts will regroup there.  Objective: scout and harass enemy base."}
+{"10": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tConfirm drop-off location [35, 40].  Adepts will regroup there.  Objective: scout and harass enemy base."}
+{"11": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tConfirm drop-off location [35, 40].  Adepts will regroup there.  Objective: scout and harass enemy base."}
+{"12": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tConfirm drop-off location [35, 40].  Adepts will regroup there.  Objective: scout and harass enemy base."}
+{"13": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tConfirm drop-off location [35, 40].  Adepts will regroup there.  Objective: scout and harass enemy base."}
+{"14": "\n\nCommunication information:\n\tFrom CombatGroup7: \n\t\tConfirm drop-off location [35, 40].  Adepts will regroup there.  Objective: scout and harass enemy base."}

@@ -1,0 +1,4 @@
+20250120215347
+2025-01-20 21:55:13.865 | ERROR    | llm_pysc2.lib.llm_client:query:180 - [ID 1] CombatGroup7 LLM query runtime error
+2025-01-20 21:55:13.867 | ERROR    | llm_pysc2.lib.llm_client:query:201 - [ID 1] CombatGroup7 Error when calling the OpenAI API: CombatGroup7 LLM query runtime error
+2025-01-20 21:55:37.934 | ERROR    | llm_pysc2.agents.llm_pysc2_agent:get_func_a:379 - [ID 1] Error in CombatGroup7 get_func_a(): invalid literal for int() with base 16: '0xXXXXXXXX'

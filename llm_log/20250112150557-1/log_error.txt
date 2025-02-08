@@ -1,0 +1,3 @@
+20250112150557
+2025-01-12 15:06:50.294 | ERROR    | llm_pysc2.lib.llm_client:query:180 - [ID 1] CombatGroup2 LLM query runtime error
+2025-01-12 15:06:50.294 | ERROR    | llm_pysc2.lib.llm_client:query:201 - [ID 1] CombatGroup2 Error when calling the OpenAI API: CombatGroup2 LLM query runtime error

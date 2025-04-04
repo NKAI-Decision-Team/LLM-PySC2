@@ -29,7 +29,7 @@ class MainAgentLLMPysc2(MainAgent):
     model_name = 'gpt-3.5-turbo'
     api_base = 'https://api.xty.app/v1'
     api_key = ''
-    config.LLM_SIMULATION_TIME = 3
+    config.LLM_SIMULATION_TIME = 2
     config.reset_llm(model_name, api_base, api_key, enable_image_rgb, enable_image_feature)
     super(MainAgentLLMPysc2, self).__init__(config, LLMAgent)
 

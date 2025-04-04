@@ -299,7 +299,7 @@ class LLMAgent:
       logger.error(f"task description is not realised in llm_pysc2.lib.task")
       raise AssertionError("task description is not realised in llm_pysc2.lib.task")
     task_dict = task.FACTORY[obs.observation.map_name](self)  # return dict[team_name]='text_task_description'
-    print(task_dict)
+    logger.debug(f'task_dict={task_dict}')
     logger.success(f"[ID {self.log_id}] LLMAgent {self.name}: LLM Interaction Start")
     self.teams_history[self.main_loop_step] = copy.deepcopy(self.teams)
     text_o = self.get_text_o(obs)
@@ -387,7 +387,7 @@ class LLMAgent:
     # except Exception as e:
     #   logger.error(f"[ID {self.log_id}] Error in {self.name} get_func_a(): {e}")
     new_action_lists, action_list_dict, processed_text_a = self.translator_a.translate(raw_text_a)
-    print(f"\nprocessed_text_a=\n{processed_text_a}")
+    logger.debug(f"\nprocessed_text_a=\n{processed_text_a}")
     self.last_text_a_pro = processed_text_a
 
     if self.name not in self.config.AGENTS_ALWAYS_DISABLE and self.enable:

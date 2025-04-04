@@ -17,7 +17,6 @@ from pysc2.lib import features
 
 from llm_pysc2.lib.utils import *
 from llm_pysc2.lib.knowledge import *
-from llm_pysc2.lib.buffs import BUFF_TO_TARGET_TYPE
 
 from loguru import logger
 import random

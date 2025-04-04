@@ -17,59 +17,74 @@ from llamaapi import LlamaAPI
 from zhipuai import ZhipuAI
 import openai
 
+from llm_pysc2.lib import utils
 from loguru import logger
+from threading import Event
 import threading
 import random
 import time
-# import json
+import json
+import os
 
 
-def gpt_query_runtime(self, ):
+def gpt_query_runtime(self, event):
   llm_response = openai.ChatCompletion.create(
     model=self.model_name,
     messages=self.messages,
     temperature=self.temperature
   )
+  if event.is_set():
+    return
+  # print(llm_response)
   self.query_token_in = llm_response["usage"]["prompt_tokens"]
   self.query_token_out = llm_response["usage"]["completion_tokens"]
   self.llm_response = llm_response["choices"][0]["message"]["content"]
 
-def claude_query_runtime(self, ):
+
+def claude_query_runtime(self, event):
   llm_response = openai.ChatCompletion.create(
     model=self.model_name,
     messages=self.messages,
     temperature=self.temperature
   )
+  if event.is_set():
+    return
   self.query_token_in = llm_response.usage.prompt_tokens
   self.query_token_out = llm_response.usage.completion_tokens
   self.llm_response = llm_response.choices[0].message.content
 
-def llama_query_runtime(self, ):
+def llama_query_runtime(self, event):
   llm_response = self.client.run({
     'model': self.model_name,
     'messages': self.messages,
     'temperature': self.temperature,}
   ).json()
+  if event.is_set():
+    return
   self.query_token_in = llm_response["usage"]["prompt_tokens"] if 'usage' in llm_response.keys() else 0
   self.query_token_out = llm_response["usage"]["completion_tokens"] if 'usage' in llm_response.keys() else 0
   self.llm_response = llm_response['choices'][0]["message"]["content"]
 
-def glm_query_runtime(self, ):
+def glm_query_runtime(self, event):
   llm_response = self.client.chat.completions.create(
     model=self.model_name,  # 填写需要调用的模型名称
     messages=self.messages,
     temperature=self.temperature
   )
+  if event.is_set():
+    return
   self.query_token_in = 0
   self.query_token_out = 0
   self.llm_response = llm_response.choices[0].message.content
 
-def glm4v_query_runtime(self, ):
+def glm4v_query_runtime(self, event):
   llm_response = self.client.chat.completions.create(
     model=self.model_name,  # 填写需要调用的模型名称
     messages=self.messages,
     temperature=self.temperature
   )
+  if event.is_set():
+    return
   self.query_token_in = llm_response.usage.prompt_tokens
   self.query_token_out = llm_response.usage.completion_tokens
   self.llm_response = llm_response.choices[0].message.content
@@ -87,6 +102,19 @@ def glm4v_query_runtime(self, ):
 #   self.query_token_in = llm_response.usage.prompt_tokens
 #   self.query_token_out = llm_response.usage.completion_tokens
 #   self.llm_response = llm_response.choices[0].message.content
+
+def deepseek_query_runtime(self, event):
+  llm_response = openai.ChatCompletion.create(
+    model=self.model_name,
+    messages=self.messages,
+    temperature=self.temperature
+  )
+  if event.is_set():
+    return
+  self.query_token_in = llm_response.usage.prompt_tokens
+  self.query_token_out = llm_response.usage.completion_tokens
+  self.llm_response = llm_response.choices[0].message.content
+
 
 class GptClient:
 
@@ -109,8 +137,7 @@ class GptClient:
     self.messages = []
     self.llm_response = None
     self.query_runtime = gpt_query_runtime
-    if 'gpt' in self.model_name or self.model_name == 'default':
-      logger.info(f"[ID {self.log_id}] {self.agent_name} {self.model_name} GptClient initialized")
+    logger.info(f"[ID {self.log_id}] {self.agent_name} {self.model_name} GptClient initialized")
 
     self.num_query = 0
     self.query_time = 0
@@ -122,6 +149,11 @@ class GptClient:
     self.ave_query_time = 0
     self.ave_query_token_in = 0
     self.ave_query_token_out = 0
+
+  def set_prompt(self, prompt):
+    self.system_prompt = prompt.sp
+    self.example_i_prompt = prompt.eip
+    self.example_o_prompt = prompt.eop
 
   def wrap_message(self, obs_prompt, base64_image):
 
@@ -160,13 +192,16 @@ class GptClient:
 
     # 尝试发送请求并获取回复
     max_retries = self.config.MAX_LLM_QUERY_TIMES
+    events = [Event() for _ in range(max_retries)]
     for retries in range(max_retries):
       try:
         # tracemalloc.start()
+
+        self.llm_response = None
         logger.success(f"[ID {self.log_id}] {self.agent_name} Start calling llm api!")
         logger.debug(f"[ID {self.log_id}] {self.agent_name} input prompt: \n{obs_prompt}")
 
-        self.thread = threading.Thread(target=self.query_runtime, args=(self,))#保留“，”
+        self.thread = threading.Thread(target=self.query_runtime, args=(self, events[retries]))
         self.thread.start()
 
         # 超时错误
@@ -174,6 +209,7 @@ class GptClient:
         while not isinstance(self.llm_response, str):
           time.sleep(0.1)
           if float(time.time()) - query_start_time > self.config.MAX_LLM_RUNTIME_ERROR_TIME:
+            events[retries].is_set()
             logger.error(f"[ID {self.log_id}] {self.agent_name} LLM query runtime error")
             raise RuntimeError(f"{self.agent_name} LLM query runtime error")
 
@@ -253,7 +289,16 @@ class GlmClient(GptClient):
     self.client = ZhipuAI(api_key=self.api_key)
     logger.info(f"[ID {self.log_id}] {self.agent_name} {self.model_name} GlmClient initialized")
 
-# class GeminiClient(GptClient):
+class DeepseekClient(GptClient):
+  def __init__(self, name, log_id, config):
+    super(DeepseekClient, self).__init__(name, log_id, config)
+    self.query_runtime = deepseek_query_runtime
+    self.client = openai
+    self.client.api_base = self.api_base
+    self.client.api_key = self.api_key
+    logger.info(f"[ID {self.log_id}] {self.agent_name} {self.model_name} DeepseekClient initialized")
+
+  # class GeminiClient(GptClient):
 #   def __init__(self, name, log_id, config):
 #     super(GeminiClient).__init__(self, name, log_id, config)
 #     self.query_runtime = gemini_query_runtime
@@ -299,6 +344,7 @@ FACTORY = {
   'llama3.1-405b': LlamaClient,
 
   'glm-4': GlmClient,
+  'glm-4-long': GlmClient,
   'glm-4-plus': GlmClient,
   'glm-4-air': GlmClient,
   'glm-4-airx': GlmClient,
@@ -311,4 +357,21 @@ FACTORY = {
   # 'qwen2.5-7b-instruct': QWen2Client,
   # 'qwen2:72b': QWen2Client,  # debug for LAN LLM
   # 'gemini': GeminiClient,
+  'deepseek-r1-250120': GptClient,
+  'deepseek-v3': GptClient,
+  'deepseek-r1': GptClient,
+  'deepseek-chat': DeepseekClient,
+  'deepseek-ai/DeepSeek-R1': DeepseekClient,  # silicon flow
+  'deepseek-ai/DeepSeek-V3': DeepseekClient,  # silicon flow
 }
+
+if __name__ == "__main__":
+  from llm_pysc2.cfg.config import ProtossAgentConfig
+  config = ProtossAgentConfig()
+  model_name = 'deepseek-ai/DeepSeek-R1'
+  api_base = 'https://api.siliconflow.cn/v1'
+  api_key = ''
+  config.reset_llm(model_name, api_base, api_key)
+  c = DeepseekClient('CombatGroup0', 0, config)
+  response = c.query('hello')
+  print(response)

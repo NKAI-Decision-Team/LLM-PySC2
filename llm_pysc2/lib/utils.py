@@ -15,6 +15,7 @@
 from pysc2.lib import units, upgrades, buffs, actions
 import numpy as np
 import math
+import os
 
 
 # Do not modify this variable
@@ -83,6 +84,20 @@ def get_relevant_team_dist(relevant_team_list, obs, curr_unit):
       else:
         relevant_team_dist.append(get_dist(unit_r, curr_unit))
   return relevant_team_dist
+
+def write_to_file(text, path):
+  if not os.path.exists(path):
+    with open(path, "w") as f:
+      text_ =  text + '\n' if text != '' else text
+      f.write(text)
+  else:
+    with open(path, "a", newline='\n') as f:
+      print(text, file=f)
+
+# TODO: add Buff-state info
+BUFF_TO_TARGET_TYPE = {
+  Buffs.GravitonBeam: 'air'
+}
 
 # TODO: Add Zerg and Terran buildings
 BASE_BUILDING_NAMES = ['Nexus', 'Hatchery', 'Hive', 'Lair', 'CommandCenter', 'OrbitalCommand', 'PlanetaryFortress']

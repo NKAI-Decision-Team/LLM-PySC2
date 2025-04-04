@@ -40,6 +40,9 @@ class BaseEnvWrapper(environment.Base):
   def save_replay(self, *args, **kwargs):
     return self._env.save_replay(*args, **kwargs)
 
+  def send_chat_messages(self, messages):
+    return self._env.send_chat_messages(messages)
+
   @property
   def state(self):
     return self._env.state

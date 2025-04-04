@@ -94,11 +94,6 @@ def write_to_file(text, path):
     with open(path, "a", newline='\n') as f:
       print(text, file=f)
 
-# TODO: add Buff-state info
-BUFF_TO_TARGET_TYPE = {
-  Buffs.GravitonBeam: 'air'
-}
-
 # TODO: Add Zerg and Terran buildings
 BASE_BUILDING_NAMES = ['Nexus', 'Hatchery', 'Hive', 'Lair', 'CommandCenter', 'OrbitalCommand', 'PlanetaryFortress']
 GAS_BUILDING_NAMES = ['Assimilator', 'AssimilatorRich', 'Extractor', 'ExtractorRich', 'Refinery', 'RefineryRich']

@@ -26,7 +26,7 @@ def get_camera_xy(self, raw_x, raw_y):
   return x, y
 
 
-def get_camera_func_smart(self, obs, tag, threshold=0.15, team=None):
+def get_camera_func_smart(self, obs, tag, threshold=0.15, team=None, mode=''):
   unit_r = None
   unit_f = None
   for unit in obs.observation.raw_units:
@@ -37,7 +37,7 @@ def get_camera_func_smart(self, obs, tag, threshold=0.15, team=None):
       unit_f = unit
 
   # 动作时，使用观测时锚定的坐标
-  if team is not None:
+  if team is not None and len(team['pos']) > 0:
     unit_ = None
 
     logger.debug(f"[ID {self.log_id}] get_camera_func_smart(): team['obs'] mode")
@@ -58,37 +58,50 @@ def get_camera_func_smart(self, obs, tag, threshold=0.15, team=None):
             break
         if unit_selected_in_obs:
           x, y = team['pos'][i][0], team['pos'][i][1]
-          if self.last_two_camera_pos[0][0] == self.last_two_camera_pos[1][0] == x and \
-              self.last_two_camera_pos[0][1] == self.last_two_camera_pos[1][1] == y:
-            logger.debug(f"[ID {self.log_id}] {agent_name} {team['name']}: camera in correct position")
-            return (0, actions.FUNCTIONS.no_op())
-          else:
-            unit_type = unit_.unit_type if unit_ is not None else None
-            logger.info(f"[ID {self.log_id}] {agent_name} {team['name']}: use obs position ({x}, {y}) for unit {str(units.get_unit_type(unit_type))} {hex(tag)}")
+          if team is not None and len(team['camera_move']) < 2 and mode == 'a':
+            x, y = team['pos'][i][0], team['pos'][i][1]
+            logger.info(f"[ID {self.log_id}] get_camera_func_smart(): always move camera at action executing stage")
             self.last_two_camera_pos.append([x, y])
-            return (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))
-
+            team['camera_move'].append([x, y])
+            return (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))  # 强制移动相机两次
+          else:
+            return (0, actions.FUNCTIONS.no_op())
+          # if self.last_two_camera_pos[0][0] == self.last_two_camera_pos[1][0] == x and \
+          #     self.last_two_camera_pos[0][1] == self.last_two_camera_pos[1][1] == y:
+          #   logger.debug(f"[ID {self.log_id}] {agent_name} {team['name']}: camera in correct position")
+          #   return (0, actions.FUNCTIONS.no_op())
+          # else:
+          #   unit_type = unit_.unit_type if unit_ is not None else None
+          #   logger.info(f"[ID {self.log_id}] {agent_name} {team['name']}: use obs position ({x}, {y}) for unit {str(units.get_unit_type(unit_type))} {hex(tag)}")
+          #   self.last_two_camera_pos.append([x, y])
+          #   return (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))
       unit_type = unit_.unit_type if unit_ is not None else None
       logger.error(f"[ID {self.log_id}] {agent_name} {team['name']} cannot find unit {str(units.get_unit_type(unit_type))} {hex(tag)}")
 
   logger.debug(f"[ID {self.log_id}] get_camera_func_smart(): standard mode")
-  if (unit_r is not None) and unit_f is None:
+
+  if team is not None and len(team['camera_move']) < 2 and mode == 'o' and unit_r is not None:
     x, y = get_camera_xy(self, unit_r.x, unit_r.y)
-    logger.info(f"[ID {self.log_id}] get_camera_func_smart(): (unit_r is not None) and unit_f is None")
+    logger.info(f"[ID {self.log_id}] get_camera_func_smart(): always move camera at obs collection stage")
     self.last_two_camera_pos.append([x, y])
-    return (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))  # 有这个单位，但是屏幕上没找到
-  elif (unit_r is not None) and (unit_f is not None) and \
-      not (abs(unit_f.x - self.size_screen / 2) < threshold * self.size_screen and
-           abs(unit_f.y - self.size_screen / 2) < threshold * self.size_screen):
-    # not (threshold * self.size_screen < unit_f.x < (1 - threshold) * self.size_screen and
-    #      threshold * self.size_screen < unit_f.y < (1 - threshold) * self.size_screen):
-    x, y = get_camera_xy(self, unit_r.x, unit_r.y)
-    logger.info(f"[ID {self.log_id}] get_camera_func_smart(): unit_f {str(units.get_unit_type(unit_f.unit_type))} "
-                f"{hex(unit_f.tag)} not near screen center, {unit_f.x} {unit_f.y}")
-    self.last_two_camera_pos.append([x, y])
-    return (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))  # 有这个单位，屏幕上找到了，但太偏了
+    team['camera_move'].append([x, y])
+    return (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))  # 强制移动相机两次
   else:
-    return (0, actions.FUNCTIONS.no_op())  # 不动相机
+    if (unit_r is not None) and unit_f is None:
+      x, y = get_camera_xy(self, unit_r.x, unit_r.y)
+      logger.info(f"[ID {self.log_id}] get_camera_func_smart(): (unit_r is not None) and unit_f is None")
+      self.last_two_camera_pos.append([x, y])
+      return (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))  # 有这个单位，但是屏幕上没找到
+    if (unit_r is not None) and (unit_f is not None) and \
+        not (abs(unit_f.x - self.size_screen / 2) < threshold * self.size_screen and
+             abs(unit_f.y - self.size_screen / 2) < threshold * self.size_screen):
+      x, y = get_camera_xy(self, unit_r.x, unit_r.y)
+      logger.info(f"[ID {self.log_id}] get_camera_func_smart(): unit_f {str(units.get_unit_type(unit_f.unit_type))} "
+                  f"{hex(unit_f.tag)} not near screen center, {unit_f.x} {unit_f.y}")
+      self.last_two_camera_pos.append([x, y])
+      return (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))  # 有这个单位，屏幕上找到了，但太偏了
+    # pass
+  return (0, actions.FUNCTIONS.no_op())  # 不动相机
 
 
 def get_new_unit_agent(self, obs, unit) -> str:  # 编队逻辑函数

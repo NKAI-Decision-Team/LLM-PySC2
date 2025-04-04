@@ -37,11 +37,15 @@ def run_loop(agents, env, max_frames=0, max_episodes=0):
         total_frames += 1
         actions = [agent.step(timestep)
                    for agent, timestep in zip(agents, timesteps)]
+        messages = [agent.send_chat_message()
+                    for agent, timestep in zip(agents, timesteps)]
         if max_frames and total_frames >= max_frames:
           return
         if timesteps[0].last():
           break
         timesteps = env.step(actions)
+        if len(timesteps) > 0 and timesteps[0].step_type != 2:  # environment.StepType.LAST==2
+          env.send_chat_messages(messages)
   except KeyboardInterrupt:
     pass
   finally:

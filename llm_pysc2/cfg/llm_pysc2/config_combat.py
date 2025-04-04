@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from llm_pysc2.agents.configs.config import ProtossAgentConfig
+from llm_pysc2.cfg.config import ProtossAgentConfig
 
 
-class ConfigPysc2_Harass(ProtossAgentConfig):
+class ConfigPysc2_Combat(ProtossAgentConfig):
 
   def __init__(self):
-    super(ConfigPysc2_Harass, self).__init__()
+    super(ConfigPysc2_Combat, self).__init__()
     self.AGENTS_ALWAYS_DISABLE = [
       'Airborne', 'Builder', 'Commander', 'Developer', 'Defender', 'CombatGroup4',
     ]
@@ -30,5 +30,5 @@ class ConfigPysc2_Harass(ProtossAgentConfig):
     # self.MAX_LLM_QUERY_TIMES = 5
     # self.MAX_LLM_WAITING_TIME = 10
     # self.MAX_LLM_RUNTIME_ERROR_TIME = 30
-    # self.MAX_LLM_DECISION_FREQUENCY = 1
+    self.MAX_LLM_DECISION_FREQUENCY = 2
     # self.MAX_NUM_ACTIONS = 3

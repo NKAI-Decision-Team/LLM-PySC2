@@ -16,6 +16,8 @@ from pysc2.lib.actions import FUNCTIONS as F
 from pysc2.lib import features
 
 from llm_pysc2.lib.utils import *
+from llm_pysc2.lib.knowledge import *
+from llm_pysc2.lib.buffs import BUFF_TO_TARGET_TYPE
 
 from loguru import logger
 import random
@@ -24,32 +26,57 @@ import re
 # standard action object
 AN_ACTION = {'name': '', 'arg': [], 'func': []}
 
+HOLD_POSITION = {
+  'name': 'Hold_Position',   'arg': [],  'func': [(274, F.HoldPosition_quick, ('queued'))]}
+HOLD_POSITION_NO_OP = {
+  'name': 'No_Operation', 'arg': [], 'func': [(0, F.no_op, ())]}
+
+MOVE_SCREEN = {
+  'name': 'Move_Screen', 'arg': ['screen'],
+  'func': [(331, F.Move_screen, ('queued', 'screen')), (331, F.Move_screen, ('now', 'screen'))]}
+MOVE_MINIMAP = {
+  'name': 'Move_Minimap', 'arg': ['minimap'],
+  'func': [(332, F.Move_minimap, ('queued', 'minimap')), (332, F.Move_minimap, ('now', 'minimap'))]}
+SU_MOVE_SCREEN = {
+  'name': 'Select_Unit_Move_Screen', 'arg': ['tag', 'screen'],
+  'func': [(3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
+           (331, F.Move_screen, ('now', 'screen')),
+           (331, F.Move_screen, ('queued', 'screen'))]}
+SU_MOVE_MINIMAP = {
+  'name': 'Select_Unit_Move_Minimap', 'arg': ['tag', 'minimap'],
+  'func': [(3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
+           (332, F.Move_minimap, ('now', 'minimap')),
+           (332, F.Move_minimap, ('queued', 'minimap'))]}
+
+ATTACK_00S = {
+  'name': 'Attack_Unit', 'arg': ['tag'],
+  'func': [(12, F.Attack_screen, ('queued', 'screen_tag'))]}
+ATTACK_02S = {
+  'name': 'Attack_Unit', 'arg': ['tag'],
+  'func': [(12, F.Attack_screen, ('queued', 'screen_tag')),
+           (0, F.no_op, ()), (0, F.no_op, ()), (0, F.no_op, ()),
+           (0, F.no_op, ()), (0, F.no_op, ())]}
+SU_ATTACK_00S = {
+  'name': 'Select_Unit_Attack_Unit', 'arg': ['tag', 'tag'],
+  'func': [(3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
+           (12, F.Attack_screen, ('queued', 'screen_tag2'))]}
+SU_ATTACK_02S = {
+  'name': 'Select_Unit_Attack_Unit', 'arg': ['tag', 'tag'],
+  'func': [(3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
+           (12, F.Attack_screen, ('queued', 'screen_tag2')),
+           (0, F.no_op, ()), (0, F.no_op, ()), (0, F.no_op, ()),
+           (0, F.no_op, ()), (0, F.no_op, ())]}
+
 # actions for smac tasks, ACTION_SMAC for tasks that attack is enough
-PROTOSS_BASIC_ACTION_SMAC = [
-  {'name': 'Attack_Unit', 'arg': ['tag'],
-   'func': [(12, F.Attack_screen, ('queued', 'screen_tag'))]},
-  # {'name': 'Select_Unit_Attack_Unit', 'arg': ['tag', 'tag'],  # single unit control
-  #  'func': [(3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
-  #           (12, F.Attack_screen, ('queued', 'screen_tag2'))]},
-]
-# actions for smac tasks, ACTION_SMAC2 for those moving is indispensable
-PROTOSS_BASIC_ACTION_SMAC2 = [
-  {'name': 'Attack_Unit', 'arg': ['tag'],
-   'func': [(12, F.Attack_screen, ('queued', 'screen_tag'))]},
-  {'name': 'Move_Screen', 'arg': ['screen'],
-   'func': [(331, F.Move_screen, ('queued', 'screen'))]},
-  # {'name': 'Select_Unit_Attack_Unit', 'arg': ['tag', 'tag'],  # single unit control
-  #  'func': [(3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
-  #           (12, F.Attack_screen, ('queued', 'screen_tag2'))]},
-  # {'name': 'Select_Unit_Move_Screen', 'arg': ['tag', 'screen'],  # single unit control
-  #  'func': [(3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
-  #           (331, F.Move_screen, ('queued', 'screen'))]},
-]
+SMAC_ACTION_ZEALOT = [ATTACK_00S]
+SMAC_ACTION_STALKER = [ATTACK_02S, MOVE_SCREEN]  #  ,SU_MOVE_SCREEN
+SMAC_ACTION_COLOSSUS = [ATTACK_00S, MOVE_SCREEN, SU_MOVE_SCREEN]
+
 # actions for sc2 unit, 1 for buildings
 PROTOSS_BASIC_ACTION_1 = [
-  {'name': 'Stop', 'arg': [], 'func': [(453, F.Stop_quick, ('now'))]},
-  {'name': 'No_Operation', 'arg': [], 'func': [(0, F.no_op, ())]},
-  {'name': 'Stop_Building', 'arg': [], 'func': [(454, F.Stop_Building_quick, ('queued'))]},
+  # {'name': 'Stop', 'arg': [], 'func': [(453, F.Stop_quick, ('now'))]},
+  # {'name': 'No_Operation', 'arg': [], 'func': [(0, F.no_op, ())]},
+  # {'name': 'Stop_Building', 'arg': [], 'func': [(454, F.Stop_Building_quick, ('queued'))]},
   # {'name': 'Stop_Building_Unit',  'arg': ['tag'],
   #  'func': [(573, F.llm_pysc2_move_camera, ('world_tag')),
   #           (3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
@@ -57,20 +84,29 @@ PROTOSS_BASIC_ACTION_1 = [
 ]
 # actions for sc2 unit, 2 for units capable of launching attacks
 PROTOSS_BASIC_ACTION_2 = [
-  {'name': 'Stop', 'arg': [], 'func': [(453, F.Stop_quick, ('now'))]},
-  {'name': 'No_Operation', 'arg': [], 'func': [(0, F.no_op, ())]},
-  {'name': 'Hold_Position',   'arg': [],  'func': [(274, F.HoldPosition_quick, ('queued'))]},
+  # {'name': 'Stop', 'arg': [], 'func': [(453, F.Stop_quick, ('now'))]},
+  # {'name': 'No_Operation', 'arg': [], 'func': [(0, F.no_op, ())]},
+  # {'name': 'Hold_Position',   'arg': [],  'func': [(274, F.HoldPosition_quick, ('queued'))]},
   {'name': 'Move_Minimap', 'arg': ['minimap'], 'func': [(332, F.Move_minimap, ('queued', 'minimap'))]},
   {'name': 'Move_Screen', 'arg': ['screen'], 'func': [(331, F.Move_screen, ('queued', 'screen'))]},
   {'name': 'Attack_Unit', 'arg': ['tag'], 'func': [(12, F.Attack_screen, ('queued', 'screen_tag'))]},
+  {'name': 'Select_Unit_Attack_Unit', 'arg': ['tag', 'tag'],  # single unit control
+   'func': [(3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
+            (12, F.Attack_screen, ('queued', 'screen_tag2'))]},
+  {'name': 'Select_Unit_Move_Screen', 'arg': ['tag', 'screen'],  # single unit control
+   'func': [(3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
+            (331, F.Move_screen, ('queued', 'screen'))]},
+  # {'name': 'Select_Unit_Move_Minimap', 'arg': ['tag', 'minimap'],  # single unit control
+  #  'func': [(3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
+  #           (332, F.Move_minimap, ('queued', 'minimap'))]},
   # {'name': 'Attack_Screen',   'arg': ['screen'],  'func': [(12, F.Attack_screen, ('queued', 'screen'))]},
   # {'name': 'Board_WarpPrism', 'arg': ['screen'],  'func': [(331, F.Move_screen, ('queued', 'screen_tag'))]},
 ]
 # actions for sc2 unit, 3 for those unable to attack
 PROTOSS_BASIC_ACTION_3 = [
-  {'name': 'Stop', 'arg': [], 'func': [(453, F.Stop_quick, ('now'))]},
-  {'name': 'No_Operation', 'arg': [], 'func': [(0, F.no_op, ())]},
-  {'name': 'Hold_Position',   'arg': [],  'func': [(274, F.HoldPosition_quick, ('queued'))]},
+  # {'name': 'Stop', 'arg': [], 'func': [(453, F.Stop_quick, ('now'))]},
+  # {'name': 'No_Operation', 'arg': [], 'func': [(0, F.no_op, ())]},
+  # {'name': 'Hold_Position',   'arg': [],  'func': [(274, F.HoldPosition_quick, ('queued'))]},
   {'name': 'Move_Minimap', 'arg': ['minimap'], 'func': [(332, F.Move_minimap, ('queued', 'minimap'))]},
   {'name': 'Move_Screen', 'arg': ['screen'], 'func': [(331, F.Move_screen, ('queued', 'screen'))]},
   # {'name': 'Board_WarpPrism', 'arg': ['screen'],  'func': [(331, F.Move_screen, ('queued', 'screen_tag'))]},
@@ -309,6 +345,144 @@ PROTOSS_ACTION_ABILITY = [
             (180, F.Effect_Blink_screen, ('queued', 'screen'))]},
 ]
 
+STANDARD_ACTION_STALKER = PROTOSS_BASIC_ACTION_2 + [
+  {'name': 'Ability_Blink_Screen', 'arg': ['screen'],
+   'func': [(180, F.Effect_Blink_screen, ('now', 'screen'))]},
+  {'name': 'Select_Unit_Blink_Screen', 'arg': ['tag', 'screen'],
+   'func': [(3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
+            (180, F.Effect_Blink_screen, ('now', 'screen'))]},
+]
+SCANNING_ACTION_PROBE = PROTOSS_BASIC_ACTION_2 + [
+  {'name': 'Lock_Nexus_Near', 'arg': ['tag'],
+   'func': [(70, F.Build_Pylon_screen, ('queued', 'screen_tag'))]},
+  {'name': 'Lock_Assimilator_Near', 'arg': ['tag'],
+   'func': [(40, F.Build_Assimilator_screen, ('queued', 'screen_tag'))]},
+]
+STANDARD_ACTION_OBSERVER1 = [
+  {'name': 'Move_Minimap', 'arg': ['minimap'], 'func': [(332, F.Move_minimap, ('queued', 'minimap'))]},
+  {'name': 'Move_Screen', 'arg': ['screen'], 'func': [(331, F.Move_screen, ('queued', 'screen'))]},
+  {'name': 'Morph_SurveillanceMode', 'arg': [], 'func': [(538, F.Morph_SurveillanceMode_quick, ('queued'))]},
+]
+STANDARD_ACTION_OBSERVER2 = [
+  {'name': 'Continuously_Monitor_Here', 'arg': [], 'func': [(0, F.no_op, ())]},
+  {'name': 'Morph_ObserverMode', 'arg': [], 'func': [(535, F.Morph_ObserverMode_quick, ('queued'))]},
+]
+STANDARD_ACTION_HIGHTEMPLAR = PROTOSS_BASIC_ACTION_2 + [
+  {'name': 'Ability_PsiStorm_Screen', 'arg': ['screen'],
+   'func': [(218, F.Effect_PsiStorm_screen, ('queued', 'screen'))]},
+  {'name': 'Ability_PsiStorm_Attack_Unit', 'arg': ['tag'],
+   'func': [(218, F.Effect_PsiStorm_screen, ('queued', 'screen_tag'))]},
+  {'name': 'Morph_Archon', 'arg': [],
+   'func': [(296, F.Morph_Archon_quick, ('queued'))]},
+  {'name': 'Select_Two_Unit_Morph_Archon', 'arg': ['tag', 'tag'],
+   'func': [(3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
+            (3, F.select_rect, ('add', 'screen1_tag2', 'screen2_tag2')),
+            (296, F.Morph_Archon_quick, ('queued'))]},
+]
+STANDARD_ACTION_DISRUPTOR = PROTOSS_BASIC_ACTION_3 + [
+  {'name': 'Ability_PurificationNova_Attack_Unit', 'arg': ['tag'],
+   'func': [(219, F.Effect_PurificationNova_screen, ('queued', 'screen_tag'))]},
+]
+STANDARD_ACTION_SENTRY = PROTOSS_BASIC_ACTION_2 + [
+  {'name': 'Ability_ForceField_Screen', 'arg': ['screen'],
+   'func': [(193, F.Effect_ForceField_screen, ('queued', 'screen'))]},
+  {'name': 'Ability_GuardianShield', 'arg': [],
+   'func': [(197, F.Effect_GuardianShield_quick, ('queued'))]},
+  # # Hallucination not supported in pysc2
+  # {'name': 'Hallucination_Adept',             'arg': [],
+  #  'func': [(248, F.Hallucination_Adept_quick, ('queued'))]},
+  # {'name': 'Hallucination_Archon',            'arg': [],
+  #  'func': [(249, F.Hallucination_Archon_quick, ('queued'))]},
+  # {'name': 'Hallucination_Colossus',          'arg': [],
+  #  'func': [(250, F.Hallucination_Colossus_quick, ('queued'))]},
+  # {'name': 'Hallucination_Disruptor',         'arg': [],
+  #  'func': [(251, F.Hallucination_Disruptor_quick, ('queued'))]},
+  # {'name': 'Hallucination_HighTemplar',       'arg': [],
+  #  'func': [(252, F.Hallucination_HighTemplar_quick, ('queued'))]},
+  # {'name': 'Hallucination_Immortal',          'arg': [],
+  #  'func': [(253, F.Hallucination_Immortal_quick, ('queued'))]},
+  # {'name': 'Hallucination_Oracle',            'arg': [],
+  #  'func': [(254, F.Hallucination_Oracle_quick, ('queued'))]},
+  # {'name': 'Hallucination_Phoenix',           'arg': [],
+  #  'func': [(255, F.Hallucination_Phoenix_quick, ('queued'))]},
+  # {'name': 'Hallucination_Probe',             'arg': [],
+  #  'func': [(256, F.Hallucination_Probe_quick, ('queued'))]},
+  # {'name': 'Hallucination_Stalker',           'arg': [],
+  #  'func': [(257, F.Hallucination_Stalker_quick, ('queued'))]},
+  # {'name': 'Hallucination_VoidRay',           'arg': [],
+  #  'func': [(258, F.Hallucination_VoidRay_quick, ('queued'))]},
+  # {'name': 'Hallucination_WarpPrism',         'arg': [],
+  #  'func': [(259, F.Hallucination_WarpPrism_quick, ('queued'))]},
+  # {'name': 'Hallucination_Zealot',            'arg': [],
+  #  'func': [(260, F.Hallucination_Zealot_quick, ('queued'))]},
+]
+STANDARD_ACTION_MOTHERSHIP = PROTOSS_BASIC_ACTION_3 + [
+  # Ability_CloakingField not supported in pysc2
+  # Ability_MothershipMassRecall not neccessary in simple combat tasks
+  # {'name': 'Ability_MothershipMassRecall_Near', 'arg': ['tag'],
+  #  'func': [(573, F.llm_pysc2_move_camera, ('world_tag')), (208, F.Effect_MassRecall_screen, ('queued', 'screen_tag'))]},
+  {'name': 'Ability_TimeWarp_Attack', 'arg': ['tag'],
+   'func': [(241, F.Effect_TimeWarp_screen, ('queued', 'screen_tag'))]},
+  {'name': 'Ability_TimeWarp_Screen', 'arg': ['screen'],
+   'func': [(241, F.Effect_TimeWarp_screen, ('queued', 'screen'))]},
+]
+STANDARD_ACTION_DARKTEMPLAR = PROTOSS_BASIC_ACTION_2 + [
+  {'name': 'Ability_ShadowStride_Unit', 'arg': ['tag'],
+   'func': [(182, F.Effect_ShadowStride_screen, ('queued', 'screen_tag'))]},
+  {'name': 'Morph_Archon', 'arg': [],
+   'func': [(296, F.Morph_Archon_quick, ('queued'))]},
+  {'name': 'Select_Two_Unit_Morph_Archon', 'arg': ['tag', 'tag'],
+   'func': [(3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
+            (3, F.select_rect, ('add', 'screen1_tag2', 'screen2_tag2')),  # screen1/2_tag2 not realized yet
+            (296, F.Morph_Archon_quick, ('queued'))]},
+]
+STANDARD_ACTION_ADEPT = PROTOSS_BASIC_ACTION_2 + [
+  # {'name': 'Ability_AdeptPhaseShift_Screen', 'arg': ['screen'],
+  #  'func': [(177, F.Effect_AdeptPhaseShift_screen, ('now', 'screen'))]},
+  {'name': 'Ability_AdeptPhaseShift_Minimap', 'arg': ['minimap'],
+   'func': [(547, F.Effect_AdeptPhaseShift_minimap, ('now', 'minimap'))]},
+  {'name': 'Ability_CancelPhaseShift', 'arg': [], 'func': [(141, F.Cancel_AdeptPhaseShift_quick, ('now'))]},
+]
+STANDARD_ACTION_ORACLE = PROTOSS_BASIC_ACTION_2 + [
+  {'name': 'Ability_PulsarBeamOn', 'arg': [],
+   'func': [(38, F.Behavior_PulsarBeamOn_quick, ('queued'))]},
+  {'name': 'Ability_OracleRevelation_Screen', 'arg': ['screen'],
+   'func': [(214, F.Effect_OracleRevelation_screen, ('queued', 'screen'))]},
+  {'name': 'Build_StasisTrap_Screen', 'arg': ['screen'],
+   'func': [(90, F.Build_StasisTrap_screen, ('queued', 'screen'))]},
+  {'name': 'Select_Unit_Ability_PulsarBeamOn', 'arg': ['tag'],
+   'func': [(3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
+            (38, F.Behavior_PulsarBeamOn_quick, ('queued'))]},
+  {'name': 'Select_Unit_OracleRevelation_Screen', 'arg': ['tag', 'screen'],
+   'func': [(3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
+            (214, F.Effect_OracleRevelation_screen, ('queued', 'screen'))]},
+  {'name': 'Select_Unit_Build_StasisTrap_Screen', 'arg': ['tag', 'screen'],
+   'func': [(3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
+            (90, F.Build_StasisTrap_screen, ('queued', 'screen'))]},
+]
+STANDARD_ACTION_PHOENIX = PROTOSS_BASIC_ACTION_2 + [
+  # {'name': 'Ability_GravitonBeam_Unit', 'arg': ['tag'],
+  #  'func': [(196, F.Effect_GravitonBeam_screen, ('queued', 'screen_tag'))]},
+  {'name': 'Select_Phoenix_Ability_GravitonBeam_Unit', 'arg': ['tag', 'tag'],
+   'func': [(3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
+            (196, F.Effect_GravitonBeam_screen, ('queued', 'screen_tag2'))]},
+  {'name': 'Cancel_GravitonBeam_For_Phoenix', 'arg': ['tag'],
+   'func': [(3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
+            (140, F.Cancel_quick, ('now'))]},
+]
+STANDARD_ACTION_WARPPRISM = PROTOSS_BASIC_ACTION_3 + [
+  {'name': 'Morph_WarpPrismPhasingMode', 'arg': [],
+   'func': [(329, F.Morph_WarpPrismPhasingMode_quick, ('queued'))]},
+  {'name': 'Load_Unit', 'arg': ['tag'], 'func': [(287, F.Load_screen, ('queued', 'screen_tag'))]},
+  {'name': 'Unload_Screen', 'arg': ['screen'],
+   'func': [(516, F.UnloadAllAt_screen, ('queued', 'screen'))]},
+]
+STANDARD_ACTION_WARPPRISMPHASING = [
+  {'name': 'Wait_For_Unit_Warp', 'arg': [], 'func': [(0, F.no_op, ())]},
+  {'name': 'Morph_WarpPrismTransportMode', 'arg': [],
+   'func': [(330, F.Morph_WarpPrismTransportMode_quick, ('queued'))]},
+]
+
 
 # 目标类型查询函数，获取Research和Train所需的源单位类型
 def find_unit_type_the_func_belongs_to(func_id, race):
@@ -364,19 +538,57 @@ def find_idle_unit_tag(obs, unit_type, queued_source_unit_tag_list):
   return None
 
 
+def check_weapon_state(obs, queued, source_unit_tag, strict=False):
+  weapon_ready_unit_tags = []
+  cooldown_time_limit = 0 if strict else 0.5
+  if queued == 'queued':
+    return True
+  else:
+    for unit in obs.observation.feature_units:
+      if unit.is_selected and unit.weapon_cooldown <= cooldown_time_limit:
+        weapon_ready_unit_tags.append(unit.tag)
+    if (source_unit_tag is not None and source_unit_tag in weapon_ready_unit_tags) or \
+        (source_unit_tag is None and len(weapon_ready_unit_tags) > 0):
+      return True
+    return False
+
+
+def is_valid_screen_range(obs, screen, size_screen) -> (int, int, int, int):
+  arr = obs.observation.feature_screen.buildable
+  arr_t = arr.T
+  edge_l, edge_r = 0, size_screen - 1
+  edge_b, edge_u = size_screen - 1, 0  # y++ from up to down
+  for i in range(size_screen):
+    x1, y1 = i, i
+    x2, y2 = size_screen - 1 - i, size_screen - 1 - i
+    if x1 >= x2:
+      break
+    edge_u = y1 if (edge_u == y1 - 1 and sum(arr[y1][:]) == 0) else edge_u
+    edge_b = y2 if (edge_b == y2 + 1 and sum(arr[y2][:]) == 0) else edge_b
+    edge_l = x1 if (edge_l == x1 - 1 and sum(arr_t[x1][:]) == 0) else edge_l
+    edge_r = x2 if (edge_r == x2 + 1 and sum(arr_t[x2][:]) == 0) else edge_r
+  edge_b = edge_b if edge_b == size_screen - 1 else edge_b - int(size_screen / 8)  # /8 3s_vs_3z
+  edge_u = edge_u if edge_u == 0 else edge_u + int(size_screen / 8)
+  edge_l = edge_l if edge_l == 0 else edge_l + int(size_screen / 8)
+  edge_r = edge_r if edge_r == size_screen - 1 else edge_r - int(size_screen / 8)
+  return edge_l, edge_r, edge_u, edge_b
+
+
+
 # Parameter verification
 def get_arg_minimap(obs, minimap: list, size_minimap, action_name) -> (tuple, bool):  # 小地图坐标，校验范围
   if isinstance(minimap, list) and len(minimap) == 2 and isinstance(minimap[0], (int, float)) and isinstance(minimap[1], (int, float)):
-    x = min(max(0, minimap[0]), size_minimap)
-    y = min(max(0, minimap[1]), size_minimap)
+    x = int(min(max(0, minimap[0]), size_minimap))
+    y = int(min(max(0, minimap[1]), size_minimap))
     if 'Attack' in action_name and obs.observation.feature_minimap.player_relative[x][y] in [1, 2]:
-      return f'({x}, {y}) is alliance', False
+      return f'minimap ({x}, {y}) is alliance, can not attack alliance', False
     if 'Load' in action_name and obs.observation.feature_minimap.player_relative[x][y] not in [1, 2]:
-      return f'({x}, {y}) is not alliance', False
+      return f'minimap ({x}, {y}) is not alliance, can not load the target', False
     if 'Follow' in action_name and obs.observation.feature_minimap.player_relative[x][y] not in [1, 2]:
-      return f'({x}, {y}) is not alliance', False
+      return f'minimap ({x}, {y}) is not alliance, can not follow the target', False
+    # there is no need for Move_Minimap action due to pretreatment
     return (x, y), True
-  return f'minimap={minimap}, unknown error', False
+  return f'input arg error: minimap={minimap}', False
 
 
 # Parameter verification
@@ -384,14 +596,23 @@ def get_arg_screen(obs, screen: list, size_screen, action_name) -> (tuple, bool)
   if isinstance(screen, list) and len(screen) == 2 and isinstance(screen[0], (int, float)) and isinstance(screen[1], (int, float)):
     x = int(min(max(0, screen[0]), size_screen))
     y = int(min(max(0, screen[1]), size_screen))
+    ratio = size_screen / SCREEN_WORLD_GRID
     if 'Attack' in action_name and obs.observation.feature_screen.player_relative[x][y] in [1, 2]:
-      return f'({x}, {y}) is alliance', False
+      return f'screen ({x}, {y}) is alliance, can not attack alliance', False
     if 'Load' in action_name and obs.observation.feature_screen.player_relative[x][y] not in [1, 2]:
-      return f'({x}, {y}) is not alliance', False
+      return f'screen ({x}, {y}) is not alliance, can not load the target', False
     if 'Follow' in action_name and obs.observation.feature_screen.player_relative[x][y] not in [1, 2]:
-      return f'({x}, {y}) is not alliance', False
+      return f'screen ({x}, {y}) is not alliance, can not follow the target', False
+    if 'Move' in action_name:
+      x1, x2, y1, y2 = is_valid_screen_range(obs, [x, y], size_screen)
+      if not ((x1 <= x <= x2) or (y1 <= y <= y2)):
+        return f'Move failed! x({int(x/ratio)}) and y({int(y/ratio)}) coordinate exceeds the boundary, valid ranges are **{int(x1/ratio)}<x<{int(x2/ratio)}**, **{int(y1/ratio)}<y<{int(y2/ratio)}**', False
+      if not (x1 <= x <= x2):
+        return f"Move failed! x({int(x/ratio)}) exceeds the boundary, valid range is **{int(x1/ratio)}<x<{int(x2/ratio)}**", False
+      if not (y1 <= y <= y2):
+        return f"Move failed! y({int(y/ratio)}) exceeds the boundary, valid range is **{int(y1/ratio)}<y<{int(y2/ratio)}**", False
     return (x, y), True
-  return f'input arg {screen} error', False
+  return f'input arg error: screen={screen}', False
 
 
 # Parameter verification, for build
@@ -400,7 +621,7 @@ def get_arg_screen_build(obs, screen: list, size_screen, action_name) -> (tuple,
   building_size = find_building_size(building_name)
   if isinstance(screen, list) and len(screen) == 2 and isinstance(screen[0], (int, float)) and isinstance(screen[1], (
   int, float)) and building_size != 0:
-    ratio = int(size_screen / SCREEN_WORLD_GRID)
+    ratio = size_screen / SCREEN_WORLD_GRID
     x0 = int(min(max(0, screen[0]), size_screen))
     y0 = int(min(max(0, screen[1]), size_screen))
     x1 = int(min(max(0, screen[0]), size_screen) - ratio * (building_size - 1) / 2)
@@ -413,16 +634,21 @@ def get_arg_screen_build(obs, screen: list, size_screen, action_name) -> (tuple,
       for j in range(building_size):
         x = int(x1 + i * ratio)
         y = int(y1 + j * ratio)
-        if not (0 < x < size_screen and 0 < y < size_screen):
-          return f'({x0}, {y0}) too close to screen edge', False
+        x1, x2, y1, y2 = is_valid_screen_range(obs, [x, y], size_screen)
+        if not (x1 <= x <= x2 or y1 <= y <= y2):
+          return f'Build failed! x({int(x/ratio)}) and y({int(y/ratio)}) coordinate exceeds the boundary, valid ranges are {int(x1 / ratio)} < x < {int(x2 / ratio)}, {int(y1 / ratio)} < y < {int(y2 / ratio)}', False
+        if not x1 <= x <= x2:
+          return f"Build failed! x({int(x/ratio)}) exceeds the boundary, valid range is {int(x1 / ratio)} < x < {int(x2 / ratio)}", False
+        if not y1 <= y <= y2:
+          return f"Build failed! y({int(y/ratio)}) exceeds the boundary, valid range is {int(y1 / ratio)} < y < {int(y2 / ratio)}", False
         if obs.observation.feature_screen.buildable[x][y] != 1:
           return f'area near ({x0}, {y0}) not buildable', False
         if obs.observation.feature_screen.pathable[x][y] != 1:
           return f'area near ({x0}, {y0}) not pathable', False
         if obs.observation.feature_screen.player_relative[x][y] not in [0, 1]:
-          return f'area near ({x0}, {y0}) not blocked', False
+          return f'area near ({x0}, {y0}) blocked', False
     return (x0, y0), True
-  return f'input arg {screen} error', False
+  return f'input arg error: screen={screen}', False
 
 
 # Parameter verification, tag to world coordinate
@@ -436,23 +662,68 @@ def get_arg_world_tag(obs, tag: int, x_offset, y_offset, world_range) -> (tuple,
   return f'cannot find unit {tag}', False
 
 
+def check_attack_target(obs, tag):
+  source_unit_types = []
+  target_unit_types = []
+  available_target_types = []
+  target_types = []
+  target_unit = None
+  for unit in obs.observation.raw_units:
+    if unit.alliance == features.PlayerRelative.SELF and unit.is_on_screen and unit.unit_type not in source_unit_types:
+      source_unit_types.append(unit.unit_type)
+    if unit.tag == tag and unit.unit_type not in source_unit_types:
+      target_unit_types.append(unit.unit_type)
+      target_unit = unit
+  for unit_type in source_unit_types:
+    if unit_type in DATA_SC2_UNITS.keys():
+      unit_data = DATA_SC2_UNITS[unit_type]
+      for available_target_type in unit_data['target']:
+        if available_target_type not in available_target_types:
+          available_target_types.append(available_target_type)
+  for unit_type in target_unit_types:
+    if unit_type in DATA_SC2_UNITS.keys():
+      unit_data = DATA_SC2_UNITS[unit_type]
+      for target_type in unit_data['target_self']:
+        if target_type not in target_types:
+          target_types.append(target_type)
+  # print(available_target_types, target_types)
+  if target_unit is not None:
+    if target_unit.buff_id_0 in BUFF_TO_TARGET_TYPE.keys() and BUFF_TO_TARGET_TYPE[target_unit.buff_id_0] in available_target_types:
+      return True, f''
+    if target_unit.buff_id_1 in BUFF_TO_TARGET_TYPE.keys() and BUFF_TO_TARGET_TYPE[target_unit.buff_id_1] in available_target_types:
+      return True, f''
+  if 'ground' in target_types and 'air' not in target_types and 'ground' not in available_target_types:
+    return False, f'Must target air unit'
+  if 'air' in target_types and 'ground' not in target_types and 'air' not in available_target_types:
+    return False, f'Must target ground unit'
+  return True, f''
+  # for target_type in target_types:
+  #   if target_type in available_target_types:
+  #     return True, available_target_types, target_types
+  # return False, available_target_types, target_types
+
+
 # Parameter verification, tag to screen coordinate
 def get_arg_screen_tag(obs, tag: int, size_screen, action_name) -> (tuple, bool):  # 获取指定tag单位的屏幕坐标
   for unit in obs.observation.feature_units:
     if unit.tag == tag:
-      x, y = unit.x, unit.y
-      if 'Attack' in action_name and unit.alliance in [1, 2]:
-        return f'({x}, {y}) is alliance', False
+      unit_info = f'unit {hex(tag)}({str(units.get_unit_type(unit.unit_type))})'
+      if 'Attack' in action_name:
+        if unit.alliance in [1, 2]:
+          return f'{unit_info} is alliance', False
+        target_can_be_attack, error_info = check_attack_target(obs, tag)
+        if not target_can_be_attack:
+          return f'{error_info}: {unit_info}', False
       if 'Load' in action_name and unit.alliance not in [1]:
-        return f'({x}, {y}) is not alliance', False
+        return f'{unit_info} is not alliance', False
       if 'Follow' in action_name and unit.alliance not in [1, 2]:
-        return f'({x}, {y}) is not alliance', False
+        return f'{unit_info} is not alliance', False
       if 'MassRecall' in action_name and unit.alliance not in [1]:
-        return f'({x}, {y}) is not alliance', False
+        return f'{unit_info} is not alliance', False
       if 'Chrono_Boost' in action_name and (unit.alliance not in [1] or unit.unit_type not in BOOSTABLE_TYPE):
-        return f'({x}, {y}) is not boostable', False
+        return f'{unit_info} is not boostable', False
       if 'Board_' in action_name and (unit.alliance not in [1] or unit.unit_type not in TRANSPORTER_TYPE):
-        return f'({x}, {y}) is not a transporter', False
+        return f'{unit_info} is not a transporter', False
       if unit.is_on_screen and (0 < unit.x < size_screen and 0 < unit.y < size_screen):
         return (unit.x, unit.y), True
   tag = hex(tag) if isinstance(tag, int) else tag
@@ -463,10 +734,11 @@ def get_arg_screen_tag(obs, tag: int, size_screen, action_name) -> (tuple, bool)
 def get_arg_screen_tag_sclect_rect(obs, tag: int, size_screen, func_arg_name) -> (tuple, bool):  # 获取指定tag附近单位群的中心坐标
   for unit in obs.observation.feature_units:
     if unit.tag == tag:
+      unit_info = f'unit {hex(tag)}({str(units.get_unit_type(unit.unit_type))})'
       if unit.alliance not in [1]:
-        return f'({unit.y}, {unit.y}) is not alliance', False
+        return f'{unit_info} is not alliance, can not select the unit', False
       if not (0 < unit.x < size_screen and 0 < unit.y < size_screen):
-        return f'unit {tag} ({unit.x}, {unit.y}) not no screen', False
+        return f'{unit_info} ({unit.x}, {unit.y})) not no screen', False
       if func_arg_name == 'screen' and unit.is_on_screen:
         x = max(0, min(int(unit.x - size_screen / 64), size_screen))
         y = max(0, min(int(unit.y - size_screen / 64), size_screen))
@@ -483,9 +755,9 @@ def get_arg_screen_tag_sclect_rect(obs, tag: int, size_screen, func_arg_name) ->
 def get_arg_screen_tag_recall(obs, tag: int, size_screen, action_name) -> (tuple, bool):  # 获取指定tag附近单位群的中心坐标
   for unit in obs.observation.feature_units:
     if unit.tag == tag:
-      x, y = unit.x, unit.y
+      unit_info = f'unit {hex(unit.tag)}({str(units.get_unit_type(unit.unit_type))})'
       if unit.alliance not in [1]:
-        return f'({x}, {y}) is not alliance', False
+        return f'{unit_info} is not alliance', False
       if unit.is_on_screen and (0 < unit.x < size_screen and 0 < unit.y < size_screen):
         return (unit.x, unit.y), True
   tag = hex(tag) if isinstance(tag, int) else tag
@@ -498,8 +770,11 @@ def get_arg_screen_tag_warp(obs, tag: int, size_screen, action_name) -> (tuple, 
   for unit in obs.observation.feature_units:
     max_try = 72
     if unit.tag == tag:
+      unit_info = f'unit {hex(unit.tag)}({str(units.get_unit_type(unit.unit_type))})'
       if unit.unit_type not in [units.Protoss.Pylon, units.Protoss.WarpPrismPhasing]:
-        return f'tag {unit.tag}({unit.unit_type}) is not Pylon(60) or WarpPrismPhasing(136)', False
+        return f'{unit_info} is not Pylon(60) or WarpPrismPhasing(136)', False
+      elif unit.alliance not in [1]:
+        return f'{unit_info} is not alliance', False
       else:
         radius = [2, 3, 4, 5, 6] if unit.unit_type == units.Protoss.Pylon else [1, 2, 3]
         angles = [0, 45, 90, 135, 180, 225, 270, 315]
@@ -537,15 +812,16 @@ def get_arg_screen_tag_gas_building(obs, tag: int, size_screen, action_name) -> 
   # confirm if is possible to construct
   for unit in obs.observation.feature_units:
     if unit.tag == tag:
+      unit_info = f'unit {hex(unit.tag)}({str(units.get_unit_type(unit.unit_type))})'
       base_nearby = False
       for unit_ in obs.observation.raw_units:
         if unit_.alliance == features.PlayerRelative.SELF and unit_.unit_type in BASE_BUILDING_TYPE and \
             math.sqrt((unit_.x - unit_r.x) ** 2 + (unit_.y - unit_r.y) ** 2) < 10:
           base_nearby = True
       if not base_nearby:
-        return f'tag {unit.tag}({unit.unit_type}) is far away from our base building', False
+        return f'{unit_info} is far away from our base building', False
       if unit.unit_type not in GAS_TYPE:
-        return f'tag {unit.tag}({unit.unit_type}) is not VespeneGeyser(342 344 608 880 881)', False
+        return f'{unit_info} is not VespeneGeyser(342 344 608 880 881)', False
       if unit.is_on_screen and (0 < unit.x < size_screen and 0 < unit.y < size_screen):
         return (unit.x, unit.y), True
   tag = hex(tag) if isinstance(tag, int) else tag
@@ -594,8 +870,9 @@ def get_arg_world_tag_base_building(obs, tag: int, x_offset, y_offset, world_ran
 
   for unit in obs.observation.raw_units:
     if unit.tag == tag:
+      unit_info = f'unit {hex(unit.tag)}({str(units.get_unit_type(unit.unit_type))})'
       if unit.unit_type not in GAS_TYPE + MINERAL_TYPE:
-        return f'tag {unit.tag}({unit.unit_type}) is not VespeneGaser', False
+        return f'{unit_info} is not VespeneGeyser', False
       mineral_list = find_nearby_raw_mg(unit)
       n, x0, y0 = 0, 0, 0
       for mineral in mineral_list:
@@ -658,8 +935,9 @@ def get_arg_screen_tag_base_building(obs, tag: int, size_screen, action_name) ->
   building_size = find_building_size(building_name)
   for unit in obs.observation.feature_units:
     if unit.tag == tag or (unit.unit_type in GAS_TYPE + MINERAL_TYPE and unit.is_on_screen):
+      unit_info = f'unit {hex(unit.tag)}({str(units.get_unit_type(unit.unit_type))})'
       if unit.unit_type not in GAS_TYPE + MINERAL_TYPE:
-        return f'tag {unit.tag}({unit.unit_type}) is not VespeneGaser', False
+        return f'{unit_info} is not VespeneGeyser', False
       mineral_gas_list = find_nearby_screen_mg(unit)
       n, x0, y0 = 0, 0, 0
       for mineral in mineral_gas_list:
@@ -763,8 +1041,21 @@ def add_func_for_train_and_research(self, obs, action):
 
 class BaseTranslatorA:
 
-  def __init__(self):
-    pass
+  def __init__(self, name, log_id, config):
+    self.name = name
+    self.log_id = log_id
+    self.config = config
+    self.actions = []
+    self.action = {}
+
+    self.size_minimap = None
+    self.size_screen = None
+
+    # self.ACTION_SPACE = config.AGENTS[name]['action']
+    # self.ACTION_SPACE_DICT = {}
+    # for unit_type in self.ACTION_SPACE.keys():
+    #   for action in self.ACTION_SPACE[unit_type]:
+    #     self.ACTION_SPACE_DICT[action['name']] = action
 
   def translate(self, obs) -> "list of [(func_id, func_call)]":
     pass
@@ -776,48 +1067,111 @@ class BaseTranslatorA:
 class DefaultTranslatorA(BaseTranslatorA):
 
   def __init__(self, name, log_id, config):
-    super(DefaultTranslatorA, self).__init__()
-    self.agent_name = name
-    self.ACTION_SPACE = config.AGENTS[name]['action']
-    self.ACTION_SPACE_DICT = {}
-    for unit_type in self.ACTION_SPACE.keys():
-      for action in self.ACTION_SPACE[unit_type]:
-        self.ACTION_SPACE_DICT[action['name']] = action
-    self.log_id = log_id
+    super(DefaultTranslatorA, self).__init__(name, log_id, config)
     logger.info(f"[ID {self.log_id}] {name} DefaultTranslatorA initialized")
 
   # text actions recognition
   def translate(self, raw_text_a: str):
+    self.action = {'analysis': '', 'actions': ''}
+
     action_list_dict = {}
     action_lists, action_lists2 = [], []
     team_actions, team_actions2 = [], []
-    processed_text_a, team_name = '', ''
+    processed_text_a, team_name, team_names = '', '', []
+    self.curr_team_action_list = []
+    self.curr_team_action_name_list = []
+
     lines = raw_text_a.splitlines()
     start_recognize = False
     first_function = True
+    first_function_move = True
+    first_action_attack = True
+    first2_actions_attack = True
+    # team_action_name_list = []
+
     for line in lines:
+      line = line.replace('*', '')
+
+      # ACTION PART
       if ("Actions:" in line) or ("Action:" in line) or \
           ("actions:" in line) or ("action:" in line):
         processed_text_a = "Actions:"
         start_recognize = True
+
+      # ANALYSIS PART
+      if not start_recognize:
+        if 'analysis' not in self.action.keys() and (("Analysis:" in line) or ("analysis:" in line)):
+          self.action['analysis'] = line + '\n'
+        elif 'analysis' in self.action.keys():
+          self.action['analysis'] += line + '\n'
+        else:
+          pass
+
+      # COMMUNICATION PART
       if ("Communications:" in line) or ("Communication:" in line) or \
           ("communications:" in line) or ("Communication:" in line):
         start_recognize = False
+
+      # ACTION PART, TEAM ACTIONS
       if start_recognize:
         if ("Team" in line and ":" in line) or ("team" in line and ":" in line):
-          team_name = line.split("eam ")[1].split(":")[0]  # Team/team xxxx:  -->  xxxx
+
+          team_name_old = team_name
+          team_name = line.split("eam ")[-1].split(":")[0]  # Team/team xxxx:  -->  xxxx
+
+          if team_name in self.config.AGENTS[self.name]['team'].keys():
+            self.curr_team_config = self.config.AGENTS[self.name]['team'][team_name]
+            for team_actions_ in self.curr_team_config['actions'].values():
+              self.curr_team_action_list += team_actions_
+            for team_action in self.curr_team_action_list:
+              self.curr_team_action_name_list.append(team_action['name'])  # 可能重复，如同一个小队多个兵种时，可能有多个Move
+
+          # else:
+          #   teams_ = self.config.AGENTS[self.name]['team']
+          #   teams_unit_types, action_space = [], []
+          #   for team_ in teams_:
+          #     if team_['name'] == team_name:
+          #       teams_unit_types += team_['unit_type']
+          #   for unit_type in teams_unit_types:
+          #     if unit_type in self.config.AGENTS[self.name]['action']:
+          #       action_space += self.config.AGENTS[self.name]['action'][unit_type]
+          #   team_action_name_list = [action['name'] for action in action_space]
+
           processed_text_a += f"\n\tTeam {team_name}:"
           if len(team_actions) != 0:
             action_lists.append(team_actions)
             action_lists2.append(team_actions2)
-            action_list_dict[team_name] = team_actions
-            first_function = True
+            action_list_dict[team_name_old] = team_actions
             team_actions, team_actions2 = [], []
+            if team_name not in team_names:
+              first_function = True
+              first_function_move = True
+              first_action_attack = True
+              first2_actions_attack = True
+              
+            team_names.append(team_name)
+
+          # print(f"team_name={team_name}, self.curr_team_action_name_list={self.curr_team_action_name_list}")
+
+
         elif "<" in line and ">" in line:
+          line.replace('tag=', '')
+          line.replace('screen=', '')
+          line.replace('minimap=', '')
           action_text = line.split("<")[1].split(">")[0]
           action_name = action_text.split("(")[0]
-          action_args = action_text.split("(")[1].split(")")[0]
+          action_args = action_text.split("(")[-1].split(")")[0]
           action_valid, tag, tag2, tag3, x, y = True, None, None, None, None, None
+          action = {'name': 'No_Operation', 'arg': [], 'func': [(0, F.no_op, ())]}
+          if action_name not in self.curr_team_action_name_list:
+            logger.error(f"translator unable to find {action_name} in team_config {self.curr_team_action_list}")
+            continue
+          # if not first_action_attack and "Attack" in action_name and \
+          #     "Select_Unit" not in action_name and "Ability" not in action_name:
+          #   continue
+          if not first2_actions_attack and "Attack" in action_name and \
+              "Select_Unit" not in action_name and "Ability" not in action_name:
+            continue
           if "0x" in action_args:
             tag = int(re.findall(r'0x\w+', action_args)[0], 16)
             if len(re.findall(r'0x\w+', action_args)) > 1:
@@ -825,19 +1179,25 @@ class DefaultTranslatorA(BaseTranslatorA):
             if len(re.findall(r'0x\w+', action_args)) > 2:
               tag3 = int(re.findall(r'0x\w+', action_args)[2], 16)
           if "[" in action_args:
-            x = float(re.findall(r'\[-?\d+\.?\d*e?-?\d*?', action_args)[0].split("[")[1])
-            y = float(re.findall(r'-?\d+\.?\d*e?-?\d*?\]', action_args)[0].split("]")[0])
+            ratio = 1 if "Minimap" in action_name else self.size_screen / SCREEN_WORLD_GRID
+            x = float(re.findall(r'\[-?\d+\.?\d*e?-?\d*?', action_args)[0].split("[")[1]) * ratio
+            y = float(re.findall(r'-?\d+\.?\d*e?-?\d*?\]', action_args)[0].split("]")[0]) * ratio
 
-          # 在动作空间中查找action_name对应的action
-          if action_name in self.ACTION_SPACE_DICT.keys():
-            action = self.ACTION_SPACE_DICT[action_name]
-          else:
-            logger.error(f"translator unable to find {action_name}")
-            action = {'name': 'No_Operation', 'arg': [], 'func': [(0, F.no_op, ())]}
-            action_valid = False
+          for action_ in self.curr_team_action_list:
+            if action_name == action_['name']:
+              action = action_
+
+          # # 在动作空间中查找action_name对应的action
+          # if action_name in self.ACTION_SPACE_DICT.keys():
+          #   action = self.ACTION_SPACE_DICT[action_name]
+          # else:
+          #   logger.error(f"translator unable to find {action_name}")
+          #   action = {'name': 'No_Operation', 'arg': [], 'func': [(0, F.no_op, ())]}
+          #   action_valid = False
 
           # 将识别出的动作参数填入函数参数元组中
           new_func_triples, new_func_triples2 = [], []
+          new_func_triple, new_func_triple2, new_func_args = [], [], []
           for func_triple in action['func']:  # func_triple 形如 (0, F.no_op, ())
             new_func_triple, new_func_triple2, new_func_args = [], [], []
             func_args = func_triple[2]
@@ -846,7 +1206,12 @@ class DefaultTranslatorA(BaseTranslatorA):
                 func_args = [func_args]
               for arg in list(func_args):
                 if arg == "now":
-                  new_func_args.append('now')
+                  if "Move" not in action_name:
+                    new_func_args.append('now')
+                  elif "Move" in action_name and (first_function_move or "Select_Unit" in action_name):
+                    new_func_args.append('now')
+                  else:
+                    new_func_args.append('queued')
                 if arg == "queued":
                   if first_function:
                     new_func_args.append('now')
@@ -881,6 +1246,9 @@ class DefaultTranslatorA(BaseTranslatorA):
                 #     new_func_args.append('error')
             if 'error' not in new_func_args and first_function and 'now' in new_func_args:
               first_function = False
+            if 'error' not in new_func_args and first_function_move and 'now' in new_func_args and \
+                "Move" in action_name and "Select_Unit" not in action_name:
+              first_function_move = False
             if 'error' in new_func_args:
                 action_valid = False
             new_func_triple.append(func_triple[0])
@@ -893,9 +1261,17 @@ class DefaultTranslatorA(BaseTranslatorA):
             new_func_triple2.append(tuple(new_func_args))
             new_func_triples2.append(tuple(new_func_triple2))
 
+          if 'error' not in new_func_args and not first_action_attack and first2_actions_attack and \
+              "Attack" in action_name and "Ability" not in action_name and "Select_Unit" not in action_name:
+            first2_actions_attack = False
+          if 'error' not in new_func_args and first_action_attack and \
+              "Attack" in action_name and "Ability" not in action_name and "Select_Unit" not in action_name:
+            first_action_attack = False
+
           if action_valid:
-            team_actions.append({'name': action['name'], 'arg': action['arg'], 'func': new_func_triples})
-            team_actions2.append({'name': action['name'], 'arg': action['arg'], 'func': new_func_triples2})
+
+            team_actions.append({'name': action['name'], 'arg': action_args, 'func': new_func_triples})
+            team_actions2.append({'name': action['name'], 'arg': action_args, 'func': new_func_triples2})
             processed_text_a += f"\n\t\t<{action_text}>"
           else:
             team_actions.append({'name': 'No_Operation', 'arg': [], 'func': [(0, F.no_op, ())]})
@@ -903,12 +1279,13 @@ class DefaultTranslatorA(BaseTranslatorA):
         else:
           pass
 
+    self.action['actions'] = processed_text_a
+    self.actions.append(self.action)
+
     if len(team_actions) != 0:
       action_lists.append(team_actions)
       action_lists2.append(team_actions2)
       action_list_dict[team_name] = team_actions
-      first_function = True
-      team_actions, team_actions2 = [], []
 
     return action_lists, action_list_dict, processed_text_a
 
@@ -925,61 +1302,70 @@ FACTORY = {
 
 
 if __name__ == "__main__":
-  from llm_pysc2.agents.configs.config import ProtossAgentConfig
+  from llm_pysc2.cfg import ConfigSmac_2s3z, ProtossAgentConfig
   config = ProtossAgentConfig()
 
   # ----------------- show action space -----------------
   def show(config):
     for name in config.AGENTS.keys():
-      agent_actions = config.AGENTS[name]['action']
+      # agent_actions = config.AGENTS[name]['action']
+      agent_actions = {}
+      for team_config in config.AGENTS[name]['team'].values():
+        agent_actions[team_config['name']] = {}
+        for unit_type in team_config['actions'].keys():
+          agent_actions[team_config['name']][unit_type] = team_config['actions'][unit_type]
       print(name)
-      for unit_type in agent_actions.keys():
-        print(f"\t{str(units.get_unit_type(unit_type))}")
-        for i in range(len(agent_actions[unit_type])):
-          action = agent_actions[unit_type][i]
-          if len(action['arg']) == 0:
-            print(f"\t\t <{action['name']}()>")
-        for i in range(len(agent_actions[unit_type])):
-          action = agent_actions[unit_type][i]
-          if len(action['arg']) == 1 and 'minimap' in action['arg']:
-            print(f"\t\t <{action['name']}({action['arg'][0]})>")
-        for i in range(len(agent_actions[unit_type])):
-          action = agent_actions[unit_type][i]
-          if len(action['arg']) == 1 and 'screen' in action['arg']:
-            print(f"\t\t <{action['name']}({action['arg'][0]})>")
-        for i in range(len(agent_actions[unit_type])):
-          action = agent_actions[unit_type][i]
-          if len(action['arg']) == 1 and 'tag' in action['arg']:
-            print(f"\t\t <{action['name']}({action['arg'][0]})>")
-        for i in range(len(agent_actions[unit_type])):
-          action = agent_actions[unit_type][i]
-          if len(action['arg']) == 2:
-            print(f"\t\t <{action['name']}({action['arg'][0]}, {action['arg'][1]})>")
+      for team_name in agent_actions.keys():
+        print(f"\t{team_name}")
+        for unit_type in agent_actions[team_name].keys():
+          print(f"\t{str(units.get_unit_type(unit_type))}")
+          for i in range(len(agent_actions[team_name][unit_type])):
+            action = agent_actions[team_name][unit_type][i]
+            if len(action['arg']) == 0:
+              print(f"\t\t <{action['name']}()>")
+          for i in range(len(agent_actions[team_name][unit_type])):
+            action = agent_actions[team_name][unit_type][i]
+            if len(action['arg']) == 1 and 'minimap' in action['arg']:
+              print(f"\t\t <{action['name']}({action['arg'][0]})>")
+          for i in range(len(agent_actions[team_name][unit_type])):
+            action = agent_actions[team_name][unit_type][i]
+            if len(action['arg']) == 1 and 'screen' in action['arg']:
+              print(f"\t\t <{action['name']}({action['arg'][0]})>")
+          for i in range(len(agent_actions[team_name][unit_type])):
+            action = agent_actions[team_name][unit_type][i]
+            if len(action['arg']) == 1 and 'tag' in action['arg']:
+              print(f"\t\t <{action['name']}({action['arg'][0]})>")
+          for i in range(len(agent_actions[team_name][unit_type])):
+            action = agent_actions[team_name][unit_type][i]
+            if len(action['arg']) == 2:
+              print(f"\t\t <{action['name']}({action['arg'][0]}, {action['arg'][1]})>")
   show(config)
 
   # ----------------- example of TranslatorA -----------------
 
-  translator = DefaultTranslatorA('CombatGroup1', 0, config)
+  translator = DefaultTranslatorA('CombatGroupSmac1', log_id=0, config=config)
   text = \
 """
 Analysis:
     We should do xxx and xxx.
 
 Actions:
-    Team Stalker-1:
-        <Move_Screen([2, 9])>
+    **Team Zealot-1**:
+        <Attack_Unit(0x200540001)> 
+    Team Zealot-2:
         <Attack_Unit(0x200540001)>
-    Team Stalker-2:
-        <Ability_Blink_Screen([33, 96])>
-        <Move_Minimap([24, 54])>
-    Team Stalker-3:
-        <Select_Unit_Blink_Screen(0x1007c0001 ,[33, 96])>
-        <Hold_Position()>
+        <Move_Minimap([24, 54])>                              # invalid in smac
+    Team Stalker-1:
+        <Ability_Blink_Screen([33, 96])>                      # invalid in smac
+        <Select_Unit_Blink_Screen(0x1007c0001 ,[33, 96])>     # invalid in smac
+        <Move_Screen([2, 9])>
 """
 
-  actions, processed_text_a, _ = translator.translate(text)
-  print(f"\n\ntext to translator:{text}")
-  print(f"detected action from translator:\n{actions}\n")
-  print(f"detected text_a from translator:\n{processed_text_a}\n")
-  print(f"agent {translator.agent_name} action names: {translator.ACTION_SPACE_DICT.keys()}")
-  print(f"agent {translator.agent_name} action num: {len(translator.ACTION_SPACE_DICT.keys())}")
+  # translator.size_screen = 128
+  # actions, action_list_dict, processed_text_a = translator.translate(text)
+  #
+  # print(f"\n\ntext to translator:{text}")
+  # print(f"detected action from translator:\n{actions}\n")
+  # print(f"action_list_dict from translator:\n{action_list_dict}\n")
+  # print(f"detected text_a from translator:\n{processed_text_a}\n")
+

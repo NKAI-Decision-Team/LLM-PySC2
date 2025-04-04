@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from llm_pysc2.agents.configs.config import ProtossAgentConfig
+from llm_pysc2.cfg.config import ProtossAgentConfig
 from llm_pysc2.lib.llm_action import *
 
 
-class ConfigSmac_3s(ProtossAgentConfig):
+class ConfigSmac_2c(ProtossAgentConfig):
 
   def __init__(self):
-    super(ConfigSmac_3s, self).__init__()
+    super(ConfigSmac_2c, self).__init__()
     self.ENABLE_INIT_STEPS = False
     self.ENABLE_AUTO_WORKER_MANAGE = False
     self.ENABLE_AUTO_WORKER_TRAINING = False
@@ -45,16 +45,15 @@ class ConfigSmac_3s(ProtossAgentConfig):
           'api_base': self.api_base,
           'api_key': self.api_key,
         },
-        'team': [
-          {'name': 'Stalker-1', 'unit_type': [units.Protoss.Stalker],
-           'game_group': 4, 'select_type': 'group'},
-          {'name': 'Stalker-2', 'unit_type': [units.Protoss.Stalker],
-           'game_group': 5, 'select_type': 'group'},
-          {'name': 'Stalker-3', 'unit_type': [units.Protoss.Stalker],
-           'game_group': 6, 'select_type': 'group'},
-        ],
-        'action': {
-          units.Protoss.Stalker: PROTOSS_BASIC_ACTION_SMAC2,
+        'team': {
+          'Colossus-1': {
+            'name': 'Colossus-1', 'unit_type': [units.Protoss.Colossus], 'game_group': 1, 'select_type': 'group',
+            'actions': {units.Protoss.Colossus: SMAC_ACTION_COLOSSUS}
+          },
+          'Colossus-2': {
+            'name': 'Colossus-2', 'unit_type': [units.Protoss.Colossus], 'game_group': 2, 'select_type': 'group',
+            'actions': {units.Protoss.Colossus: SMAC_ACTION_COLOSSUS}
+          },
         },
       },
     }

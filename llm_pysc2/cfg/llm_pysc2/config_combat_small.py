@@ -12,14 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from llm_pysc2.agents.configs.config import ProtossAgentConfig
+from llm_pysc2.cfg.config import ProtossAgentConfig
 from llm_pysc2.lib.llm_action import *
+from llm_pysc2.lib.llm_client import vision_model_names  #, video_model_names
+
+from pysc2.lib import units
+from loguru import logger
+import time
 
 
-class ConfigSmac_2s(ProtossAgentConfig):
+class ConfigPysc2_Combat_Small(ProtossAgentConfig):
 
   def __init__(self):
-    super(ConfigSmac_2s, self).__init__()
+    super(ConfigPysc2_Combat_Small, self).__init__()
+    self.AGENTS_ALWAYS_DISABLE = [
+      'Airborne', 'Builder', 'Commander', 'Developer', 'Defender', 'CombatGroup4',
+    ]
     self.ENABLE_INIT_STEPS = False
     self.ENABLE_AUTO_WORKER_MANAGE = False
     self.ENABLE_AUTO_WORKER_TRAINING = False
@@ -28,13 +36,12 @@ class ConfigSmac_2s(ProtossAgentConfig):
     # self.MAX_LLM_QUERY_TIMES = 5
     # self.MAX_LLM_WAITING_TIME = 10
     # self.MAX_LLM_RUNTIME_ERROR_TIME = 30
-    # self.MAX_LLM_DECISION_FREQUENCY = 1
+    self.MAX_LLM_DECISION_FREQUENCY = 2
     # self.MAX_NUM_ACTIONS = 3
 
-    self.AGENTS_ALWAYS_DISABLE = []
-    self.AGENTS = {
-      'CombatGroupSmac': {
-        'describe': "Protoss military commander, controls units to fight against enemy. ",
+    self.AGENTS['CombatGroup1'] = {
+        'describe': "Protoss frontline commander, controls several Stalkers. "
+                    "Responsible for providing cover for the main force and restraining enemy forces.",
         'llm': {
           'basic_prompt': self.basic_prompt,
           'translator_o': self.translator_o,
@@ -45,14 +52,15 @@ class ConfigSmac_2s(ProtossAgentConfig):
           'api_base': self.api_base,
           'api_key': self.api_key,
         },
-        'team': [
-          {'name': 'Stalker-1', 'unit_type': [units.Protoss.Stalker],
-           'game_group': 4, 'select_type': 'group'},
-          {'name': 'Stalker-2', 'unit_type': [units.Protoss.Stalker],
-           'game_group': 5, 'select_type': 'group'},
-        ],
-        'action': {
-          units.Protoss.Stalker: PROTOSS_BASIC_ACTION_SMAC2,
+        'team': {
+          'Stalker-1': {
+            'name': 'Stalker-1', 'unit_type': [units.Protoss.Stalker], 'game_group': 4, 'select_type': 'group',
+            'actions': {units.Protoss.Stalker: STANDARD_ACTION_STALKER}},
+          # 'Stalker-2': {
+          #   'name': 'Stalker-2', 'unit_type': [units.Protoss.Stalker], 'game_group': 5, 'select_type': 'group',
+          #   'actions': {units.Protoss.Stalker: STANDARD_ACTION_STALKER}},
+          # 'Stalker-3': {
+          #   'name': 'Stalker-3', 'unit_type': [units.Protoss.Stalker], 'game_group': 6, 'select_type': 'group',
+          #   'actions': {units.Protoss.Stalker: STANDARD_ACTION_STALKER}},
         },
-      },
-    }
+      }

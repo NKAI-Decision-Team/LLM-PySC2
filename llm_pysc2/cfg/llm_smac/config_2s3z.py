@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from llm_pysc2.agents.configs.config import ProtossAgentConfig
+from llm_pysc2.cfg.config import ProtossAgentConfig
 from llm_pysc2.lib.llm_action import *
 
 
@@ -32,7 +32,7 @@ class ConfigSmac_2s3z(ProtossAgentConfig):
     # self.MAX_NUM_ACTIONS = 3
 
     self.AGENTS = {
-      'CombatGroupSmac': {
+      'CombatGroupSmac1': {
         'describe': "Protoss military commander, controls units to fight against enemy. ",
         'llm': {
           'basic_prompt': self.basic_prompt,
@@ -44,17 +44,23 @@ class ConfigSmac_2s3z(ProtossAgentConfig):
           'api_base': self.api_base,
           'api_key': self.api_key,
         },
-        'team': [
-          {'name': 'Zealot-1', 'unit_type': [units.Protoss.Zealot],
-           'game_group': 1, 'select_type': 'group'},
-          {'name': 'Zealot-2', 'unit_type': [units.Protoss.Zealot],
-           'game_group': 2, 'select_type': 'group'},
-          {'name': 'Stalker-1', 'unit_type': [units.Protoss.Stalker],
-           'game_group': 4, 'select_type': 'group'},
-        ],
-        'action': {
-            units.Protoss.Zealot: PROTOSS_BASIC_ACTION_SMAC,
-            units.Protoss.Stalker: PROTOSS_BASIC_ACTION_SMAC,
+        'team': {
+          'Zealot-1': {
+            'name': 'Zealot-1', 'unit_type': [units.Protoss.Zealot], 'game_group': 1, 'select_type': 'group',
+            'actions': {units.Protoss.Zealot: SMAC_ACTION_ZEALOT}
+          },
+          'Zealot-2': {
+            'name': 'Zealot-2', 'unit_type': [units.Protoss.Zealot], 'game_group': 2, 'select_type': 'group',
+            'actions': {units.Protoss.Zealot: SMAC_ACTION_ZEALOT}
+          },
+          'Stalker-1': {
+            'name': 'Stalker-1', 'unit_type': [units.Protoss.Stalker], 'game_group': 4, 'select_type': 'group',
+            'actions': {units.Protoss.Stalker: SMAC_ACTION_STALKER}  # [ATTACK_00S] SMAC_ACTION_STALKER
+          },
+          # 'Zealot&Stalker-1': {
+          #   'name': 'Zealot&Stalker-1', 'unit_type': [units.Protoss.Zealot, units.Protoss.Stalker], 'game_group': 1, 'select_type': 'group',
+          #   'actions': {units.Protoss.Zealot: SMAC_ACTION_ZEALOT, units.Protoss.Stalker: SMAC_ACTION_STALKER}
+          # },
         },
       },
     }

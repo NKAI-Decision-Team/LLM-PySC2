@@ -14,10 +14,10 @@
 
 
 from llm_pysc2.lib.llm_communicate import communication_info_transmission
-from llm_pysc2.lib.data_recorder import DataRecorder
+from llm_pysc2.lib.log.data_recorder import DataRecorder
 from llm_pysc2.agents.main_agent_funcs import *
-from llm_pysc2.agents.configs import ProtossAgentConfig
 from llm_pysc2.agents.llm_pysc2_agent import LLMAgent
+from llm_pysc2.cfg import ProtossAgentConfig
 
 from pysc2.agents import base_agent
 from pysc2.lib import actions
@@ -28,6 +28,7 @@ from loguru import logger
 import threading
 import datetime
 import random
+import math
 import time
 import sys
 import os
@@ -38,7 +39,10 @@ llm_pysc2_global_log_id = 0
 
 # multi thread query, target function
 def thread_act(agent, obs):
-  agent.query(obs)
+  try:
+    agent.query(obs)
+  except Exception as e:
+    logger.error(f"error {e} occur in agent {agent.name} query")
 
 
 # Main Agent, for interacting with pysc2 env
@@ -65,7 +69,9 @@ class MainAgent(base_agent.BaseAgent):
     self.main_loop_lock = False
     self.main_loop_step_old = 0
     self.main_loop_step = 0
-    self.game_time_last = 0
+    self.game_time_last1 = 0
+    self.game_time_last2 = 0
+    self.current_game_time = 0
 
     self.unit_selected_tag_list = []
     self.temp_team_unit_tags = None
@@ -112,6 +118,10 @@ class MainAgent(base_agent.BaseAgent):
     self.stop_worker = None
     self.idle_nexus = None
 
+    # chat_message
+    self.last_action = None
+    self.last_team = None
+
   def _initialize_logger(self):
 
     global llm_pysc2_global_log_id
@@ -121,9 +131,9 @@ class MainAgent(base_agent.BaseAgent):
     if not os.path.exists(base_log_dir):
       os.mkdir(base_log_dir)
     if not os.path.exists(base_log_dir + f"/log_show.py"):
-      copyfile(f"{os.path.dirname(os.path.abspath(__file__))}/../lib/log_show.py", base_log_dir + f"/log_show.py")
+      copyfile(f"{os.path.dirname(os.path.abspath(__file__))}/../lib/log/log_show.py", base_log_dir + f"/log_show.py")
     if not os.path.exists(base_log_dir + f"/log_analyse.py"):
-      copyfile(f"{os.path.dirname(os.path.abspath(__file__))}/../lib/log_analyse.py", base_log_dir + f"/log_analyse.py")
+      copyfile(f"{os.path.dirname(os.path.abspath(__file__))}/../lib/log/log_analyse.py", base_log_dir + f"/log_analyse.py")
 
     self.log_id = -1
     while True:
@@ -171,7 +181,7 @@ class MainAgent(base_agent.BaseAgent):
       self.agents[agent_name] = SubAgent(agent_name, self.log_id, self.start_time, self.config)
       self.agents[agent_name].enable = True if (agent_name in ['Commander', 'Developer']) else False
       # self.agents[agent_name].flag_enable_empty_unit_group = True if (agent_name in ['Developer']) else False
-      for team in self.config.AGENTS[agent_name]['team']:
+      for team in self.config.AGENTS[agent_name]['team'].values():
         if team['name'] == 'Empty' and len(team['unit_type']) == 0:
           self.agents[agent_name].flag_enable_empty_unit_group = True
       self.agents_query_llm_times[agent_name] = 0
@@ -209,6 +219,7 @@ class MainAgent(base_agent.BaseAgent):
     agent_name = None
     self.obs_history.append(obs)
     self.data_recorder.step(obs, self.episodes, self.steps)
+    self.last_action = None
     if len(self.func_id_history) > 0 and self.func_id_history[-1] == 573:
       self.camera_threshold += 0.05
     elif len(self.func_id_history) > 0 and self.func_id_history[-1] == 3:
@@ -277,7 +288,8 @@ class MainAgent(base_agent.BaseAgent):
 
     # LLM decision frequency control
     game_time_s = obs.observation.game_loop / 22.4
-    if not self.main_loop_lock and game_time_s - self.game_time_last < 1 / self.config.MAX_LLM_DECISION_FREQUENCY:
+    self.current_game_time = game_time_s
+    if not self.main_loop_lock and game_time_s - self.game_time_last1 < 1 / self.config.MAX_LLM_DECISION_FREQUENCY:
       logger.warning(f"[ID {self.log_id}] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()")
       func_id, func_call = (0, actions.FUNCTIONS.no_op())
       self.func_id_history.append(func_id)
@@ -297,7 +309,7 @@ class MainAgent(base_agent.BaseAgent):
     # communication and ready to enter main loop
     if self.main_loop_lock is False:
       self.main_loop_lock = True
-      self.game_time_last = game_time_s
+      self.game_time_last1 = game_time_s
       communication_info_transmission(self)
       logger.success(f"[ID {self.log_id}] 7.0 Main Loop Lock! Ignore outer-loop actions. ")
 
@@ -309,7 +321,7 @@ class MainAgent(base_agent.BaseAgent):
 
       agent_name = self.AGENT_NAMES[self.agent_id]
       agent = self.agents[self.AGENT_NAMES[self.agent_id]]
-      func_id, func_call = (None, None)
+      func_id, func_call, enable_no_op = (None, None, False)
 
       if not agent.enable:  # agent finished query, skip current agent
         self.agent_id = (self.agent_id + 1) % len(self.AGENT_NAMES)
@@ -348,6 +360,8 @@ class MainAgent(base_agent.BaseAgent):
             self.unit_selected_tag_list = []
             if self._all_agent_query_llm_finished():
               logger.success(f"[ID {self.log_id}] 7.2 All Agent waiting for response")
+            func_id, func_call = (4, actions.FUNCTIONS.select_control_group("recall", 0))
+            return func_call
 
           else:
             # obtain team and head unit tag
@@ -355,7 +369,7 @@ class MainAgent(base_agent.BaseAgent):
             team, tag = agent._get_unobsed_team_and_unit_tag()
 
             # Move camera
-            func_id, func_call = get_camera_func_smart(self, obs, tag, threshold=self.camera_threshold)
+            func_id, func_call = get_camera_func_smart(self, obs, tag, threshold=self.camera_threshold, team=team, mode='o')
             if func_id == 573:
               logger.success(f"[ID {self.log_id}] 7.1.4 Func Call: {func_call}")
               self.func_id_history.append(func_id)
@@ -367,8 +381,8 @@ class MainAgent(base_agent.BaseAgent):
               if unit.tag == tag:
                 unit_f = unit
             if unit_f is None:
-              logger.error(f"[ID {self.log_id}] Agent {agent_name}: unit of tag {tag} not found")
-              logger.error(f"[ID {self.log_id}]                     relative team = {team}")
+              logger.error(f"[ID {self.log_id}] Agent {agent_name}: unit of tag {tag} not found in screen")
+              logger.error(f"[ID {self.log_id}]                     relevant team = {team['name']}")
               logger.error(f"[ID {self.log_id}] unit_f is None")
               if tag in team['unit_tags']:
                 team['unit_tags'].remove(tag)
@@ -418,17 +432,26 @@ class MainAgent(base_agent.BaseAgent):
                 time.sleep(5)  # this error may lead to endless loop
                 pass
 
-            # # Recheck all required unit selected (Warning: May Lead To Possible Endless Loop)
-            # for unit in obs.observation.feature_units:
-            #   if team['select_type'] == 'select_all_type' and \
-            #       unit.unit_type == unit_f.unit_type and not unit.is_selected and \
-            #       0.15 * self.size_screen < unit.x < 0.85 * self.size_screen and \
-            #       0.15 * self.size_screen < unit.y < 0.85 * self.size_screen:
-            #     logger.debug(f"[ID {self.log_id}] Agent {agent_name} status: 7.1.5.4")
-            #     func_id, func_call = (2, actions.FUNCTIONS.select_point('select_all_type', (unit_f.x, unit_f.y)))
-            #     logger.success(f"[ID {self.log_id}] 7.1.5.4 Agent {agent_name}: Func Call: {func_call}")
-            #     self.func_id_history.append(func_id)
-            #     return func_call
+            # Recheck all required unit selected (Warning: May Lead To Possible Endless Loop)
+            for unit in obs.observation.feature_units:
+              if team['select_type'] == 'group' and \
+                unit.tag in team['unit_tags'] and not unit.is_selected and \
+                  0.15 * self.size_screen < unit.x < 0.85 * self.size_screen and \
+                  0.15 * self.size_screen < unit.y < 0.85 * self.size_screen:
+                logger.debug(f"[ID {self.log_id}] Agent {agent_name} status: 7.1.5.4")
+                func_id, func_call = (4, actions.FUNCTIONS.select_control_group('recall', int(team['game_group'])))
+                logger.success(f"[ID {self.log_id}] 7.1.5.4 Agent {agent_name}: Func Call: {func_call}")
+                self.func_id_history.append(func_id)
+                return func_call
+              # if team['select_type'] == 'select_all_type' and \
+              #     unit.unit_type == unit_f.unit_type and not unit.is_selected and \
+              #     0.15 * self.size_screen < unit.x < 0.85 * self.size_screen and \
+              #     0.15 * self.size_screen < unit.y < 0.85 * self.size_screen:
+              #   logger.debug(f"[ID {self.log_id}] Agent {agent_name} status: 7.1.5.4")
+              #   func_id, func_call = (2, actions.FUNCTIONS.select_point('select_all_type', (unit_f.x, unit_f.y)))
+              #   logger.success(f"[ID {self.log_id}] 7.1.5.4 Agent {agent_name}: Func Call: {func_call}")
+              #   self.func_id_history.append(func_id)
+              #   return func_call
 
             # collect obs for the team
             if unit_f.is_selected:
@@ -439,6 +462,7 @@ class MainAgent(base_agent.BaseAgent):
                 if unit.tag == tag:
                   x, y = get_camera_xy(self, unit.x, unit.y)
                   team['pos'].append([x, y])
+                  team['camera_move'] = []
                 if unit.is_selected and unit.is_on_screen:
                   team['unit_tags_selected'].append(unit.tag)
               team['obs'].append(obs)
@@ -455,6 +479,12 @@ class MainAgent(base_agent.BaseAgent):
 
       elif not self._all_agent_executing_finished():
 
+        if game_time_s - self.game_time_last2 < 0.5:  # self.config.MIN_ACTION_EXECUTING_TIME
+          logger.warning(f"[ID {self.log_id}] Reach MIN_ACTION_EXECUTING_TIME! return no_op()")
+          func_id, func_call = (0, actions.FUNCTIONS.no_op())
+          self.func_id_history.append(func_id)
+          return func_call
+
         # agent's teams' actions all executed
         if not agent._is_executing_actions():
           logger.info(f"[ID {self.log_id}] 7.3.0 Agent {agent_name}: finished executing!")
@@ -465,6 +495,7 @@ class MainAgent(base_agent.BaseAgent):
           for i in range(len(agent.teams)):
             agent.teams[i]['obs'] = []
             agent.teams[i]['pos'] = []
+            agent.teams[i]['camera_move'] = []
             # agent.teams[i]['unit_tags_selected'] = []
           self.agent_id = (self.agent_id + 1) % len(self.AGENT_NAMES)
           continue
@@ -489,7 +520,7 @@ class MainAgent(base_agent.BaseAgent):
           # empty team excuting actions (only for spesified empty team)
           if (agent.flag_enable_empty_unit_group and len(agent.team_unit_tag_list) == 0):
             logger.debug(f"[ID {self.log_id}] Agent {agent_name}, status: 7.3.5")
-            func_id, func_call = agent.get_func(obs)
+            func_id, func_call, enable_no_op, _ = agent.get_func(obs)
             self.func_id_history.append(func_id)
 
           # standard team excuting actions
@@ -503,6 +534,7 @@ class MainAgent(base_agent.BaseAgent):
             # obtain team and head unit tag
             logger.debug(f"[ID {self.log_id}] Agent {agent_name} status: 7.3.2")
             team, tag = agent._get_unacted_team_and_unit_tag()
+            self.last_team = team['name']
             if tag == None:  # single select team, unit dead / multi select team, all unit dead, relese actions
               agent.func_list = []
               agent.action_list = []
@@ -516,7 +548,7 @@ class MainAgent(base_agent.BaseAgent):
             if len(agent.func_list) == 0 and ('Select_Unit_' not in agent.curr_action_name):
 
               # Move camera
-              func_id, func_call = get_camera_func_smart(self, obs, tag, threshold=self.camera_threshold, team=team)
+              func_id, func_call = get_camera_func_smart(self, obs, tag, threshold=self.camera_threshold, team=team, mode='a')
               if func_id == 573:
                 logger.success(f"[ID {self.log_id}] 7.3.2.0 Agent {agent_name}: Func Call: {func_call}")
                 self.func_id_history.append(func_id)
@@ -527,9 +559,9 @@ class MainAgent(base_agent.BaseAgent):
                 if unit.tag == tag:
                   unit_f = unit
               if unit_f is None:
-                logger.error(f"[ID {self.log_id}] 7.3.2.1 Agent {agent_name}: unit of tag {tag} not found")
+                logger.error(f"[ID {self.log_id}] 7.3.2.1 Agent {agent_name}: unit of tag {tag} not found in screen")
                 logger.error(f"[ID {self.log_id}]         relative team = {team['name']} {team['unit_tags']}")
-                func_id, func_call = agent.get_func(obs)  # 销掉这个动作
+                func_id, func_call, enable_no_op, _ = agent.get_func(obs)  # 销掉这个动作
                 logger.error(f"[ID {self.log_id}] 7.3.4 Agent {agent_name}: Func Call: {func_call}")
                 self.func_id_history.append(func_id)
                 time.sleep(1)
@@ -574,24 +606,33 @@ class MainAgent(base_agent.BaseAgent):
                   time.sleep(5)  # this error may lead to endless loop
                   pass
 
-              # # Recheck all required unit selected (Warning: May Lead To Possible Endless Loop)
-              # for unit in obs.observation.feature_units:
-              #   if team['select_type'] == 'select_all_type' and \
-              #       unit.unit_type == unit_f.unit_type and not unit.is_selected and \
-              #       0.15 * self.size_screen < unit.x < 0.85 * self.size_screen and \
-              #       0.15 * self.size_screen < unit.y < 0.85 * self.size_screen:
-              #     logger.debug(f"[ID {self.log_id}] Agent {agent_name} status: 7.3.3.5")
-              #     x, y = min(max(0, unit_f.x), self.size_screen), min(max(0, unit_f.y), self.size_screen)
-              #     func_id, func_call = (2, actions.FUNCTIONS.select_point('select_all_type', (x, y)))
-              #     logger.success(f"[ID {self.log_id}] 7.3.3.5 Agent {agent_name}: Func Call: {func_call}")
-              #     self.func_id_history.append(func_id)
-              #     return func_call
+              # Recheck all required unit selected (Warning: May Lead To Possible Endless Loop)
+              for unit in obs.observation.feature_units:
+                if team['select_type'] == 'group' and \
+                    unit.tag in team['unit_tags'] and not unit.is_selected and \
+                    0.15 * self.size_screen < unit.x < 0.85 * self.size_screen and \
+                    0.15 * self.size_screen < unit.y < 0.85 * self.size_screen:
+                  logger.debug(f"[ID {self.log_id}] Agent {agent_name} status: 7.1.5.4")
+                  func_id, func_call = (4, actions.FUNCTIONS.select_control_group('recall', int(team['game_group'])))
+                  logger.success(f"[ID {self.log_id}] 7.1.5.4 Agent {agent_name}: Func Call: {func_call}")
+                  self.func_id_history.append(func_id)
+                  return func_call
+                # if team['select_type'] == 'select_all_type' and \
+                #     unit.unit_type == unit_f.unit_type and not unit.is_selected and \
+                #     0.15 * self.size_screen < unit.x < 0.85 * self.size_screen and \
+                #     0.15 * self.size_screen < unit.y < 0.85 * self.size_screen:
+                #   logger.debug(f"[ID {self.log_id}] Agent {agent_name} status: 7.3.3.5")
+                #   x, y = min(max(0, unit_f.x), self.size_screen), min(max(0, unit_f.y), self.size_screen)
+                #   func_id, func_call = (2, actions.FUNCTIONS.select_point('select_all_type', (x, y)))
+                #   logger.success(f"[ID {self.log_id}] 7.3.3.5 Agent {agent_name}: Func Call: {func_call}")
+                #   self.func_id_history.append(func_id)
+                #   return func_call
 
             # get pysc2 function of current action
             if (unit_f is not None and unit_f.is_selected) or \
               ('Select_Unit_' in agent.curr_action_name) or \
               len(agent.func_list) != 0:
-              func_id, func_call = agent.get_func(obs)
+              func_id, func_call, enable_no_op, self.last_action = agent.get_func(obs)
               logger.info(f"[ID {self.log_id}] 7.3.4 Agent {agent_name}: agent.get_func(obs): get {func_call}")
               self.func_id_history.append(func_id)
 
@@ -606,12 +647,13 @@ class MainAgent(base_agent.BaseAgent):
         logger.success(f"[ID {self.log_id}] 7.3.5 Agent {agent_name}: One loop finished, release self.main_loop_lock")
         self.main_loop_step += 1
         self.main_loop_lock = False  # release main_loop_lock to enable auto management
+        self.game_time_last2 = game_time_s
         func_id, func_call = (0, actions.FUNCTIONS.no_op())
         self.func_id_history.append(func_id)
         return func_call
 
       # execute function of current agent's current action
-      if func_id != 0:
+      if func_id != 0 or (func_id == 0 and enable_no_op):
         if func_id in obs.observation.available_actions:
           logger.success(f"[ID {self.log_id}] 7.4 Agent {agent_name} Func Call: {func_call}")
           self.func_id_history.append(func_id)
@@ -626,3 +668,17 @@ class MainAgent(base_agent.BaseAgent):
     logger.warning(f"[ID {self.log_id}] Func Call: {func_call}")
     self.func_id_history.append(func_id)
     return func_call
+
+  def send_chat_message(self):
+    if self.steps == 0:
+      return f""
+    if self.last_action is not None:
+      time_m = self.steps / 22.4 // 60
+      time_s = self.steps / 22.4 % 60
+      time_s_ = int(100 * round(time_s-math.floor(time_s), 2))
+      text_time_m = f'0{math.floor(time_m)}' if math.floor(time_m) < 10 else f'{math.floor(time_m)}'
+      text_time_s = f'0{math.floor(time_s)}' if math.floor(time_s) < 10 else f'{math.floor(time_s)}'
+      text_time_s_ = f'0{time_s_}' if math.floor(time_s_) < 10 else f'{time_s_}'
+      # return f"{self.last_action} {self.last_team} Step{self.main_loop_step} ({text_time_m}:{text_time_s}:{text_time_s_}) "
+      return f"{self.last_team} Step{self.main_loop_step} ({text_time_m}:{text_time_s}:{text_time_s_}) {self.last_action} "
+    return None

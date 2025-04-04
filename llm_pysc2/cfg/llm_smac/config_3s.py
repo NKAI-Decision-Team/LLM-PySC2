@@ -12,19 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from llm_pysc2.agents.configs.config import ProtossAgentConfig
+from llm_pysc2.cfg.config import ProtossAgentConfig
 from llm_pysc2.lib.llm_action import *
 
 
-class ConfigPysc2_Defend(ProtossAgentConfig):
+class ConfigSmac_3s(ProtossAgentConfig):
 
   def __init__(self):
-    super(ConfigPysc2_Defend, self).__init__()
-    self.AGENTS_ALWAYS_DISABLE = [
-      'Airborne', 'Builder', 'Commander', 'Developer', 'Defender',
-      'CombatGroup0', '            ', 'CombatGroup2', 'CombatGroup3', 'CombatGroup4',
-      'CombatGroup5', 'CombatGroup6', 'CombatGroup7', 'CombatGroup8', 'CombatGroup9'
-    ]  # CombatGroup1
+    super(ConfigSmac_3s, self).__init__()
     self.ENABLE_INIT_STEPS = False
     self.ENABLE_AUTO_WORKER_MANAGE = False
     self.ENABLE_AUTO_WORKER_TRAINING = False
@@ -36,10 +31,10 @@ class ConfigPysc2_Defend(ProtossAgentConfig):
     # self.MAX_LLM_DECISION_FREQUENCY = 1
     # self.MAX_NUM_ACTIONS = 3
 
+    self.AGENTS_ALWAYS_DISABLE = []
     self.AGENTS = {
-      'CombatGroup1': {
-        'describe': "Protoss garrison troops commander, controls several Stalkers. "
-                    "Responsible for intercepting enemy infiltrating forces.",
+      'CombatGroupSmac': {
+        'describe': "Protoss military commander, controls units to fight against enemy. ",
         'llm': {
           'basic_prompt': self.basic_prompt,
           'translator_o': self.translator_o,
@@ -50,18 +45,19 @@ class ConfigPysc2_Defend(ProtossAgentConfig):
           'api_base': self.api_base,
           'api_key': self.api_key,
         },
-        'team': [
-          {'name': 'Stalker-1', 'unit_type': [units.Protoss.Stalker],
-           'game_group': 4, 'select_type': 'group'},
-        ],
-        'action': {
-          units.Protoss.Stalker: PROTOSS_BASIC_ACTION_2 + [
-            {'name': 'Ability_Blink_Screen', 'arg': ['screen'],
-             'func': [(180, F.Effect_Blink_screen, ('queued', 'screen'))]},
-            {'name': 'Select_Unit_Blink_Screen', 'arg': ['tag', 'screen'],
-             'func': [(3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
-                      (180, F.Effect_Blink_screen, ('now', 'screen'))]},
-          ]
-        },
+        'team': {
+          'Stalker-1': {
+            'name': 'Stalker-1', 'unit_type': [units.Protoss.Stalker], 'game_group': 4, 'select_type': 'group',
+            'actions': {units.Protoss.Stalker: SMAC_ACTION_STALKER}
+           },
+          # 'Stalker-2': {
+          #   'name': 'Stalker-2', 'unit_type': [units.Protoss.Stalker], 'game_group': 5, 'select_type': 'group',
+          #   'actions': {units.Protoss.Stalker: SMAC_ACTION_STALKER}
+          # },
+          # 'Stalker-3': {
+          #   'name': 'Stalker-3', 'unit_type': [units.Protoss.Stalker], 'game_group': 6, 'select_type': 'group',
+          #   'actions': {units.Protoss.Stalker: SMAC_ACTION_STALKER}
+          # },
+        }
       },
     }

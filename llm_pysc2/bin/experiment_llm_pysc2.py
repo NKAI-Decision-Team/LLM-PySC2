@@ -12,34 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from llm_pysc2.agents.configs.llm_pysc2 import ConfigPysc2_Harass, ConfigPysc2_Defend, ConfigPysc2_Combat
-from llm_pysc2.agents import MainAgent, LLMAgent
+from llm_pysc2.cfg.llm_pysc2 import ConfigPysc2_Harass, ConfigPysc2_Defend, ConfigPysc2_Combat, ConfigPysc2_Combat_Small
+from llm_pysc2.agents import *
 import os
 
 
-def get_config(task):
-  if task in [1, 2]:
+def get_config(map_name):
+  if "task1" in map_name or "task2" in map_name or "harass" in map_name:
     config = ConfigPysc2_Harass()
-    for agent_name in list(config.AGENTS.keys()):
-      for team in config.AGENTS[agent_name]['team']:
-        team['task'] = [
-          {'time': None, 'pos': [52, 32], 'info': "Go to minimap coordinate [52, 32], and try to avoid been detected or attacked before arrival."},
-          {'time': None, 'pos': None, 'info': "Kill as much as enemy workers as possible."},
-        ]
-  elif task in [3]:
+  elif "task3" in map_name:
     config = ConfigPysc2_Defend()
-    for team in config.AGENTS['CombatGroup1']['team']:
-      team['task'] = [
-        {'time': '0:00', 'pos': None, 'info': "Protect our nexus and probes from enemy airdrops. At Game time 0:00, "
-                                              "2 airdrops detected from minimap [24, 32] and [12, 24] to [16, 32]"},
-        {'time': '0:10', 'pos': None, 'info': "Protect our nexus and probes from enemy airdrops. At Game time 0:10, "
-                                              "2 airdrops detected from minimap [20, 24] and [20, 40] to [16, 32]"},
-        {'time': '0:20', 'pos': None, 'info': "Protect our nexus and probes from enemy airdrops. At Game time 0:20, "
-                                              "2 airdrops detected from minimap [24, 32] and [12, 40] to [16, 32]"},
-        {'time': '0:30', 'pos': None, 'info': "Protect our nexus and probes from enemy airdrops. At Game time 0:30, "
-                                              "2 airdrops detected from minimap [24, 32] and [10, 32] to [16, 32]"},
-      ]
-  elif task in [4, 5, 6]:
+  elif "task4" in map_name or "task5" in map_name or "task6" in map_name:
     config = ConfigPysc2_Combat()
     for agent_name in list(config.AGENTS.keys()):
       for team in config.AGENTS[agent_name]['team']:
@@ -48,7 +31,7 @@ def get_config(task):
           {'time': '0:10', 'pos': None,
            'info': "Kill as much as enemy units as possible. If no enemy found, hold the position."},
         ]
-  elif task in [7]:
+  elif "task7" in map_name:
     config = ConfigPysc2_Combat()
     config.ENABLE_COMMUNICATION = True
     config.MAX_LLM_RUNTIME_ERROR_TIME = 60
@@ -57,7 +40,7 @@ def get_config(task):
       {'time': None, 'pos': None, 'info': "Organize frontline commanders to collaborate in defeating enemy troops, "
                                           "you should reach the goal and finish the battle before game time 1:30."},
     ]
-  elif task in [8]:
+  elif "task8" in map_name:
     config = ConfigPysc2_Combat()
     config.ENABLE_COMMUNICATION = True
     config.AGENTS_ALWAYS_DISABLE.remove('Airborne')
@@ -67,6 +50,8 @@ def get_config(task):
       {'time': None, 'pos': None, 'info': "Organize a multiline combat to defeat enemy troops and kill their workers, "
                                           "you should reach all the goals and finish the battle before game time 1:30."},
     ]
+  elif "4s_blink_vs_" in map_name:
+    config = ConfigPysc2_Combat_Small()
   else:
     raise AssertionError("wrong task index")
 
@@ -91,6 +76,7 @@ class MainAgentLLMPysc2(MainAgent):
   def step(self, obs):
     return super().step(obs)
 
+# python -m pysc2.bin.agent --map 3s_vs_3z --agent pysc2.agents.no_op_agent.NoOpAgent
 
 if __name__ == "__main__":
 
@@ -98,7 +84,7 @@ if __name__ == "__main__":
     os.system(f"python -m pysc2.bin.agent --map {map_name} --agent_race protoss --parallel 1 "
               f"--agent llm_pysc2.bin.experiment_llm_pysc2.MainAgentLLMPysc2")
   elif enable_image_rgb:
-    os.system(f"python -m pysc2.bin.agent --map {map_name} --agent_race protoss --parallel 1 "
+    os.system(f"python -m pysc2.bin.agent --map {map_name} --agent_race protoss --parallel 1 "  
               f"--agent llm_pysc2.bin.experiment_llm_pysc2.MainAgentLLMPysc2 "
               f"--feature_screen_size 256 --feature_minimap_size 64 "
               f"--rgb_screen_size 256 --rgb_minimap_size 64 "

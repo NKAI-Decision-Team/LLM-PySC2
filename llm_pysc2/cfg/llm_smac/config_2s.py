@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from llm_pysc2.agents.configs.config import ProtossAgentConfig
+from llm_pysc2.cfg.config import ProtossAgentConfig
 from llm_pysc2.lib.llm_action import *
 
 
-class ConfigSmac_1c3s5z(ProtossAgentConfig):
+class ConfigSmac_2s(ProtossAgentConfig):
 
   def __init__(self):
-    super(ConfigSmac_1c3s5z, self).__init__()
+    super(ConfigSmac_2s, self).__init__()
     self.ENABLE_INIT_STEPS = False
     self.ENABLE_AUTO_WORKER_MANAGE = False
     self.ENABLE_AUTO_WORKER_TRAINING = False
@@ -45,22 +45,19 @@ class ConfigSmac_1c3s5z(ProtossAgentConfig):
           'api_base': self.api_base,
           'api_key': self.api_key,
         },
-        'team': [
-          {'name': 'Zealot-1', 'unit_type': [units.Protoss.Zealot],
-           'game_group': 1, 'select_type': 'group'},
-          {'name': 'Zealot-2', 'unit_type': [units.Protoss.Zealot],
-           'game_group': 2, 'select_type': 'group'},
-          {'name': 'Zealot-3', 'unit_type': [units.Protoss.Zealot],
-           'game_group': 3, 'select_type': 'group'},
-          {'name': 'Stalker-1', 'unit_type': [units.Protoss.Stalker],
-           'game_group': 4, 'select_type': 'group'},
-          {'name': 'Colossus-1', 'unit_type': [units.Protoss.Colossus],
-           'game_group': 5, 'select_type': 'group'},
-        ],
-        'action': {
-          units.Protoss.Zealot: PROTOSS_BASIC_ACTION_SMAC,
-          units.Protoss.Stalker: PROTOSS_BASIC_ACTION_SMAC2,
-          units.Protoss.Colossus: PROTOSS_BASIC_ACTION_SMAC2,
+        'team': {
+          'Stalker-1': {
+            'name': 'Stalker-1', 'unit_type': [units.Protoss.Stalker], 'game_group': 4, 'select_type': 'group',
+            'actions': {units.Protoss.Stalker: [ATTACK_00S, MOVE_SCREEN]}  # [SU_ATTACK_02S, SU_MOVE_SCREEN]
+          },
+          'Stalker-2': {
+            'name': 'Stalker-2', 'unit_type': [units.Protoss.Stalker], 'game_group': 5, 'select_type': 'group',
+            'actions': {units.Protoss.Stalker: [ATTACK_00S, MOVE_SCREEN]}
+          },
+          # 'Stalker-1': {
+          #   'name': 'Stalker-1', 'unit_type': [units.Protoss.Stalker], 'game_group': 4, 'select_type': 'group',
+          #   'actions': {units.Protoss.Stalker: [ATTACK_02S, MOVE_SCREEN, HOLD_POSITION, SU_MOVE_SCREEN]}  # [SU_ATTACK_02S, SU_MOVE_SCREEN]
+          # },
         },
       },
     }

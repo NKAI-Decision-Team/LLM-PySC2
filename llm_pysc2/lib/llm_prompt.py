@@ -13,9 +13,59 @@
 # limitations under the License.
 
 
+BASIC_COMBAT_RULES = \
+"""
+  1. Concentrating firepower is always necessary, attack different unit at the same time will definitely reduce killing speed and leading to terrible result. Always concentrating all teams' fire at one unit that (1)with highest DPS(most valuable) (2)most vulnerable (3)closest.
+"""
+
+# BASIC_COMBAT_RULES = \
+# """
+#   1. Try to kill more and loss less. Always concentrating firepower on the most vulnerable enemy to quickly kill enemy units.
+#   2. Try to kill enemy as quick as possible, retreat promptly when/before enemy reinforcements arrive.
+#   3. When sacrificing your unit can earn much more profits, you can choose to sacrifice your unit.
+#   4. Use your skills well to achieve optimal tactical results. Especially when controlling support units. Be aware that some skills may have side effects or long cooldowns, use them with caution.
+#   5. Always remember the tactical **tasks** given by superior. Sometimes you have to sacrifice whole team to ensure the achievement of tactical objectives.
+#   6. Try to handle micro operations well. Move during weapon cooling, attack while weapon ready, retreat heavily damaged unit and complete a kill as soon as possible.
+#   7. All teams should **concentrating fire** on the same unit(Usually the most vulnerable unit or unit with highest DPS). Do not attack multi-unit at the same time.
+#   8. Sequence actions as "skills/abilities -> attack -> move".
+#   9. Every coordinate mentioned in analysis should be clearly marked whether it is screen coordinates or minimap coordinates.
+#   10. Using <Select_Unit_Move_Screen> to repositioning low health units to safer location while still ensuring attacking the nearest enemy. At the same time, use healther units to engage in forward combat and bear damage for those vulnerable units.
+#   11. When you use **Move** action, please ensure that the moving path is **valid(within the allowed range)**, **long enough**, **safe** and **keep enemies in attack range**.
+#   12. Usually, the camera will focus you units that screen [12, 12] is the position of your units. If you need to relocate your units, move your units to a position away from [12, 12].
+#   13. Sometimes movement can lead to missed opportunities for attacks and causing allys be concentrated by the enemies. In high-intensity combat, use movement with caution(only when necessary).
+#   14. Concentrating firepower is always necessary. Always concentrating all teams' fire at one unit that (1)with highest DPS(most valuable) (2)most vulnerable (3)closest.
+# """
+
+#   11. When you use **Move** action, please ensure that the moving path is **long enough** and **safe** for the next several seconds.
+
+BASIC_COMMAND_RULES = \
+"""
+"""
+
+BASIC_DEVELOP_RULES = \
+"""
+"""
+
+BASIC_BUILD_RULES = \
+"""
+"""
+
+# BASIC_COMBAT_RULES_REFLECTION = \
+# """
+#   1. Whether each action of a_t1 are in a legal form that shown in the 'Valid Actions Part' of s_t1?
+#   2. Whether each action of a_t1 is queued in correct sequence?
+#   3. Whether the args of a_t1 are appropriate? for example, whether the attacked unit is the most important target?
+#   4. Whether concentrated firepower on the most vulnerable enemy? Can a single attack kill this unit? (calculate the total damage of one hit are needed)
+# whether the position of moving is appropriate in the micro-operation.
+# """
+
+
 class BasePrompt:
 
-  def __init__(self):
+  def __init__(self, name, log_id, config):
+    self.name = name
+    self.config = config
+    self.log_id = log_id
     self.sp = ''
     self.eip = ''
     self.eop = ''
@@ -28,10 +78,21 @@ class BasePrompt:
 class CombatGroupPrompt(BasePrompt):
 
   def __init__(self, name, log_id, config):
-    super(CombatGroupPrompt, self).__init__()
-    self.name = name
-    self.config = config
-    self.log_id = log_id
+    super(CombatGroupPrompt, self).__init__(name, log_id, config)
+
+    output_format = \
+"""
+Analysis:
+  xxxxx
+Strategy:
+  xxxxx
+Actions:
+  Team TeamName-1:
+    <ActionName1(...)>  # format like **ActionName1(...)** and -ActionName1(...)- are not valid, must use <>
+    <ActionName2(...)>
+  Team TeamName-2:
+    <ActionName1(...)>
+"""
 
     # Part 1
     self.sp = \
@@ -41,96 +102,16 @@ f"""
   Your should command your troops, complete the tactical tasks assigned by the superior. You will have several teams of units, you can command these teams to fight together or perform different tasks.
 
 2.Rules
-  2.1 Try to kill more and loss less. Usually, concentrating all firepower on the same target(especially the closest enemy) can improve the strike effectiveness.
-  2.2 Try to kill enemy as quick as possible, retreat promptly when/before enemy reinforcements arrive.
-  2.3 When sacrificing your unit can earn much more profits, you can choose to sacrifice your unit.
-  2.4 Use your skills well to achieve optimal tactical results. Especially when controlling support units.
-  2.5 Always remember the tactical tasks given by superior. Sometimes you have to sacrifice whole team to ensure the achievement of tactical objectives.
+{BASIC_COMBAT_RULES}
 
 3.Action Output
-  You should make decisions according to observed information, tactic task and rules, give analysis and decisions for each team. For example, if you have 2 teams name as 'Stalker-1' and 'Stalker-2', you should output as:
-  
-  Analysis: 
-    xxxxx
-  Actions:
-    Team Stalker-1:
-      xxxxx
-    Team Stalker-2:
-      xxxxx
+  You should make decisions according to observed information, tactic task and rules, give analysis and decisions for each team. For example, if you have 2 teams name as 'TeamName-1' and 'TeamName-2', you should output as:
+  {output_format}
+      
+Note that actions must in the shape <ActionName(...)>, do not generate action like 'ActionName(...)' or **ActionName(...)**.
 """
-    self.eip = \
-"""
-Game Info
-  Time: 0:32
-
-Team Oracle-1 Info:
-  Team minimap position: [50, 32]
-  Controlled Team Units:
-    Unit: Oracle    Tag: 0x100200001    Pos: (67, 59)    Health: 100    Energy: 108    Weapon_cooldown: 0
-  Nearby Ally units:
-    Unit: Observer    Tag: 0x100140001    Pos: (10, 70)    Health: 70    Weapon_cooldown: 0
-  Nearby Enemy units:
-    Unit: Drone    Tag: 0x101340001    Pos: (54, 40)    Health: 40
-    Unit: Drone    Tag: 0x101280001    Pos: (61, 58)    Health: 40
-    Unit: Drone    Tag: 0x1012c0001    Pos: (52, 70)    Health: 40
-    Unit: Drone    Tag: 0x1014c0001    Pos: (50, 62)    Health: 40
-    Unit: Drone    Tag: 0x101400001    Pos: (61, 63)    Health: 40
-    Unit: Drone    Tag: 0x101380001    Pos: (58, 89)    Health: 40
-    Unit: Drone    Tag: 0x101480001    Pos: (61, 71)    Health: 18
-    Unit: Drone    Tag: 0x101300001    Pos: (54, 94)    Health: 40
-    Unit: Drone    Tag: 0x101440001    Pos: (50, 72)    Health: 40
-    Unit: Drone    Tag: 0x101240001    Pos: (61, 63)    Health: 40
-    Unit: Overlord    Tag: 0x101500001    Pos: (18, 67)    Health: 200
-    Unit: Hatchery    Tag: 0x101100001    Pos: (34, 67)    Health: 1500
-    Unit: SpawningPool    Tag: 0x1011c0002    Pos: (50, 110)    Health: 197    Build_progress: 10%
-    Unit: Queen    Tag: 0x1000c0001    Pos: (50, 40)    Health: 175    Energy: 25
-    Unit: Queen    Tag: 0x100580001    Pos: (57, 54)    Health: 175    Energy: 25
-
-Here are some description of screen units:
-  Protoss.Oracle
-    A light, psionic, support and harassment ship. Can grant vision and harass light units and workers with its pulsar beam.(Cannot attack ground units before activating Pulsar Beam)
-    unit abilities:
-      Revelation: Always available. Active skill. Cost: 25 energy. Reveals enemy units and structures in an area, granting vision for 20 seconds. Also reveals cloaked or burrowed units or structures.
-      Pulsar Beam: Always available. Active skill. Cost: 25 energy (+1.96 energy per second). Enables the Oracle to attack ground units with high damage, particularly effective against light units.
-      Stasis Ward: Always available. Active skill. Cost: 50 energy. Places a cloaked stasis ward on the ground that traps enemy units in stasis for 21 seconds upon activation.
-  Protoss.Observer
-    A cloaking air unit that functions as a detector.
-  Protoss.StasisTrap
-    Cloaked structure created by the Oracle. Used to freeze incoming units.Permanent Cloaking:This unit is permanently cloaked. They cannot be seen or directly attacked by enemy forces, unless they have detector support.
-  Zerg.Drone
-    Harvests resources and spawns structures. Is sacrificed when creating new structures.The drone morphs into structures and harvests minerals and vespene gas.
-  Zerg.Overlord
-    Produces control and is no longer a detector like the StarCraft I version.
-  Zerg.Hatchery
-    Spawns larvae to be morphed into other zerg strains, generates creep and digests minerals and gas into a usable form. The queen is spawned directly from the hatchery.
-  Zerg.SpawningPool
-    Required for production of zerglings and queens and researches zergling upgrades.
-  Zerg.Queen
-    The queen a powerful attacking ground dwelling support unit ideal for zerg defense.
-
-Valid Actions:
-  <Stop()>
-  <No_Operation()>
-  <Attack_Unit(tag)>
-  <Move_Screen(screen)>
-  <Move_Minimap(minimap)>
-  <Ability_OracleRevelation_Screen(screen)>
-  <Ability_StasisTrap_Screen(screen)>
-Arg: 
-  tag: refers to a hexadecimal number, shape as 0x000000000.
-  screen: refers to a screen coordinate, shape as [x, y], x and y range from 0 to 128.
-  minimap: refers to a minimap coordinate, shape as [x, y], x and y range from 0 to 64.
-"""
-    self.eop = \
-"""
-Analysis: 
-  We are controlling a team called Oracle-1, we have met several enemy Queens, Drones and Overlord. 
-  Our goal is killing as much Drone, consider that we still have enough health and energy, we should choose drone to attack, and leave the area quickly.
-Actions:
-  Team Oracle-1:
-    <Attack_Unit(0x101480001)>
-    <Move_Screen([67, 96])>
-"""
+    self.eip = """xxxxx"""
+    self.eop = f"""{output_format}"""
 
     # Part 2
     if self.config.ENABLE_COMMUNICATION:
@@ -160,27 +141,18 @@ Args explanation:
   (2)ChannelName: shape as Channel-i, i refers to an integer.
   (2)message: any text wrapped between ''' and '''.
 """
+
       self.eop += \
 """
 Communications:
     <MessageTo(Commander, '''Copy that, we have arrived enemy base, and started attack enemy workers''')>
 """
 
-    # Part 3
-    self.eip += \
-f"""
-Give each team no more than {self.config.MAX_NUM_ACTIONS} actions.
-Now, start generating your analysis and actions:
-"""
-
 
 
 class CommanderPrompt(BasePrompt):  # TODO: Design a prompt specifically for the supreme military commander
   def __init__(self, name, log_id, config):
-    super(CombatGroupPrompt, self).__init__()
-    self.name = name
-    self.config = config
-    self.log_id = log_id
+    super(CombatGroupPrompt, self).__init__(name, log_id, config)
     # self.sp = ''
     # self.eip = ''
     # self.eop = ''
@@ -188,14 +160,10 @@ class CommanderPrompt(BasePrompt):  # TODO: Design a prompt specifically for the
 
 class DeveloperPrompt(BasePrompt):  # TODO: Design a prompt specifically for the supreme logistics commander
   def __init__(self, name, log_id, config):
-    super(CombatGroupPrompt, self).__init__()
-    self.name = name
-    self.config = config
-    self.log_id = log_id
+    super(CombatGroupPrompt, self).__init__(name, log_id, config)
     # self.sp = ''
     # self.eip = ''
     # self.eop = ''
-
 
 
 PROTOSS_FACTORY = {

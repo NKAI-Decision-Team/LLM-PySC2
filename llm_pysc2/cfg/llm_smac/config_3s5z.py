@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from llm_pysc2.agents.configs.config import ProtossAgentConfig
+from llm_pysc2.cfg.config import ProtossAgentConfig
 from llm_pysc2.lib.llm_action import *
 
 
-class ConfigSmac_2c(ProtossAgentConfig):
+class ConfigSmac_3s5z(ProtossAgentConfig):
 
   def __init__(self):
-    super(ConfigSmac_2c, self).__init__()
+    super(ConfigSmac_3s5z, self).__init__()
     self.ENABLE_INIT_STEPS = False
     self.ENABLE_AUTO_WORKER_MANAGE = False
     self.ENABLE_AUTO_WORKER_TRAINING = False
@@ -45,14 +45,23 @@ class ConfigSmac_2c(ProtossAgentConfig):
           'api_base': self.api_base,
           'api_key': self.api_key,
         },
-        'team': [
-          {'name': 'Colossus-1', 'unit_type': [units.Protoss.Colossus],
-           'game_group': 1, 'select_type': 'group'},
-          {'name': 'Colossus-2', 'unit_type': [units.Protoss.Colossus],
-           'game_group': 2, 'select_type': 'group'},
-        ],
-        'action': {
-          units.Protoss.Colossus: PROTOSS_BASIC_ACTION_SMAC2,
+        'team': {
+          'Zealot-1': {
+            'name': 'Zealot-1', 'unit_type': [units.Protoss.Zealot], 'game_group': 1, 'select_type': 'group',
+            'actions': {units.Protoss.Zealot: SMAC_ACTION_ZEALOT}
+          },
+          'Zealot-2': {
+            'name': 'Zealot-2', 'unit_type': [units.Protoss.Zealot], 'game_group': 2, 'select_type': 'group',
+            'actions': {units.Protoss.Zealot: SMAC_ACTION_ZEALOT}
+          },
+          'Zealot-3': {
+            'name': 'Zealot-3', 'unit_type': [units.Protoss.Zealot], 'game_group': 3, 'select_type': 'group',
+            'actions': {units.Protoss.Zealot: SMAC_ACTION_ZEALOT}
+          },
+          'Stalker-1': {
+            'name': 'Stalker-1', 'unit_type': [units.Protoss.Stalker], 'game_group': 4, 'select_type': 'group',
+            'actions': {units.Protoss.Stalker: SMAC_ACTION_STALKER}
+          },
         },
       },
     }

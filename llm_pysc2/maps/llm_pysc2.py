@@ -30,6 +30,11 @@ class llm_pysc2(lib.Map):
 
 llm_pysc2_maps = [
   "debug_map",
+
+  "2a_harass_level1",
+  "3ph_harass_level1",
+
+
   "pvz_task1_level1",
   "pvz_task2_level1",
   "pvz_task3_level1",

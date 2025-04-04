@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from llm_pysc2.lib import events, llm_action
 from llm_pysc2.lib.knowledge import protoss, zerg, terran
 from llm_pysc2.lib.utils import *
 
@@ -24,7 +25,6 @@ import numpy as np
 import pygame
 import base64
 import math
-import glob
 import io
 import os
 
@@ -261,8 +261,9 @@ def get_img_obs_rgb(self, obs):
 
 
 
-def get_game_info(obs, agent) -> str:
+def get_game_info(agent) -> str:
   # obtain time info
+  obs = agent.team_unit_obs_list[0]
   game_info = 'Game Info:'
   game_loop = obs.observation.game_loop
   game_s = str(int(game_loop / 22.4 % 60))  # SC2 runs at 22.4 game loops per second
@@ -278,24 +279,28 @@ def get_game_info(obs, agent) -> str:
     game_info += f"\n\tSupply Total: {player.food_cap}"
     game_info += f"\n\tSupply Left: {player.food_cap - player.food_used}"
     game_info += f"\n\tSupply Used: {player.food_used}"
+  game_info += f"\n\n"
   return game_info
 
 
-def get_single_unit_info(unit, team_unit_screen_coord=None, size_screen=None) -> str:
+def get_single_unit_info(unit, size_screen, team_unit_screen_coord=None) -> str:
 
   unit_type_id = unit.unit_type
   unit_name = unit_dict.get(unit_type_id, "Unknown")
+  ratio = size_screen / SCREEN_WORLD_GRID
 
   # tag and pos
-  unit_info = f"\n\t\tUnit: {unit_name}"
+  if unit.alliance == features.PlayerRelative.ENEMY:
+    unit_info = f"\n\t\tEnemy Unit: {unit_name}"
+  else:
+    unit_info = f"\n\t\tUnit: {unit_name}"
   if unit.unit_type not in UNIT_DONOT_NEED_TAG:
     unit_info += f"    Tag: {hex(unit.tag)}"
-  unit_info += f"    ScreenPos: [{unit.x}, {unit.y}]"
+  unit_info += f"    ScreenPos: [{int(unit.x/ratio)}, {int(unit.y/ratio)}]"
   total_health = unit.health + unit.shield
   # distance to current team head unit
   if unit.unit_type not in UNIT_DONOT_NEED_DIS:
     if team_unit_screen_coord is not None and size_screen is not None:
-      ratio = int(size_screen / SCREEN_WORLD_GRID)
       dist = math.sqrt((team_unit_screen_coord[0] - unit.x) ** 2 + (team_unit_screen_coord[1] - unit.y) ** 2) / ratio
       unit_info += f"    Distance: {int(dist)}"
   # health, energy, build_progress, weapon_cooldown
@@ -312,11 +317,11 @@ def get_single_unit_info(unit, team_unit_screen_coord=None, size_screen=None) ->
       unit.unit_type in knowledge_dict.keys() and 'weapon1_attack' in knowledge_dict[unit.unit_type].keys() \
       and knowledge_dict[unit.unit_type]['weapon1_attack'] not in [0, -1]:
     if unit.unit_type == units.Protoss.Phoenix and unit.order_id_0 == 32:
-      unit_info += f"    Weapon Locked by GravitonBeam Ability"
-    elif unit.weapon_cooldown == 0:
-      unit_info += f"    Weapon Ready"
-    elif unit.weapon_cooldown > 0:
-      unit_info += f"    Weapon Cooldown Time: {unit.weapon_cooldown / 22:.2f}s"
+      unit_info += f"    Cannot attack because of maintaining GravitonBeam on enemy unit (cannot move at the same time)"
+    # elif unit.weapon_cooldown == 0:
+    #   unit_info += f"    Weapon Ready"
+    # elif unit.weapon_cooldown > 0:
+    #   unit_info += f"    Weapon Waiting For Cooldown: {unit.weapon_cooldown / 22:.2f}s"
     else:
       pass
   if unit.build_progress == 100 and unit.buff_id_0 != 0:
@@ -365,8 +370,16 @@ def get_single_unit_type_knowledge(unit_type, log_id) -> str:
   return unit_type_knowledge
 
 
-# 获取所属单位的信息
+# 获取所属单位的信息和相关知识
 def get_teams_info_with_knowledge(agent) -> str:
+  info = ''
+  info += get_teams_info(agent)
+  info += get_relevant_knowledge(agent)
+  return info
+
+
+# 获取所属单位的信息
+def get_teams_info(agent) -> str:
 
   teams_info = ''
   ctrl_unit_type_total = []
@@ -434,9 +447,9 @@ def get_teams_info_with_knowledge(agent) -> str:
       enemy_units_info = ''
 
       if team['select_type'] == 'select':
-        teams_info += f"\n\nTeam {team['name']}-{i + 1} Info:"
+        teams_info += f"Team {team['name']}-{i + 1} Info:"
       else:
-        teams_info += f"\n\nTeam {team['name']} Info:"
+        teams_info += f"Team {team['name']} Info:"
 
       arr = obs.observation['feature_minimap']['camera']
       idx = np.nonzero(arr)  # 获取特征图上非零值的坐标
@@ -445,12 +458,34 @@ def get_teams_info_with_knowledge(agent) -> str:
       teams_info += f"\n\tTeam minimap position: [{minimap_x}, {minimap_y}]"
       size_screen = obs.observation.feature_screen.height_map.shape[0]
 
+      arr = obs.observation.feature_screen.buildable
+      arr_t = arr.T
+      edge_l, edge_r = 0, size_screen - 1
+      edge_b, edge_u = size_screen - 1, 0    # y++ from up to down
+      for i in range(size_screen):
+        x1, y1 = i, i
+        x2, y2 = size_screen - 1 - i, size_screen - 1 - i
+        if x1 >= x2:
+          break
+        edge_u = y1 if (sum(arr[y1][:]) == 0 and edge_u == y1 - 1) else edge_u
+        edge_b = y2 if (sum(arr[y2][:]) == 0 and edge_b == y2 + 1) else edge_b
+        edge_l = x1 if (sum(arr_t[x1][:]) == 0 and edge_l == x1 - 1) else edge_l
+        edge_r = x2 if (sum(arr_t[x2][:]) == 0 and edge_r == x2 + 1) else edge_r
+      team['b'] = edge_b = edge_b if edge_b == size_screen - 1 else edge_b - int(size_screen / 6)  # /6
+      team['u'] = edge_u = edge_u if edge_u == 0 else edge_u + int(size_screen / 6)
+      team['l'] = edge_l = edge_l if edge_l == 0 else edge_l + int(size_screen / 6)
+      team['r'] = edge_r = edge_r if edge_r == size_screen - 1 else edge_r - int(size_screen / 6)
+      ratio = size_screen / SCREEN_WORLD_GRID
+      teams_info += f"\n\tTeam screen edge (screen coordinate range valid for actions): {int(edge_l/ratio)} < x < {int(edge_r/ratio)}, {int(edge_u/ratio)} < y < {int(edge_b/ratio)}"
+      if (team['l'] != 0 or team['u'] != 0 or team['r'] != size_screen - 1 or team['b'] != size_screen - 1):
+        teams_info += f"\nWarning! controlled team near the map edge! Pay attention to using coordinates within the boundary!({int(edge_l/ratio)} < x < {int(edge_r/ratio)}, {int(edge_u/ratio)} < y < {int(edge_b/ratio)})"
+
       # controlled units
       for unit_type in ctrl_unit_type:
         for unit in obs.observation.feature_units:
           if unit.unit_type == unit_type and unit.is_on_screen and unit.alliance == features.PlayerRelative.SELF \
-              and unit.is_selected and (0 < unit.x < size_screen and 0 < unit.y < size_screen):
-            ctrl_units_info += get_single_unit_info(unit)
+              and unit.tag in team['unit_tags'] and (0 < unit.x < size_screen and 0 < unit.y < size_screen):
+            ctrl_units_info += get_single_unit_info(unit, size_screen)
       if ctrl_units_info != '':
         teams_info += "\n\tControlled Team Units:"
         teams_info += ctrl_units_info
@@ -459,8 +494,8 @@ def get_teams_info_with_knowledge(agent) -> str:
       for unit_type in ally_unit_type:
         for unit in obs.observation.feature_units:
           if unit.unit_type == unit_type and unit.is_on_screen and unit.alliance in [1, 2] and \
-              not unit.is_selected and (0 < unit.x < size_screen and 0 < unit.y < size_screen):
-            ally_units_info += get_single_unit_info(unit)
+              unit.tag not in team['unit_tags'] and (0 < unit.x < size_screen and 0 < unit.y < size_screen):
+            ally_units_info += get_single_unit_info(unit, size_screen)
       if ally_units_info != '':
         teams_info += "\n\tNearby Ally Units:"
         teams_info += ally_units_info
@@ -470,10 +505,78 @@ def get_teams_info_with_knowledge(agent) -> str:
         for unit in obs.observation.feature_units:
           if unit.unit_type == unit_type and unit.is_on_screen and unit.alliance == features.PlayerRelative.ENEMY and \
               (0 < unit.x < size_screen and 0 < unit.y < size_screen):
-            enemy_units_info += get_single_unit_info(unit, ctrl_unit_screen_coord, size_screen)
+            enemy_units_info += get_single_unit_info(unit, size_screen, ctrl_unit_screen_coord)
       if enemy_units_info != '':
         teams_info += "\n\tNearby Enemy Units:"
         teams_info += enemy_units_info
+    teams_info += "\n"
+
+  teams_info += '\n'
+  return teams_info
+
+
+# 获取相关知识
+def get_relevant_knowledge(agent) -> str:
+
+  knowledge_info = ''
+  ctrl_unit_type_total = []
+  ally_unit_type_total = []
+  enemy_unit_type_total = []
+  unit_types_total = []
+
+  # 获取小队单位的信息，对于单选型小队，一个单位算一队
+  for team in agent.teams:
+    team_obs_list = team['obs'] if (len(team['obs']) != 0 and len(team['unit_tags']) != 0) else None
+    if team['select_type'] == 'select' and len(team['obs']) != len(team['unit_tags']):
+      continue
+    if team_obs_list is None:
+      continue
+
+    for i in range(len(team_obs_list)):
+
+      ctrl_unit_type = []
+      ally_unit_type = []
+      enemy_unit_type = []
+      ctrl_unit_tags = []
+      ally_unit_tags = []
+      enemy_unit_tags = []
+
+      obs = team_obs_list[i]
+      curr_team_head_unit = None
+
+      ctrl_unit_screen_coord = [0, 0]
+      for unit in obs.observation.feature_units:
+        if unit.is_on_screen and unit.is_selected and unit.tag in team['unit_tags']:
+          ctrl_unit_type.append(unit.unit_type)
+          ctrl_unit_tags.append(unit.tag)
+          ctrl_unit_screen_coord[0] += unit.x
+          ctrl_unit_screen_coord[1] += unit.y
+          if team['select_type'] != 'select' and unit.tag == team['unit_tags'][0]:
+            curr_team_head_unit = unit
+          if team['select_type'] == 'select' and unit.tag == team['unit_tags'][i]:
+            curr_team_head_unit = unit
+        if unit.is_on_screen and unit.alliance in [1, 2] and not unit.is_selected:
+          ally_unit_type.append(unit.unit_type)
+          ally_unit_tags.append(unit.tag)
+        if unit.is_on_screen and unit.alliance == features.PlayerRelative.ENEMY:
+          if unit.unit_type in [units.Zerg.Larva]:
+            continue
+          enemy_unit_type.append(unit.unit_type)
+          enemy_unit_tags.append(unit.tag)
+
+      if len(ctrl_unit_tags) > 0:
+        ctrl_unit_screen_coord[0] = ctrl_unit_screen_coord[0] / len(ctrl_unit_tags)
+        ctrl_unit_screen_coord[1] = ctrl_unit_screen_coord[1] / len(ctrl_unit_tags)
+      else:
+        ctrl_unit_screen_coord = None
+
+      # 去重
+      ctrl_unit_type = list(set(ctrl_unit_type))
+      ally_unit_type = list(set(ally_unit_type))
+      enemy_unit_type = list(set(enemy_unit_type))
+      ctrl_unit_type_total += ctrl_unit_type
+      ally_unit_type_total += ally_unit_type
+      enemy_unit_type_total += enemy_unit_type
 
   ctrl_unit_type_total = list(set(ctrl_unit_type_total))
   ally_unit_type_total = list(set(ally_unit_type_total))
@@ -482,7 +585,7 @@ def get_teams_info_with_knowledge(agent) -> str:
 
   # controlled units description and abilities
   unit_types_total = ctrl_unit_type_total + ally_unit_type_total + enemy_unit_type_total
-  teams_info += f"\n\nRelevant Knowledge:"
+  knowledge_info += f"Relevant Knowledge:"
   for unit_type in unit_types_total:
     if unit_type not in knowledge_dict.keys():
       logger.warning(f"[ID {agent.log_id}] do not find unit_type {str(unit_type)} in knowledge_dict")
@@ -490,44 +593,44 @@ def get_teams_info_with_knowledge(agent) -> str:
     if unit_type in showed_unit:
       continue
     if 'Protoss' in str(units.get_unit_type(unit_type)):
-      teams_info += f"\n\t{str(units.Protoss(unit_type))}"
+      knowledge_info += f"\n\t{str(units.Protoss(unit_type))}"
     if 'Terran' in str(units.get_unit_type(unit_type)):
-      teams_info += f"\n\t{str(units.Terran(unit_type))}"
+      knowledge_info += f"\n\t{str(units.Terran(unit_type))}"
     if 'Zerg' in str(units.get_unit_type(unit_type)):
-      teams_info += f"\n\t{str(units.Zerg(unit_type))}"
+      knowledge_info += f"\n\t{str(units.Zerg(unit_type))}"
 
     if 'description' in knowledge_dict[unit_type].keys():
-      teams_info += f"\n\t\t{knowledge_dict[unit_type]['description']}"
+      knowledge_info += f"\n\t\t{knowledge_dict[unit_type]['description']}"
     else:
       logger.error(
         f"[ID {agent.log_id}] do not find description of {str(unit_type)} in knowledge_dict")
 
     unit_knowledge = knowledge_dict[unit_type]
-    teams_info += f"\n\t\tUnit properties: {unit_knowledge['target_self'] + unit_knowledge['type_self']}"
+    knowledge_info += f"\n\t\tUnit properties: {unit_knowledge['target_self'] + unit_knowledge['type_self']}"
     if 'weapon1_attack_range' in unit_knowledge.keys() and unit_knowledge['weapon1_attack_range'] not in [0, -1]:
-      teams_info += f"\n\t\tWeapon info: Attack Range {unit_knowledge['weapon1_attack_range']}"
+      knowledge_info += f"\n\t\tWeapon info: Attack Range {unit_knowledge['weapon1_attack_range']}"
     if 'target' in unit_knowledge.keys() and len(unit_knowledge['target']) != 0:
-      teams_info += f", target: {unit_knowledge['target']}"
+      knowledge_info += f", target: {unit_knowledge['target']}"
     if 'type_anti' in unit_knowledge.keys() and len(unit_knowledge['type_anti']) != 0:
-      teams_info += f", anti: {unit_knowledge['type_anti']}"
+      knowledge_info += f", anti: {unit_knowledge['type_anti']}"
     if 'weapon1_attack' in unit_knowledge.keys() and unit_knowledge['weapon1_attack'] not in [0, -1]:
-      teams_info += f", DPS(damage per second) {int(unit_knowledge['weapon1_attack'] * unit_knowledge['weapon1_attack_times'] / unit_knowledge['weapon1_cooldown'])}"
+      knowledge_info += f", DPS(damage per second) {int(unit_knowledge['weapon1_attack'] * unit_knowledge['weapon1_attack_times'] / unit_knowledge['weapon1_cooldown'])}"
     if 'weapon1_attack_bonus' in unit_knowledge.keys() and unit_knowledge['weapon1_attack_bonus'] not in [0, -1]:
-      teams_info += f", DPS-anti {int((unit_knowledge['weapon1_attack'] + unit_knowledge['weapon1_attack_bonus']) * unit_knowledge['weapon1_attack_times'] / unit_knowledge['weapon1_cooldown'])}"
+      knowledge_info += f", DPS-anti {int((unit_knowledge['weapon1_attack'] + unit_knowledge['weapon1_attack_bonus']) * unit_knowledge['weapon1_attack_times'] / unit_knowledge['weapon1_cooldown'])}"
     if 'ability' in unit_knowledge.keys() and unit_type in ctrl_unit_type_total:
-      teams_info += f"\n\t\tunit abilities:"
+      knowledge_info += f"\n\t\tunit abilities:"
       for ability in unit_knowledge['ability'].keys():
-        teams_info += f"\n\t\t\t{ability}: {unit_knowledge['ability'][ability]}"
+        knowledge_info += f"\n\t\t\t{ability}: {unit_knowledge['ability'][ability]}"
 
     showed_unit.append(unit_type)
-
-  return teams_info
+  knowledge_info += "\n\n"
+  return knowledge_info
 
 
 # 根据obs获取合法动作，以文本格式输出，这个需要作为input prompt的一个独立部分
-def get_valid_actions_from_obs(obs, agent) -> str:
+def get_valid_actions(agent) -> str:
 
-  text_valid_actions = "\n\nValid Actions:"
+  text_valid_actions = "Valid Actions:"
   for team in agent.teams:
     team_obs_list = team['obs'] if (len(team['obs']) != 0 and len(team['unit_tags']) != 0) else None
     if team['select_type'] == 'select' and len(team['obs']) != len(team['unit_tags']) or team_obs_list is None:
@@ -548,10 +651,11 @@ def get_valid_actions_from_obs(obs, agent) -> str:
       text_valid_actions += f"\n\t{team_name} Valid Actions:"
 
       # reduce to team action space
+      team_config = agent.config.AGENTS[agent.name]['team'][team['name']]
       team_action_space = []
       for unit_type in ctrl_unit_type:
-        if unit_type in agent.config.AGENTS[agent.name]['action'].keys():
-          team_action_space += agent.config.AGENTS[agent.name]['action'][unit_type]
+        if unit_type in list(team_config['actions'].keys()):
+          team_action_space += team_config['actions'][unit_type]
         else:
           logger.error(f"[ID {agent.log_id}] cannot get valid actions of unit_type {unit_type}")
 
@@ -559,9 +663,12 @@ def get_valid_actions_from_obs(obs, agent) -> str:
       valid_actions = []
       for action in team_action_space:
         valid = True
+        # print(action)
         for func_triple in action['func']:
           if func_triple[0] not in obs.observation.available_actions:
             valid = False
+        # if 'Attack' in action['name'] and 'Ability' not in action['name']:
+        #   valid = llm_action.check_weapon_state(team['obs'][0], 'now', None)
         if valid:
           valid_actions.append(action)
 
@@ -588,65 +695,105 @@ def get_valid_actions_from_obs(obs, agent) -> str:
           text_valid_actions += f"\n\t\t<{action['name']}({arg[0]}, {arg[1]})>"
         if len(arg) == 3:
           text_valid_actions += f"\n\t\t<{action['name']}({arg[0]}, {arg[1]}, {arg[2]})>"
+  text_valid_actions += "\n\n"
+  return text_valid_actions
 
-  # record action arg explanation
+
+# record action arg explanation
+def get_valid_action_args_explanation(agent):
+  obs = agent.team_unit_obs_list[0]
+  text_arg_explanation = ''
   size_screen = obs.observation.feature_screen.height_map.shape[0]
   size_minimap = obs.observation.feature_minimap.height_map.shape[0]
-  text_valid_actions += f"\n\nAction Args: "
-  text_valid_actions += f"\n\t(1) tag: tag refers to a hexadecimal number, shape as 0x000000000."
-  text_valid_actions += f"\n\t(2) screen: screen refers to a screen coordinate, shape as [x, y], where x and y range from 0 to {size_screen}."
-  text_valid_actions += f"\n\t(3) minimap: minimap refers to a minimap coordinate, shape as [x, y], where x and y range from 0 to {size_minimap}."
-  text_valid_actions += f"\nFor example, when you want to use an action like <Action_Name(tag, screen)>, you should output like <Action_Name(0x100580001, [37, 55])>; when you want to use an action like <Action_Name(screen)>, you should output like <Action_Name([66, 78])>. "
-  text_valid_actions += f"What's more, You need to see clearly whether an action is using screen coordinates or minimap coordinates, If an action name as XXXX_Screen, it uses screen coordinate; if an action name as XXXX_Minimap, it uses minimap coordinate."
-  return text_valid_actions
+  ratio = size_screen / SCREEN_WORLD_GRID
+
+  screen_edge = f"where x and y range from 0 to {int(size_screen/ratio)}."
+  if len(agent.teams) > 0:
+    team = agent.teams[0]
+    if 'l' in team.keys():
+      screen_edge = f"{int(team['l']/ratio)} < x < {int(team['r']/ratio)}, {int(team['u']/ratio)} < y < {int(team['b']/ratio)}"
+    else:
+      screen_edge = f"0 < x < {int(size_screen/ratio)}, 0 < y < {int(size_screen/ratio)}"
+
+  text_arg_explanation += f"Action Args: "
+  text_arg_explanation += f"\n\t(1) tag: tag refers to a hexadecimal number, shape as 0x000000000."
+  text_arg_explanation += f"\n\t(2) screen: screen refers to a screen coordinate, shape as [x, y], where {screen_edge}."
+  text_arg_explanation += f"\n\t(3) minimap: minimap refers to a minimap coordinate, shape as [x, y], where x and y range from 0 to {size_minimap}."
+  text_arg_explanation += f"\nFor example, when you want to use an action like <Action_Name(tag, screen)>, you should output like <Action_Name(0x100580001, [12, 16])>; when you want to use an action like <Action_Name(screen)>, you should output like <Action_Name([20, 8])>. "
+  text_arg_explanation += f"What's more, You need to see clearly whether an action is using screen coordinates or minimap coordinates, If an action name as XXXX_Screen, it uses screen coordinate; if an action name as XXXX_Minimap, it uses minimap coordinate."
+  if len(agent.teams) > 0:
+    team = agent.teams[0]
+    if 'l' in team.keys():
+      if (team['l'] != 0 or team['u'] != 0 or team['r'] != size_screen - 1 or team['b'] != size_screen - 1):
+        text_arg_explanation += f"\nWarning! controlled team near the map edge! Pay attention to using coordinates within the boundary!"
+  text_arg_explanation += "\n\n"
+  return text_arg_explanation
 
 
 def get_last_action_info(agent) -> str:
   text_last_action = ""
   if isinstance(agent.last_text_a_pro, str) and len(agent.last_text_a_pro) > 0:
-    text_last_action += f"\n\nLast Step {agent.last_text_a_pro}"
+    text_last_action += f"Last Step {agent.last_text_a_pro}"
     text_last_action += f"\nYou need to confirm whether the previous action finished executing, and based on this, determine whether to continue the old strategy or immediately take other actions."
+    text_last_action += "\n\n"
   return text_last_action
 
 
-def get_task_info(agent) -> (str, int):
+# def get_task_info(agent) -> str:
+#
+#   task_info = ''
+#   for team in agent.config.AGENTS[agent.name]['team'].values():
+#     if 'task' in team.keys() and len(team['task']) > 0 and len(team['obs']) > 0:
+#       change_task = False
+#       task = None
+#       if team['select_type'] != 'select' or team['name'] == 'Empty':
+#         task = team['task'][0]
+#         obs = team['obs'][0]
+#         idx = np.nonzero(obs.observation['feature_minimap']['camera'])
+#         x, y = int(idx[:][1].mean()), int(idx[:][0].mean())
+#         if task['pos'] is not None:
+#           dist = math.sqrt((x - task['pos'][0]) ** 2 + (y - task['pos'][1]) ** 2)
+#           if dist < 4:
+#             change_task = True
+#         if len(team['task']) > 1:
+#           task1 = team['task'][1]
+#           if task1['time'] is not None and isinstance(task1['time'], str) and ':' in task1['time']:
+#             game_loop = obs.observation.game_loop
+#             game_s = int(game_loop / 22 % 60)  # SC2 runs at 22.4 game loops per second
+#             game_m = int(game_loop / 22 // 60)  # SC2 runs at 22.4 game loops per second
+#             if int(task1['time'].split(":")[0]) < game_m or \
+#               (int(task1['time'].split(":")[0]) == game_m and int(task1['time'].split(":")[1]) <= game_s):
+#               change_task = True
+#       if team['select_type'] == 'select':
+#         pass
+#       if change_task:
+#         team['task'].pop(0)
+#       if len(team['task']) > 0 and task is not None:
+#         if team['name'] != 'Empty':
+#           task_info += f"\n\tTeam {team['name']}' task: {task['info']}"
+#         if team['name'] == 'Empty':
+#           task_info += f"\n\tAgent task: {task['info']}"
+#
+#   if task_info != '':
+#     task_info = f"Tasks:" + task_info
+#     task_info += "\n\n"
+#
+#   return task_info
 
+
+def get_task_info(agent) -> str:
   task_info = ''
-  for team in agent.config.AGENTS[agent.name]['team']:
-    if 'task' in team.keys() and len(team['task']) > 0 and len(team['obs']) > 0:
-      change_task = False
-      task = None
-      if team['select_type'] != 'select' or team['name'] == 'Empty':
-        task = team['task'][0]
-        obs = team['obs'][0]
-        idx = np.nonzero(obs.observation['feature_minimap']['camera'])
-        x, y = int(idx[:][1].mean()), int(idx[:][0].mean())
-        if task['pos'] is not None:
-          dist = math.sqrt((x - task['pos'][0]) ** 2 + (y - task['pos'][1]) ** 2)
-          if dist < 4:
-            change_task = True
-        if len(team['task']) > 1:
-          task1 = team['task'][1]
-          if task1['time'] is not None and isinstance(task1['time'], str) and ':' in task1['time']:
-            game_loop = obs.observation.game_loop
-            game_s = int(game_loop / 22 % 60)  # SC2 runs at 22.4 game loops per second
-            game_m = int(game_loop / 22 // 60)  # SC2 runs at 22.4 game loops per second
-            if int(task1['time'].split(":")[0]) < game_m or \
-              (int(task1['time'].split(":")[0]) == game_m and int(task1['time'].split(":")[1]) <= game_s):
-              change_task = True
-      if team['select_type'] == 'select':
-        pass
-      if change_task:
-        team['task'].pop(0)
-      if len(team['task']) > 0 and task is not None:
-        if team['name'] != 'Empty':
-          task_info += f"\n\tTeam {team['name']}' task: {task['info']}"
-        if team['name'] == 'Empty':
-          task_info += f"\n\tAgent task: {task['info']}"
-
-  if len(task_info) > 0:
-    task_info = f"\n\nTasks:" + task_info
-
+  for team in agent.config.AGENTS[agent.name]['team'].values():
+    if len(team['obs']) == 0:
+      continue
+    if isinstance(team['task'], str):
+      if team['name'] != 'Empty':
+        task_info += f"\n\tTeam {team['name']}' task: {team['task']}"
+      if team['name'] == 'Empty':
+        task_info += f"\n\tAgent task: {team['task']}"
+  if task_info != '':
+    task_info = f"Tasks:" + task_info
+    task_info += "\nPlease note that **Tasks** are the most important information, all your decisions must aimed at completing the tasks.\n\n"
   return task_info
 
 
@@ -690,26 +837,30 @@ def get_other_agents_info(agent) -> str:  # for Commander only
     other_agents_info += other_agent_info
 
   if len(other_agents_info) != 0:
-    other_agents_info = "\n\nGlobal agent info:" + other_agents_info
+    other_agents_info = "Global agent info:" + other_agents_info + "\n\n"
   if len(other_agents_unit_knowledge) != 0:
-    other_agents_unit_knowledge = f"\n\nRelevant Knowledge:" + other_agents_unit_knowledge
+    other_agents_unit_knowledge = f"Relevant Knowledge:" + other_agents_unit_knowledge + "\n\n"
 
   return other_agents_info + other_agents_unit_knowledge
 
 
-def get_alert_info(obs) -> str:   # for Commander only
+def get_alert_info(agent) -> str:   # for Commander only
   alert_info = ''
 
+  obs = agent.team_unit_obs_list[0]
   arr = obs.observation['feature_minimap']['alerts']
   idx = np.nonzero(arr)  # 获取特征图上非零值的坐标
   for i in range(len(idx[0])):
     alert_info += f"\n\tEngage with enemies in minimap [{idx[1][i]}, {idx[0][i]}]"
   if len(alert_info) != 0:
-    alert_info = "\n\nAlert Info:" + alert_info
+    alert_info = "Alert Info:" + alert_info
+    alert_info += "\n\n"
   return alert_info
 
 
-def get_warp_info(obs) -> str:  # for Developer only
+def get_warp_info(agent) -> str:  # for Developer only
+
+  obs = agent.team_unit_obs_list[0]
   warp_source_info = ''
   pylon_info = ''
   prism_info = ''
@@ -726,141 +877,202 @@ def get_warp_info(obs) -> str:  # for Developer only
 
   warp_target_info = pylon_info + prism_info
   if len(warp_source_info) > 0:
-    warp_source_info = f"\n\nAvailable WarpGate:" + warp_source_info + f"\n{obs.observation.player.warp_gate_count} WarpGate in total"
+    warp_source_info = f"Available WarpGate:" + warp_source_info + \
+                       f"\n{obs.observation.player.warp_gate_count} WarpGate in total" + "\n\n"
   if len(warp_target_info) > 0:
-    warp_target_info = f"\n\nAvailable WarpTrain Field Provider:" + warp_target_info
+    warp_target_info = f"Available WarpTrain Field Provider:" + warp_target_info + "\n\n"
 
   return warp_source_info + warp_target_info
 
 
+def get_event_info(agent) -> str:
+  event_text = ''
+
+  t = agent.main_loop_step
+  n, i_list = 1, [1]
+  event_dict = events.get_events(agent, t, n, i_list)['1']  # 从锚点s_t-n 往后 1 步
+
+  for team in agent.teams:
+    if team['name'] not in event_dict.keys():
+      continue
+    if len(event_dict[team['name']]) == 0:
+      continue
+    team_event_text = ''
+    team_event = event_dict[team['name']]
+
+    if len(team_event['ctrl']) > 0:
+      team_event_text += '\n\t\tControlled Unit Event:'
+      for tag in team_event['ctrl']:
+        team_event_text += '\n\t\t\t' + team_event['ctrl'][int(tag)]
+    if len(team_event['ally']) > 0:
+      team_event_text += '\n\t\tAlly Unit Event:'
+      for tag in team_event['ally']:
+        team_event_text += '\n\t\t\t' + team_event['ally'][int(tag)]
+    if len(team_event['enemy']) > 0:
+      team_event_text += '\n\t\tEnemy Unit Event:'
+      for tag in team_event['enemy']:
+        team_event_text += '\n\t\t\t' + team_event['enemy'][int(tag)]
+
+    if team_event_text != '':
+      event_text += f"\n\tTeam {team['name']} Event:" + team_event_text
+
+  if event_text != '':
+    event_text = "Last Step Event:" + event_text + "\n\n"
+
+  return event_text
+
+
+def get_action_error_info(agent):
+  action_errors = agent.action_errors
+  action_error_info = ''
+
+  for key in action_errors.keys():
+    action_error_info += f"\n\t<{key}(...)>:"
+    for error in action_errors[key]:
+      action_error_info += f"\n\t\t{error}"
+
+  if action_error_info != '':
+    action_error_info = "Last Step Action Errors:" + action_error_info + "\n\n"
+  return action_error_info
+
+
 class BaseTranslatorO:
 
-  def __init__(self):
-    pass
+  def __init__(self, name, log_id, config):
+    self.agent_name = name
+    self.log_id = log_id
+    self.config = config
+    self.loop_step = -1
+    self.states = []
+    self.state = {}
+    self.size_screen = None
+    self.size_minimap = None
+    self.final_prompt = ''
 
   def translate(self, agent) -> str:
+    obs_list = agent.team_unit_obs_list
+    if not isinstance(obs_list, list) or len(obs_list) < 1:
+      return f"obs_list error, no obs found"
+
+    self.state = {
+      'game_info': get_game_info(agent),
+      'units_info': get_teams_info(agent),
+      'event_info': get_event_info(agent),
+      'knowledge_info': get_relevant_knowledge(agent),
+      'valid_actions': get_valid_actions(agent),
+      'valid_args_explanation': get_valid_action_args_explanation(agent),
+      'last_action_info': get_last_action_info(agent),
+      'last_action_error_info': get_action_error_info(agent),
+      'task_info': get_task_info(agent),
+      'final_prompt': self.final_prompt,
+    }
+
+    if agent.config.ENABLE_COMMUNICATION:
+      # self.state['communication_info'] = get_communication_info(agent)
+      self.state['communication_input'] = agent.last_text_c_inp
+      self.state['communication_target'] = agent.last_text_c_tar + '\n\n'
+    else:
+      self.state['communication_input'] = ''
+      self.state['communication_target'] = ''
+
+    if self.loop_step != agent.main_loop_step:
+      self.loop_step = agent.main_loop_step
+      self.states.append(self.state)
+
     return ''
 
 
 class CombatGroupTranslatorO(BaseTranslatorO):
 
   def __init__(self, name, log_id, config):
-    super(CombatGroupTranslatorO, self).__init__()
-    self.agent_name = name
-    self.log_id = log_id
-    self.config = config
+    super(CombatGroupTranslatorO, self).__init__(name, log_id, config)
+    if config.ENABLE_COMMUNICATION:
+      self.final_prompt = f"Give each team no more than {config.MAX_NUM_ACTIONS} actions, " \
+                          f"these actions will be executed in the following {round(1 / config.MAX_LLM_DECISION_FREQUENCY, 2)} seconds, " \
+                          f"among which activity release should usually before attack and move." \
+                          f"\nNow, start generating your analysis, strategy, actions and communication:"
+    else:
+      self.final_prompt = f"Give each team no more than {config.MAX_NUM_ACTIONS} actions, " \
+                          f"these actions will be executed in the following {round(1 / config.MAX_LLM_DECISION_FREQUENCY, 2)} seconds, " \
+                          f"among which activity release should usually before attack and move." \
+                          f"\nNow, start generating your analysis, strategy and actions:"
     logger.info(f"[ID {log_id}] {name} CombatGroupTranslatorO initialized")
 
   def translate(self, agent) -> str:
+    super(CombatGroupTranslatorO, self).translate(agent)
 
-    obs_list = agent.team_unit_obs_list
-    text_obs = ""
+    # observation and relevant info
+    self.text_obs = self.state['game_info'] + self.state['units_info'] + self.state['event_info'] + \
+                    self.state['valid_actions'] + self.state['valid_args_explanation'] + self.state['last_action_info']
+                    # self.state['last_action_error_info']  #  + self.state['knowledge_info']
+    self.text_task = self.state['communication_input'] + self.state['communication_target'] + self.state['task_info']
+    self.text_prompt = self.text_obs + self.text_task + self.final_prompt
 
-    if not isinstance(obs_list, list) or len(obs_list) < 1:
-      return f"obs_list error, no obs found"
-
-    # general information
-    obs = obs_list[0]
-    game_info = get_game_info(obs, agent)
-    units_info = get_teams_info_with_knowledge(agent)
-    valid_actions = get_valid_actions_from_obs(obs, agent)
-    last_action_info = get_last_action_info(agent)
-    task_info = get_task_info(agent)
-    text_obs = game_info + units_info + valid_actions + last_action_info + task_info
-
-    # add communication info
-    if agent.config.ENABLE_COMMUNICATION:
-      communication_info = get_communication_info(agent)
-      text_obs += communication_info
-
-    # final info
-    text_obs += f"\n\nGive each team no more than {agent.config.MAX_NUM_ACTIONS} actions, among which " \
-                f"activity release should usually before move and attack."
-    if agent.config.ENABLE_COMMUNICATION:
-      text_obs += f"\nNow, start generating your analysis, actions and communication:"
-    else:
-      text_obs += f"\nNow, start generating your analysis and actions:"
-
-    return text_obs
+    text_o = self.text_prompt
+    return text_o
 
 
 class CommanderTranslatorO(BaseTranslatorO):
 
   def __init__(self, name, log_id, config):
-    super(CommanderTranslatorO, self).__init__()
-    self.agent_name = name
-    self.log_id = log_id
-    self.config = config
+    super(CommanderTranslatorO, self).__init__(name, log_id, config)
+    if config.ENABLE_COMMUNICATION:
+      self.final_prompt = f"\n\nAs the supreme military commander, you should not directly give actions, " \
+                          f"instead, tell your subordinates what to do through communication." \
+                          f"\nNow, start analysis, making macro decisions in military deployments by sending message to other agents:"
+    else:
+      logger.warning(f"[ID {self.log_id}] {self.agent_name} CommanderTranslatorO: Commander can not communicate with other agents due to agent.config.ENABLE_COMMUNICATION=False")
+      self.final_prompt = f"\n\nAs the supreme military commander, you should not directly give actions, " \
+                          f"instead, tell your subordinates what to do through communication." \
+                          f"\nNow, start analysis, making macro decisions in military deployments by sending message to other agents:"
     logger.info(f"[ID {log_id}] {name} CommanderTranslatorO initialized")
 
   def translate(self, agent) -> str:
-    obs_list = agent.team_unit_obs_list
-    text_obs = ""
+    super(CommanderTranslatorO, self).translate(agent)
 
-    if not isinstance(obs_list, list) or len(obs_list) < 1:
-      return f"obs_list error, no obs found"
+    # observation
+    self.states[-1]['other_agents_info'] = get_other_agents_info(agent)
+    self.text_obs = self.state['game_info'] + self.states[-1]['other_agents_info']
+    self.text_task = self.state['communication_input'] + self.state['communication_target'] + self.state['task_info']
+    self.text_prompt = self.text_obs + self.text_task + self.final_prompt
+    text_o = self.text_prompt
 
-    # general information
-    obs = obs_list[0]
-    game_info = get_game_info(obs, agent)
-    other_agents_info = get_other_agents_info(agent)
-    task_info = get_task_info(agent)
-    alert_info = get_alert_info(obs)
-    text_obs = game_info + other_agents_info + alert_info + task_info
-
-    # add communication info
-    if agent.config.ENABLE_COMMUNICATION:
-      communication_info = get_communication_info(agent)
-      text_obs += communication_info
-
-    # final info
-    text_obs += f"\n\nAs the supreme military commander, you should not directly give actions, instead, tell your subordinates what to do through communication."
-    text_obs += f"\nNow, start analysis, making macro decisions in military deployments by sending message to other agents:"
-
-    return text_obs
+    if not agent.config.ENABLE_COMMUNICATION:
+      logger.warning(f"[ID {self.log_id}] {self.agent_name} CommanderTranslatorO: Commander can not communicate with other agents due to agent.config.ENABLE_COMMUNICATION=False")
+    return text_o
 
 
 class DeveloperTranslatorO(BaseTranslatorO):
 
   def __init__(self, name, log_id, config):
-    super(DeveloperTranslatorO, self).__init__()
-    self.agent_name = name
-    self.log_id = log_id
-    self.config = config
+    super(DeveloperTranslatorO, self).__init__(name, log_id, config)
+    if config.ENABLE_COMMUNICATION:
+      self.final_prompt = f"\n\nAs a senior commander, the max number of your actions is not limited, " \
+                          f"when you warp units, try to use all the WarpGate as much as possible, " \
+                          f"and warp all units near a single WarpTrain Field Provider." \
+                          f"\nNow, start generating your analysis, actions and communication:"
+    else:
+      self.final_prompt = f"\n\nAs a senior commander, the max number of your actions is not limited, " \
+                          f"when you warp units, try to use all the WarpGate as much as possible, " \
+                          f"and warp all units near a single WarpTrain Field Provider." \
+                          f"\nNow, start generating your analysis and actions:"
     logger.info(f"[ID {log_id}] {name} DeveloperTranslatorO initialized")
 
   def translate(self, agent) -> str:
-    obs_list = agent.team_unit_obs_list
-    text_obs = ""
+    super(DeveloperTranslatorO, self).translate(agent)
 
-    if not isinstance(obs_list, list) or len(obs_list) < 1:
-      return f"obs_list error, no obs found"
+    # observation
+    self.states[-1]['warp_info'] = get_warp_info(agent)
+    self.text_obs = self.state['game_info'] + \
+               self.state['valid_actions'] + self.state['valid_args_explanation'] + self.state['last_action_info'] + \
+               self.states[-1]['warp_info']
+    self.text_task = self.state['communication_input'] + self.state['communication_target'] + self.state['task_info']
+    self.text_prompt = self.text_obs + self.text_task + self.final_prompt
 
-    # general information
-    obs = obs_list[0]
-    game_info = get_game_info(obs, agent)
-    # units_info = get_teams_info_with_knowledge(agent)
-    valid_actions = get_valid_actions_from_obs(obs, agent)
-    last_action_info = get_last_action_info(agent)
-    task_info = get_task_info(agent)
-    warp_info = get_warp_info(obs)
-    text_obs = game_info + valid_actions + last_action_info + task_info + warp_info
-
-    # add communication info
-    if agent.config.ENABLE_COMMUNICATION:
-      communication_info = get_communication_info(agent)
-      text_obs += communication_info
-
-    # final info
-    text_obs += f"\n\nAs a senior commander, the max number of your actions is not limited, " \
-                f"when you warp units, try to use all the WarpGate as much as possible, " \
-                f"and warp all units near a single WarpTrain Field Provider."
-    if agent.config.ENABLE_COMMUNICATION:
-      text_obs += f"\nNow, start generating your analysis, actions and communication:"
-    else:
-      text_obs += f"\nNow, start generating your analysis and actions:"
-
-    return text_obs
+    if not agent.config.ENABLE_COMMUNICATION:
+      logger.warning(f"[ID {self.log_id}] {self.agent_name} DeveloperTranslatorO: Developer can not communicate with other agents due to agent.config.ENABLE_COMMUNICATION=False")
+    text_o = self.text_prompt
+    return text_o
 
 
 # TODO: You can specialize your TranslatorO here

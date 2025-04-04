@@ -163,8 +163,8 @@ DATA_PROTOSS = {
         'name': 'Adept',
         'name_cn': '使徒',
         # wiki英文 Details
-        'description': 'Ground-only ranged attack unit, armed with psionic transfer ability to teleport to '
-                       'nearby locations for harassment.',
+        'description': 'Ground-only ranged attack unit, armed with psionic transfer(AdeptPhaseShift) ability '
+                       'to teleport to nearby locations for harassment.',
         # 可以对什么对象造成伤害，ground/air
         'target': ['ground'],
         # 自己可以受到什么类型伤害，ground/air，只有神族的巨像等少数单位能够同时受到两种伤害
@@ -210,11 +210,11 @@ DATA_PROTOSS = {
                                           'Cost 100 mineral, 100 gas and 100 seconds. In DarkShrine.',
         },
         'ability': {  # wiki英文 作战/技能，只记录主动技能
-            'Effect_PsionicTransfer': 'Active skill.Always avaliable. Cooldowm 11 seconds.'
-                                      'Projects an invulnerable psionic image that can move but not attack.'
-                                      ' After 7 seconds, the adept teleports to the images location. '
-                                      'The shade may be canceled at any time, and the adept would not teleport. '
-                                      'The shade has a sight radius of 2.',
+            'AdeptPhaseShift': 'Active skill.Always avaliable. Cooldowm 11 seconds.'
+                               'Projects an invulnerable psionic image that can move but not attack.'
+                               ' After 7 seconds, the adept teleports to the images location. '
+                               'The shade may be canceled at any time, and the adept would not teleport. '
+                               'The shade has a sight radius of 2.',
         },
 
         # 前置条件，这一部分需要游戏知识
@@ -226,7 +226,6 @@ DATA_PROTOSS = {
         'activate_building': '',
         'activate_tech': '',
         'activate_unit': '',
-
     },
 
     units.Protoss.Archon: {
@@ -994,7 +993,7 @@ DATA_PROTOSS = {
         # wiki英文 Details
         'description': 'An aerial fighter with an anti-gravity ability that lifts ground units into the air.',
         # 可以对什么对象造成伤害，ground/air
-        'target': ['ground', 'air'],
+        'target': ['air'],
         # 自己可以受到什么类型伤害，ground/air，只有神族的巨像等少数单位能够同时受到两种伤害
         'target_self': ['air'],
         # wiki中文 基本信息/属性

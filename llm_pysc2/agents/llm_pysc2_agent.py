@@ -17,6 +17,7 @@ from llm_pysc2.lib import llm_client, llm_observation, llm_action, llm_prompt, l
 
 from pysc2.lib import actions
 
+from pprint import pprint
 from collections import deque
 from shutil import copyfile
 from loguru import logger
@@ -62,6 +63,11 @@ class LLMAgent:
     self.translator_o = llm_observation.FACTORY[self.race][translator_o](name, log_id, config)
     self.communicator = llm_communicate.FACTORY[self.race][communicator](name, log_id, config)
 
+    if self.model_name not in llm_client.FACTORY.keys():
+      logger.error(f"Do not find model name {self.model_name} in llm_pysc2.lib.llm_client.FACTORY: \n{llm_client.FACTORY.keys()}")
+      logger.error(f"model_name set as gpt-3.5-turbo")
+      self.model_name = 'gpt-3.5-turbo'
+      time.sleep(3)
     self.client = llm_client.FACTORY[self.model_name](name, log_id, config)  # edit it to change llm client
     self.client.system_prompt = self.basic_prompt.sp
     self.client.example_i_prompt = self.basic_prompt.eip
@@ -223,6 +229,11 @@ class LLMAgent:
       self.enable = False
     if self.name in self.config.AGENTS_ALWAYS_DISABLE:
       self.enable = False
+    # game_time_s = obs.observation.game_loop / 22.4
+    # if self.name in ['Builder', 'Developer'] and game_time_s < 10:  #建造小队
+    #   self.enable = False
+    # if self.name in ['CombatGroup4'] and game_time_s < 30:  #侦查小队
+    #   self.enable = False
 
     # store all the unit tags
     for tag in self.unit_tag_list:
@@ -295,17 +306,21 @@ class LLMAgent:
     while self.is_waiting is False:
       with self.lock:
         self.is_waiting = True
+    # if obs.observation.map_name not in task.FACTORY.keys():
+    #   logger.error(f"task description is not realised in llm_pysc2.lib.task")
+    #   raise AssertionError("task description is not realised in llm_pysc2.lib.task")
     if obs.observation.map_name not in task.FACTORY.keys():
-      logger.error(f"task description is not realised in llm_pysc2.lib.task")
-      raise AssertionError("task description is not realised in llm_pysc2.lib.task")
-    task_dict = task.FACTORY[obs.observation.map_name](self)  # return dict[team_name]='text_task_description'
+      logger.warning(f"task description is not realised in llm_pysc2.lib.task, use default task")
+      task_dict = task.FACTORY['default'](self)
+    else:
+      task_dict = task.FACTORY[obs.observation.map_name](self)  # return dict[team_name]='text_task_description'
     logger.debug(f'task_dict={task_dict}')
     logger.success(f"[ID {self.log_id}] LLMAgent {self.name}: LLM Interaction Start")
     self.teams_history[self.main_loop_step] = copy.deepcopy(self.teams)
     text_o = self.get_text_o(obs)
-    base64_image = self.get_img_o(obs)  # return None if img observation disabled
+    base64_images = self.get_img_o(obs)  # return None if img observation disabled
     self.get_text_c_inp()
-    return text_o, base64_image
+    return text_o, base64_images
 
 
   def _after_query(self, raw_text_a):
@@ -330,9 +345,11 @@ class LLMAgent:
 
   # TODO: Main API Func, receive obs and get actions
   def query(self, obs) -> None:
-    text_o, base64_image = self._before_query(obs)
+    logger.debug(f"[ID {self.log_id}] LLMAgent {self.name}: start collect obs")
+    text_o, base64_images = self._before_query(obs)
+    logger.debug(f"[ID {self.log_id}] LLMAgent {self.name}: finished collect obs, text_o: \n{text_o}")
 
-    self.raw_text_a = self.get_text_a(text_o, base64_image=base64_image)  # query the llm and get response
+    self.raw_text_a = self.get_text_a(text_o, base64_images)  # query the llm and get response
     if self.name not in self.config.AGENTS_ALWAYS_DISABLE and self.enable:
       utils.write_to_file(json.dumps({self.main_loop_step: text_o}), self.log_dir_path + f"/{self.name}/o.txt")
 
@@ -346,32 +363,42 @@ class LLMAgent:
     return text_o
 
   def get_img_o(self, obs):
+    base64_images = {}
     if self.config.AGENTS[self.name]['llm']['img_rgb']:
-      base64_image = llm_observation.get_img_obs_rgb(self, obs)
+      base64_images['screen'] = llm_observation.get_img_obs_rgb(self, obs)
+      base64_images['minimap'] = llm_observation.get_img_obs_rgb_minimap(self, obs)
     elif self.config.AGENTS[self.name]['llm']['img_fea']:
-      base64_image = llm_observation.get_img_obs_fea(self, obs)
+      base64_images['screen'] = llm_observation.get_img_obs_fea(self, obs)
     else:
-      base64_image = None
-    return base64_image
+      base64_images = None
+    return base64_images
 
   # query step2: communicate with llm and get text actions
-  def get_text_a(self, text_o: str, base64_image=None) -> str:
+  def get_text_a(self, text_o: str, base64_images:"Dict or None"=None) -> str:
     text_a = ''
-
     if self.config.LLM_SIMULATION_TIME > 0:
+      # pprint(base64_images)
+      # self.client.wrap_message(text_o, base64_images)
+      # for message in self.client.messages:
+      #   pprint(message, width=200)
       logger.warning(f"[ID {self.log_id}] LLM SIMULATION MODE, no remote llm involved")
       time.sleep(self.config.LLM_SIMULATION_TIME)  # simulate llm response, for debug
       if self.name not in self.config.AGENTS_ALWAYS_DISABLE and self.enable:
         with open(self.log_dir_path + f"/{self.name}/a_inp.txt", "r") as f:
           text_a = f.read()  # simulate llm response by reading text in a_inp.txt
     else:
-      if base64_image is None:
+      if base64_images is not None and 'minimap' in base64_images.keys() and 'screen' in base64_images.keys():
+        text_a = self.client.query(text_o, base64_images=base64_images)  # Communicate with VLM
+        logger.debug(f"[ID {self.log_id}] LLMAgent {self.name}: Screen and Minimap images provided to LLM.")
+      elif base64_images is not None and 'screen' in base64_images.keys():
+        text_a = self.client.query(text_o, base64_images=base64_images)  # Communicate with VLM
+        logger.debug(f"[ID {self.log_id}] LLMAgent {self.name}: Screen Image provided to LLM.")
+      else:
         text_a = self.client.query(text_o)  # Communicate with LLM
         logger.debug(f"[ID {self.log_id}] LLMAgent {self.name}: No image provided to LLM.")
-      else:
-        text_a = self.client.query(text_o, base64_image=base64_image)  # Communicate with VLLM
-        logger.debug(f"[ID {self.log_id}] LLMAgent {self.name}: Image provided to LLM.")
 
+
+    logger.debug(f"[ID {self.log_id}] LLMAgent {self.name} get_text_a(): Query finished.")
     self.last_text_a_raw = text_a
     return text_a
 

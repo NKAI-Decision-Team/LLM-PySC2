@@ -44,10 +44,10 @@ def communication_info_transmission(self: "llm_pysc2 MainAgent"):
         received_message = f"{receiver_agent.communication_message_i[sender_name]}"
         receiver_agent.last_text_c_inp += f"{info_sender_name}: {received_message}"
       if len(receiver_agent.last_text_c_inp) != 0:
-        receiver_agent.last_text_c_inp = f"\n\nCommunication information:" + receiver_agent.last_text_c_inp
+        receiver_agent.last_text_c_inp = f"Communication information:" + receiver_agent.last_text_c_inp + "\n\n"
 
       # Generate Communication Target
-      receiver_agent.last_text_c_tar = "\n\nAvailable Communication Targets:"
+      receiver_agent.last_text_c_tar = "Available Communication Targets:"
       for agent_name in self.AGENT_NAMES:
         agent = self.agents[agent_name]
         if agent_name != receiver_name and agent.enable:
@@ -62,7 +62,7 @@ def communication_info_transmission(self: "llm_pysc2 MainAgent"):
       receiver_agent.last_text_c_tar += "\nArgs explanation:"
       receiver_agent.last_text_c_tar += "\n\t(1)AgentName: refers to a name mentioned in Available Communication Targets."
       receiver_agent.last_text_c_tar += "\n\t(2)ChannelName: shape as Channel-i, i refers to an integer."
-      receiver_agent.last_text_c_tar += "\n\t(2)message: any text wrapped between ''' and '''."
+      receiver_agent.last_text_c_tar += "\n\t(2)message: any text wrapped between ''' and '''." # + "\n\n"
 
       logger.debug(f"[ID {self.log_id}] 7.0 LLMAgent {receiver_name} get communication message: ")
       logger.debug(f"[ID {self.log_id}]     LLMAgent communication_message_i: {receiver_agent.communication_message_i}")
@@ -134,7 +134,7 @@ FACTORY = {
 
 
 if __name__ == "__main__":
-  from llm_pysc2.agents.configs.config import ProtossAgentConfig
+  from llm_pysc2.cfg.config import ProtossAgentConfig
   config = ProtossAgentConfig()
   communicator = DefaultCommunicator('AgentName', log_id=0, config=config)
 

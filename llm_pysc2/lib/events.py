@@ -73,6 +73,7 @@ def get_event(agent, teams_t1=None, teams_t2=None):
       if len(team_t2['obs']) == 0:
         team_event_dict = {'ctrl': {}, 'ally': {}, 'enemy': {}}  # team disable, all units dead
 
+    total_life = 0
     if len(team_t1['obs']) == len(team_t2['obs']) and (len(team_t1['obs']) != 0 and len(team_t2['obs']) != 0):
       # for i in range(len(team_t1['obs'])):
       obs1 = team_t1['obs'][0]
@@ -96,6 +97,9 @@ def get_event(agent, teams_t1=None, teams_t2=None):
         print(obs2.observation.keys())
       if 'raw_units' not in obs1.observation.keys() or 'raw_units' not in obs2.observation.keys():
         continue
+      for unit_r in obs2.observation['raw_units']:
+        if unit_r.tag in team_t2['unit_tags']:
+          total_life += unit_r.health + unit_r.shield
 
       for unit in obs1.observation['raw_units']:
         # controlled/ally/enemy units
@@ -144,10 +148,13 @@ def get_event(agent, teams_t1=None, teams_t2=None):
         if unit1.tag in unit_ally_state_dict2.keys():
           unit2 = get_unit_in_unit_dict(unit1.tag, unit_ally_state_dict2)
           delta_health = (unit2.health + unit2.shield) - (unit1.health + unit1.shield)
-          if delta_health > 0:
-            team_event_dict['ally'][int(unit1.tag)] = f'unit {unit_info} is healing, health +{abs(delta_health)}'
-          if delta_health < 0:
-            team_event_dict['ally'][int(unit1.tag)] = f'unit {unit_info} is attacked, health -{abs(delta_health)}'
+          if delta_health > 0 and unit2.build_progress == 100:
+            team_event_dict['ally'][int(unit1.tag)] = f'unit {unit_info} is healing, health +{abs(delta_health)}%'
+          if delta_health < 0 and unit2.build_progress == 100:
+            team_event_dict['ally'][int(unit1.tag)] = f'unit {unit_info} is attacked, health -{abs(delta_health)}%'
+          if unit2.build_progress < 100:
+            delta_building_process = unit2.build_progress - unit1.build_progress
+            team_event_dict['ally'][int(unit1.tag)] = f'unit {unit_info} is training/building, process +{abs(delta_building_process)}%  (current process {unit2.build_progress}%)'
           unit_ally_state_dict3[int(unit1.tag)] = None
         if unit1.tag not in unit_ally_state_dict2.keys():
           team_event_dict['ally'][int(unit1.tag)] = f'unit {unit_info} dead, lost the final {unit1.health + unit1.shield} health'
@@ -185,5 +192,8 @@ def get_event(agent, teams_t1=None, teams_t2=None):
           team_event_dict['enemy'][int(tag)] = f'unit {unit_info} enemy unit enter sight'
 
       event_dict[team_name] = team_event_dict
+      if total_life < 10:
+        event_dict[team_name]['ally'] = {}
+        event_dict[team_name]['enemy'] = {}
 
   return event_dict

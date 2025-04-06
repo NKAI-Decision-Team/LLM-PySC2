@@ -208,8 +208,33 @@ def task_smac_2s_vs_1sc(agent):
       team['task'] = "Search for enemy units and ready for fight. If heavily damaged, hold position and waiting for healing before searching for enemy."
       task_dict[team['name']] = team['task']
 
+    return task_dict
+
+def task_default(agent):
+  task_dict = {}
+  for team in agent.teams:  # agent.config.AGENTS[agent.name]['team'].values()
+    if len(team['obs']) == 0:
+      continue
+    if 'task' not in team.keys():
+      team['task'] = 'Complete the tasks assigned by the Commander'
+    x, y, m, s = get_info(team['obs'][0])
+
+    if team['name'] == 'Empty':
+      if agent.name == 'Commander':
+        team['task'] = 'Organize other agents through communication to win the game'
+      if agent.name == 'Developer':
+        team['task'] = "Develop economy, technology, train units to win the game. organize the agent 'Builder' to build buildings."
+
+    if agent.name == 'Builder':
+      team['task'] = "Build buildings only, according to the tasks assigned by the Developer or Commander, or based on your own judgment."
+
+  return task_dict
+
+
 # search task function by map name, obs.observation.map_name
 FACTORY = {
+  'default': task_default,
+
   '2a_harass_level1': task_harass,
   '3ph_harass_level1': task_harass,
   '4s_blink_vs_4r': task_combat_small,

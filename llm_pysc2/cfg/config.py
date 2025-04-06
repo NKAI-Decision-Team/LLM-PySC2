@@ -20,7 +20,9 @@ from loguru import logger
 import time
 
 
-def wait(second, log_id, more_info=''):
+def wait(ignore, second, log_id, more_info=''):
+  if ignore:
+   return
   for i in range(second):
     logger.warning(f"[ID {log_id}] Experiment will start with UNSAFE settings in {second - i} seconds. {more_info}")
     time.sleep(1)
@@ -41,11 +43,17 @@ class AgentConfig:
     self.translator_a = 'default'
     self.communicator = 'default'
 
+    # For debug
+    self.ENABLE_MULTI_THREAD_QUERY = True
+    self.IGNORE_INIT_WARNINGS = False
+
+    # Game settings
     self.ENABLE_INIT_STEPS = True
     self.ENABLE_AUTO_WORKER_MANAGE = True
     self.ENABLE_AUTO_WORKER_TRAINING = True
     self.ENABLE_COMMUNICATION = False
 
+    # Image settings
     self.ENABLE_IMAGE_RGB = False
     self.ENABLE_IMAGE_FEATURE = False
     self.ENABLE_SAVE_IMAGES = True
@@ -88,22 +96,23 @@ class AgentConfig:
         self.AGENTS[agent_name]['llm']['img_fea'] = False
 
   def auto_check(self, log_id):
+
+    error_in_llm_setting = False
+    if self.model_name == '' or self.model_name == 'YOUR-MODEL-NAME':
+      self.reset_llm(model_name='gpt-3.5-turbo')
+      logger.error(f"[ID {log_id}] No model_name set, please specify model_name in the config.")
+      error_in_llm_setting = True
+    if self.api_key == '' or self.api_key == 'YOUR-API-KEY':
+      logger.error(f"[ID {log_id}] No api_key set, please specify your api_key in the config.")
+      error_in_llm_setting = True
+    if self.model_name == '' or self.api_key == '':
+      error_in_llm_setting = True
+
     if not isinstance(self.LLM_SIMULATION_TIME, (int, float)) or self.LLM_SIMULATION_TIME <= 0:
-      error_in_llm_setting = False
-      if self.model_name == '' or self.model_name == 'YOUR-MODEL-NAME':
-        self.reset_llm(model_name='gpt-3.5-turbo')
-        logger.error(f"[ID {log_id}] No model_name set, please specify model_name in the config.")
-        self.LLM_SIMULATION_TIME = 5
-        error_in_llm_setting = True
-      if self.api_key == '' or self.api_key == 'YOUR-API-KEY':
-        logger.error(f"[ID {log_id}] No api_key set, please specify your api_key in the config.")
-        self.LLM_SIMULATION_TIME = 5
-        error_in_llm_setting = True
-      if self.model_name == '' or self.api_key == '':
-        self.LLM_SIMULATION_TIME = 5
-        error_in_llm_setting = True
       if error_in_llm_setting:
-        wait(5, log_id, "(in LLM SIMULATION MODE)")
+        wait(self.IGNORE_INIT_WARNINGS, 5, log_id, "(in LLM SIMULATION MODE)")
+      if error_in_llm_setting:
+        self.LLM_SIMULATION_TIME = 5
 
     if self.ENABLE_IMAGE_RGB or self.ENABLE_IMAGE_FEATURE:
       if self.ENABLE_IMAGE_RGB and self.ENABLE_IMAGE_FEATURE:
@@ -111,14 +120,14 @@ class AgentConfig:
         AssertionError(f"config.ENABLE_IMAGE_RGB and config.ENABLE_IMAGE_FEATURE can not be True together")
       if self.model_name not in vision_model_names:
         logger.error(f"[ID {log_id}] config.ENABLE_IMAGE_RGB/FEATURE with large models that do not support images.")
-        wait(5, log_id)
+        wait(self.IGNORE_INIT_WARNINGS, 5, log_id)
       if self.model_name in vision_model_names:
         logger.warning(f"[ID {log_id}] You are using a vision model with image obs, this may cost a lot, be cautious.")
-        wait(5, log_id)
+        wait(self.IGNORE_INIT_WARNINGS, 5, log_id)
     else:
       if self.model_name in vision_model_names:
         logger.warning(f"[ID {log_id}] You are using a vision avaliable model without using any image obs.")
-        wait(5, log_id)
+        wait(self.IGNORE_INIT_WARNINGS, 5, log_id)
 
 class ProtossAgentConfig(AgentConfig):
 
@@ -154,7 +163,7 @@ class ProtossAgentConfig(AgentConfig):
         'describe': "Protoss builder, controls several Probe. Responsible for build buildings",
         'llm': {
           'basic_prompt': self.basic_prompt,
-          'translator_o': self.translator_o,
+          'translator_o': 'builder',
           'translator_a': self.translator_a,
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
@@ -163,8 +172,8 @@ class ProtossAgentConfig(AgentConfig):
           'api_key': self.api_key,
         },
         'team': {
-          'Builder-Probe-1': {
-            'name': 'Builder-Probe-1', 'unit_type': [units.Protoss.Probe], 'game_group': -1, 'select_type': 'select',
+          'Builder-Probe': {
+            'name': 'Builder-Probe', 'unit_type': [units.Protoss.Probe], 'game_group': -1, 'select_type': 'select',
             'actions': {units.Protoss.Probe: PROTOSS_BASIC_ACTION_2 + PROTOSS_ACTION_BUILD}
           },
         },

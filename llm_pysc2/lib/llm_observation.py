@@ -19,12 +19,13 @@ from llm_pysc2.lib.utils import *
 from pysc2.lib import features, units, buffs
 from pysc2.lib import renderer_human, colors
 
-from PIL import ImageDraw, ImageFont, Image
+from PIL import ImageDraw, ImageFont, Image, ImageEnhance
 from loguru import logger
 import numpy as np
 import pygame
 import base64
 import math
+import copy
 import io
 import os
 
@@ -43,39 +44,16 @@ unit_dict.update({v: k for k, v in units.Zerg.__dict__.items() if
                   isinstance(v, int)})
 
 
-# def get_rgb_screen(obs) -> np.ndarray or None:
-#   if hasattr(obs.observation, 'render_data') and hasattr(obs.observation.render_data, 'map'):
-#     return obs.observation.render_data.map  # 返回RGB屏幕图像
-#   else:
-#     return None
-#
-# def get_rgb_minimap(obs) -> np.ndarray or None:
-#   if hasattr(obs.observation, 'render_data') and hasattr(obs.observation.render_data, 'minimap'):
-#     return obs.observation.render_data.minimap  # 返回RGB小地图图像
-#   else:
-#     return None
-
-# def get_feature_map_screen(obs, feature_name: str) -> np.ndarray or None:
-#   feature_layer = obs.observation.feature_screen
-#   if hasattr(feature_layer, feature_name):
-#     return getattr(feature_layer, feature_name)
-#   else:
-#     return None
-#
-# def get_feature_map_minimap(obs, feature_name: str) -> np.ndarray or None:
-#   feature_layer = obs.observation.feature_minimap
-#   if hasattr(feature_layer, feature_name):
-#     return getattr(feature_layer, feature_name)
-#   else:
-#     return None
 
 def get_img_obs_fea(self, obs):
 
   def draw_coordinate_axes(surf, screen_size):
     """在屏幕上绘制坐标轴和网格线，坐标范围固定为 0 到 128。"""
     # 固定坐标范围为 0 到 screen_size
-    coord_range_x = screen_size
-    coord_range_y = screen_size
+    # coord_range_x = screen_size
+    # coord_range_y = screen_size
+    coord_range_x = 24
+    coord_range_y = 24
     # 设置刻度和网格线数量
     num_ticks = 9  # 可以根据需要调整，例如设置为 9，则刻度为每 16 个单位
     # 计算固定坐标刻度，例如：[0, 16, 32, ..., 128]
@@ -166,7 +144,7 @@ def get_img_obs_fea(self, obs):
 # use in SubAgent
 def get_img_obs_rgb(self, obs):
   """
-  Extracts the RGB image from the observation, adds coordinate axes ranging from 0 to 128,
+  Extracts the RGB image from the observation, adds coordinate axes ranging from 0 to {screen_size},
   and returns the Base64 encoded string of the processed image.
   If saving images is enabled in the configuration, the processed image is saved to a local file.
   """
@@ -198,7 +176,8 @@ def get_img_obs_rgb(self, obs):
   # Create a drawing object
   draw = ImageDraw.Draw(img)
   # Fixed coordinate range
-  coord_range = self.size_screen  # Coordinate axes range from 0 to 128
+  # coord_range = self.size_screen  # Coordinate axes range from 0 to 128
+  coord_range = 24  # Coordinate axes range from 0 to 128
   # Set the number of ticks and grid lines
   num_ticks = 9  # Adjust as needed
   # Compute fixed coordinate ticks, e.g., [0, 16, 32, ..., 128]
@@ -244,10 +223,115 @@ def get_img_obs_rgb(self, obs):
     # Get the game loop step from the observation as the step information
     step = observation['game_loop'][0]
     # Construct the save path, including the log directory, agent name, and "rgb_images" subdirectory
-    image_save_dir = os.path.join(self.log_dir_path, f"{self.name}", "rgb_images")
+    image_save_dir = os.path.join(self.log_dir_path, f"{self.name}", "rgb_screen")
     os.makedirs(image_save_dir, exist_ok=True)
     # Construct the file name, including the step
     image_filename = f"rgb_screen_loop{self.main_loop_step}_step{step}.png"
+    image_path = os.path.join(image_save_dir, image_filename)
+    # Save the image
+    try:
+      img.save(image_path)
+      logger.info(
+        f"[ID {self.log_id}] LLMAgent {self.name}: Saved RGB image at step {step}, filename: {image_filename}")
+    except Exception as e:
+      logger.error(f"[ID {self.log_id}] LLMAgent {self.name}: Failed to save RGB image: {e}")
+
+  return base64_image
+
+
+def get_img_obs_rgb_minimap(self, obs):
+  """
+  Extracts the RGB image from the observation, adds coordinate axes ranging from 0 to {screen_size},
+  and returns the Base64 encoded string of the processed image.
+  If saving images is enabled in the configuration, the processed image is saved to a local file.
+  """
+  # Check the structure of the obs object
+  if isinstance(obs, list):
+    observation = obs[0].observation
+  else:
+    observation = obs.observation
+    logger.debug(f"[ID {self.log_id}] LLMAgent {self.name}: Accessed observation via obs.observation")
+  # Log the keys of the observation (for debugging)
+  logger.debug(f"[ID {self.log_id}] LLMAgent {self.name}: Observation keys: {list(observation.keys())}")
+
+  # Check if 'rgb_screen' is in the observation
+  if 'rgb_minimap' in observation:
+    rgb_minimap = observation['rgb_minimap']
+    logger.debug(f"[ID {self.log_id}] LLMAgent {self.name}: 'rgb_minimap' is found in the observation.")
+  else:
+    logger.error(f"[ID {self.log_id}] LLMAgent {self.name}: 'rgb_minimap' not found in the observation.")
+    return None
+
+  # Convert data type to uint8
+  rgb_minimap = rgb_minimap.astype('uint8')
+  # Convert NumPy array to PIL Image object
+  rgb_minimap = np.array(rgb_minimap)[:, :, ::-1]  # BGR to RGB
+  img = Image.fromarray(rgb_minimap, 'RGB')
+  img = img.resize((4 * self.size_minimap, 4 * self.size_minimap), resample=Image.LANCZOS)
+  enhancer = ImageEnhance.Brightness(img)
+  img = enhancer.enhance(factor=3.0)
+  # enhancer = ImageEnhance.Contrast(img)
+  # img = enhancer.enhance(factor=2.0)
+  # enhancer = ImageEnhance.Color(img)
+  # img = enhancer.enhance(factor=1.8)
+
+  # img = img.convert('RGB')
+  # Get image dimensions
+  img_width, img_height = img.size
+  # Create a drawing object
+  draw = ImageDraw.Draw(img)
+  # Fixed coordinate range
+  # coord_range = self.size_screen  # Coordinate axes range from 0 to 128
+  coord_range = self.size_minimap  # Coordinate axes range from 0 to 128
+  # Set the number of ticks and grid lines
+  num_ticks = 9  # Adjust as needed
+  # Compute fixed coordinate ticks, e.g., [0, 16, 32, ..., 128]
+  fixed_ticks = np.linspace(0, coord_range, num_ticks)  # Fixed coordinate ticks
+  # Map fixed coordinates to image pixel positions
+  x_positions = (fixed_ticks / coord_range) * img_width  # Map to image x-axis positions
+  y_positions = (fixed_ticks / coord_range) * img_height  # Map to image y-axis positions
+
+  # Draw vertical grid lines
+  for x in x_positions:
+    draw.line([(x, 0), (x, img_height)], fill='white', width=1)
+  # Draw horizontal grid lines
+  for y in y_positions:
+    draw.line([(0, y), (img_width, y)], fill='white', width=1)
+
+  # Try to load a font
+  try:
+    font = ImageFont.truetype("arial.ttf", size=12)
+    logger.debug(f"[ID {self.log_id}] LLMAgent {self.name}: Loaded 'arial.ttf' font for drawing text.")
+  except IOError:
+    # Use default font if specified font is not available
+    font = ImageFont.load_default()
+    logger.warning(f"[ID {self.log_id}] LLMAgent {self.name}: Could not load 'arial.ttf'. Using default font.")
+
+  # Draw X-axis tick labels
+  for x, label in zip(x_positions, fixed_ticks.astype(int)):
+    # Adjust label position slightly to prevent clipping
+    draw.text((x + 2, 2), str(label), fill='white', font=font)
+  # Draw Y-axis tick labels
+  for y, label in zip(y_positions, fixed_ticks.astype(int)):
+    # Adjust label position slightly to prevent clipping
+    draw.text((2, y + 2), str(label), fill='white', font=font)
+
+  # Save the image to a byte stream in memory
+  buffered = io.BytesIO()
+  img.save(buffered, format="PNG")
+  buffered.seek(0)
+
+  # Convert image byte stream to Base64 encoded string
+  base64_image = base64.b64encode(buffered.getvalue()).decode('utf-8')
+  # Save the image to a local file if saving is enabled in the configuration
+  if self.config.ENABLE_SAVE_IMAGES:
+    # Get the game loop step from the observation as the step information
+    step = observation['game_loop'][0]
+    # Construct the save path, including the log directory, agent name, and "rgb_images" subdirectory
+    image_save_dir = os.path.join(self.log_dir_path, f"{self.name}", "rgb_minimap")
+    os.makedirs(image_save_dir, exist_ok=True)
+    # Construct the file name, including the step
+    image_filename = f"rgb_minimap_loop{self.main_loop_step}_step{step}.png"
     image_path = os.path.join(image_save_dir, image_filename)
     # Save the image
     try:
@@ -866,14 +950,15 @@ def get_warp_info(agent) -> str:  # for Developer only
   prism_info = ''
 
   for unit in obs.observation.raw_units:
-    if unit.alliance == features.PlayerRelative.SELF and unit.unit_type in [units.Protoss.WarpGate]:
-      warp_source_info += f"\n\t{str(units.get_unit_type(unit.unit_type))}, "
-      warp_source_info += f""  # Pysc2 do not provide cooldown status of warp gates
+    if unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100:
 
-    if unit.alliance == features.PlayerRelative.SELF and unit.unit_type == units.Protoss.Pylon:
-      pylon_info += f"\n\t{str(units.get_unit_type(unit.unit_type))}, tag:{hex(unit.tag)}"
-    if unit.alliance == features.PlayerRelative.SELF and unit.unit_type == units.Protoss.WarpPrismPhasing:
-      prism_info += f"\n\t{str(units.get_unit_type(unit.unit_type))}, tag:{hex(unit.tag)}"
+      if unit.unit_type in [units.Protoss.WarpGate]:
+        warp_source_info += f"\n\t{str(units.get_unit_type(unit.unit_type))}, "
+        warp_source_info += f""  # Pysc2 do not provide cooldown status of warp gates
+      if unit.unit_type == units.Protoss.Pylon:
+        pylon_info += f"\n\t{str(units.get_unit_type(unit.unit_type))}, tag:{hex(unit.tag)}"
+      if unit.unit_type == units.Protoss.WarpPrismPhasing:
+        prism_info += f"\n\t{str(units.get_unit_type(unit.unit_type))}, tag:{hex(unit.tag)}"
 
   warp_target_info = pylon_info + prism_info
   if len(warp_source_info) > 0:
@@ -902,15 +987,15 @@ def get_event_info(agent) -> str:
 
     if len(team_event['ctrl']) > 0:
       team_event_text += '\n\t\tControlled Unit Event:'
-      for tag in team_event['ctrl']:
+      for tag in team_event['ctrl'].keys():
         team_event_text += '\n\t\t\t' + team_event['ctrl'][int(tag)]
     if len(team_event['ally']) > 0:
       team_event_text += '\n\t\tAlly Unit Event:'
-      for tag in team_event['ally']:
+      for tag in team_event['ally'].keys():
         team_event_text += '\n\t\t\t' + team_event['ally'][int(tag)]
     if len(team_event['enemy']) > 0:
       team_event_text += '\n\t\tEnemy Unit Event:'
-      for tag in team_event['enemy']:
+      for tag in team_event['enemy'].keys():
         team_event_text += '\n\t\t\t' + team_event['enemy'][int(tag)]
 
     if team_event_text != '':
@@ -936,6 +1021,137 @@ def get_action_error_info(agent):
   return action_error_info
 
 
+def get_ves_and_base_info(agent):
+  ves_all = []
+  ves_near, ves_near_tags = [], []
+  ves_new_base, ves_new_base_tags = [], []
+  base_build, base_build_tags = [], []
+  base_built, base_built_tags = [], []
+
+  obs = agent.team_unit_obs_list[0]
+  for unit in obs.observation.raw_units:
+    if unit.unit_type in GAS_TYPE:
+      ves_all.append(unit)
+  for unit in obs.observation.raw_units:
+    if unit.unit_type in BASE_BUILDING_TYPE and unit.alliance == features.PlayerRelative.SELF:
+      if unit.build_progress == 100:
+        base_built.append(unit)
+        base_built_tags.append(unit.tag)
+      else:
+        base_build.append(unit)
+        base_build_tags.append(unit.tag)
+  base_all = base_build + base_built
+
+  # 保留距离最近的
+  for ves_unit in ves_all:
+    d_min = 99
+    for base_unit in base_built:
+      d = get_dist(ves_unit, base_unit)
+      d_min = d if d < d_min else d_min
+    if d_min < 10:
+      ves_near.append(ves_unit)
+      ves_near_tags.append(ves_unit.tag)
+    elif d_min < 35:
+      ves_new_base.append(ves_unit)
+      # ves_new_base_tags.append(ves_unit.tag)
+
+  # 去重，2气对应1矿，保留一个气的tag即可
+  ves_new_base_ = []
+  for ves_unit in ves_new_base:
+    d_min = 99
+    for ves_unit_ in ves_new_base_:
+      d = get_dist(ves_unit, ves_unit_)
+      d_min = d if d < d_min else d_min
+    if d_min >= 10 or len(ves_new_base_) == 0:
+      ves_new_base_.append(ves_unit)
+      ves_new_base_tags.append(ves_unit.tag)
+
+  # 去除半场外的
+  if 4 * len(base_all) >= len(ves_all):
+    ves_new_base_tags = []
+
+  out_put_info = ''
+  if len(ves_new_base_tags) > 0:
+    out_put_info += f"Valid tag for new base (Nexus/CommandCenter/Hatchery):"
+    for tag in ves_new_base_tags:
+      out_put_info += f"\n\t {hex(tag)}"
+    out_put_info += f"\n"
+
+  if len(ves_near_tags) > 0:
+    out_put_info += f"Valid tag for new gas building (Assimilator/Refinery/Extractor):"
+    for tag in ves_near_tags:
+      out_put_info += f"\n\t {hex(tag)}"
+    out_put_info += f"\n"
+
+  out_put_info += f"\n"
+  return out_put_info
+
+
+def get_unit_count_info(agent, return_type):
+  unit_oppo = {}
+  unit_self_building = {}
+  unit_self_other = {}
+  build_process_building = {}
+  build_process_other = {}
+  # unit_info = f'unit {hex(unit.tag)}({str(units.get_unit_type(unit.unit_type))})'
+
+  def add_to_dict(my_dict, key, value):
+    if key in my_dict.keys():
+      my_dict[key].append(value)
+    else:
+      my_dict[key] = [value]
+
+  obs = agent.team_unit_obs_list[0]
+  for unit in obs.observation.raw_units:
+    if unit.alliance == features.PlayerRelative.ENEMY:
+      add_to_dict(unit_oppo, str(units.get_unit_type(unit.unit_type)), unit)
+    if unit.alliance == features.PlayerRelative.SELF:
+      if unit.build_progress == 100 and unit.unit_type in BUILDING_TYPE:
+        add_to_dict(unit_self_building, str(units.get_unit_type(unit.unit_type)), unit)
+      if unit.build_progress == 100 and unit.unit_type not in BUILDING_TYPE:
+        add_to_dict(unit_self_other, str(units.get_unit_type(unit.unit_type)), unit)
+      if unit.build_progress != 100 and unit.unit_type in BUILDING_TYPE:
+        add_to_dict(build_process_building, str(units.get_unit_type(unit.unit_type)), unit)
+      if unit.build_progress != 100 and unit.unit_type not in BUILDING_TYPE:
+        add_to_dict(build_process_other, str(units.get_unit_type(unit.unit_type)), unit)
+
+  num_unit_oppo = {}
+  num_unit_self_building = {}
+  num_unit_self_other = {}
+  num_build_process_building = {}
+  num_build_process_other = {}
+  for key in unit_oppo:
+    num_unit_oppo[key] = len(unit_oppo[key])
+  for key in unit_self_building:
+    num_unit_self_building[key] = len(unit_self_building[key])
+  for key in unit_self_other:
+    num_unit_self_other[key] = len(unit_self_other[key])
+  for key in build_process_building:
+    num_build_process_building[key] = len(build_process_building[key])
+  for key in build_process_other:
+    num_build_process_other[key] = len(build_process_other[key])
+
+  out_put_info = 'Unit Counts:'
+  if return_type in [1]:
+    out_put_info += f"\n\tOur Unit: \n\t {num_unit_self_other}"
+    out_put_info += f"\n\tOur Buildings: \n\t {num_unit_self_building}"
+    out_put_info += f"\n\tOur Unit (in warping/morphing): \n\t {num_build_process_other}"
+    out_put_info += f"\n\tOur Buildings (in construction): \n\t {num_build_process_building}"
+    out_put_info += f"\n\tSpotted Enemy Unit: \n\t {num_unit_oppo}"
+  if return_type in [2]:
+    out_put_info += f"\n\tOur Unit: \n\t {num_unit_self_other}"
+    out_put_info += f"\n\tOur Buildings: \n\t {num_unit_self_building}"
+    out_put_info += f"\n\tOur Unit (in warping/morphing): \n\t {num_build_process_other}"
+    out_put_info += f"\n\tOur Buildings (in construction): \n\t {num_build_process_building}"
+  if return_type in [3]:
+    out_put_info += f"\n\tOur Buildings: \n\t {num_unit_self_building}"
+    out_put_info += f"\n\tOur Buildings (in construction): \n\t {num_build_process_building}"
+  out_put_info += '\n\n'
+
+  return out_put_info
+
+
+
 class BaseTranslatorO:
 
   def __init__(self, name, log_id, config):
@@ -949,9 +1165,12 @@ class BaseTranslatorO:
     self.size_minimap = None
     self.final_prompt = ''
 
-  def translate(self, agent) -> str:
+  def obs_list_safe(self, agent):
     obs_list = agent.team_unit_obs_list
-    if not isinstance(obs_list, list) or len(obs_list) < 1:
+    return False if not isinstance(obs_list, list) or len(obs_list) < 1 else True
+
+  def translate(self, agent) -> str:
+    if not self.obs_list_safe(agent):
       return f"obs_list error, no obs found"
 
     self.state = {
@@ -1000,6 +1219,8 @@ class CombatGroupTranslatorO(BaseTranslatorO):
 
   def translate(self, agent) -> str:
     super(CombatGroupTranslatorO, self).translate(agent)
+    if not self.obs_list_safe(agent):
+      return f"obs_list error, no obs found"
 
     # observation and relevant info
     self.text_obs = self.state['game_info'] + self.state['units_info'] + self.state['event_info'] + \
@@ -1017,22 +1238,25 @@ class CommanderTranslatorO(BaseTranslatorO):
   def __init__(self, name, log_id, config):
     super(CommanderTranslatorO, self).__init__(name, log_id, config)
     if config.ENABLE_COMMUNICATION:
-      self.final_prompt = f"\n\nAs the supreme military commander, you should not directly give actions, " \
+      self.final_prompt = f"As the supreme military commander, you should not directly give actions, " \
                           f"instead, tell your subordinates what to do through communication." \
                           f"\nNow, start analysis, making macro decisions in military deployments by sending message to other agents:"
     else:
       logger.warning(f"[ID {self.log_id}] {self.agent_name} CommanderTranslatorO: Commander can not communicate with other agents due to agent.config.ENABLE_COMMUNICATION=False")
-      self.final_prompt = f"\n\nAs the supreme military commander, you should not directly give actions, " \
+      self.final_prompt = f"As the supreme military commander, you should not directly give actions, " \
                           f"instead, tell your subordinates what to do through communication." \
                           f"\nNow, start analysis, making macro decisions in military deployments by sending message to other agents:"
     logger.info(f"[ID {log_id}] {name} CommanderTranslatorO initialized")
 
   def translate(self, agent) -> str:
     super(CommanderTranslatorO, self).translate(agent)
+    if not self.obs_list_safe(agent):
+      return f"obs_list error, no obs found"
+    self.states[-1]['unit_count_info'] = get_unit_count_info(agent, return_type=1)
 
     # observation
     self.states[-1]['other_agents_info'] = get_other_agents_info(agent)
-    self.text_obs = self.state['game_info'] + self.states[-1]['other_agents_info']
+    self.text_obs = self.state['game_info'] + self.states[-1]['other_agents_info'] + self.states[-1]['unit_count_info']
     self.text_task = self.state['communication_input'] + self.state['communication_target'] + self.state['task_info']
     self.text_prompt = self.text_obs + self.text_task + self.final_prompt
     text_o = self.text_prompt
@@ -1047,12 +1271,12 @@ class DeveloperTranslatorO(BaseTranslatorO):
   def __init__(self, name, log_id, config):
     super(DeveloperTranslatorO, self).__init__(name, log_id, config)
     if config.ENABLE_COMMUNICATION:
-      self.final_prompt = f"\n\nAs a senior commander, the max number of your actions is not limited, " \
+      self.final_prompt = f"As a senior commander, the max number of your actions is not limited, " \
                           f"when you warp units, try to use all the WarpGate as much as possible, " \
                           f"and warp all units near a single WarpTrain Field Provider." \
                           f"\nNow, start generating your analysis, actions and communication:"
     else:
-      self.final_prompt = f"\n\nAs a senior commander, the max number of your actions is not limited, " \
+      self.final_prompt = f"As a senior commander, the max number of your actions is not limited, " \
                           f"when you warp units, try to use all the WarpGate as much as possible, " \
                           f"and warp all units near a single WarpTrain Field Provider." \
                           f"\nNow, start generating your analysis and actions:"
@@ -1060,12 +1284,15 @@ class DeveloperTranslatorO(BaseTranslatorO):
 
   def translate(self, agent) -> str:
     super(DeveloperTranslatorO, self).translate(agent)
+    if not self.obs_list_safe(agent):
+      return f"obs_list error, no obs found"
+    self.states[-1]['unit_count_info'] = get_unit_count_info(agent, return_type=2)
 
     # observation
     self.states[-1]['warp_info'] = get_warp_info(agent)
     self.text_obs = self.state['game_info'] + \
                self.state['valid_actions'] + self.state['valid_args_explanation'] + self.state['last_action_info'] + \
-               self.states[-1]['warp_info']
+               self.states[-1]['unit_count_info'] + self.states[-1]['warp_info']
     self.text_task = self.state['communication_input'] + self.state['communication_target'] + self.state['task_info']
     self.text_prompt = self.text_obs + self.text_task + self.final_prompt
 
@@ -1075,6 +1302,36 @@ class DeveloperTranslatorO(BaseTranslatorO):
     return text_o
 
 
+class BuilderTranslatorO(BaseTranslatorO):
+  def __init__(self, name, log_id, config):
+    super(BuilderTranslatorO, self).__init__(name, log_id, config)
+    if config.ENABLE_COMMUNICATION:
+      self.final_prompt = f"As a builder, you should build buildings in correct position." \
+                          f"\nNow, start generating your analysis, actions and communication:"
+    else:
+      self.final_prompt = f"As a builder, you should build buildings in correct position." \
+                          f"\nNow, start generating your analysis, actions:"
+    logger.info(f"[ID {log_id}] {name} DeveloperTranslatorO initialized")
+
+  def translate(self, agent) -> str:
+    super(BuilderTranslatorO, self).translate(agent)
+    if not self.obs_list_safe(agent):
+      return f"obs_list error, no obs found"
+    self.states[-1]['unit_count_info'] = get_unit_count_info(agent, return_type=3)
+    self.states[-1]['new_base_and_ves_info'] = get_ves_and_base_info(agent)
+
+    # observation
+    self.text_obs = self.state['game_info'] + self.state['units_info'] + self.state['event_info'] + \
+               self.state['valid_actions'] + self.state['valid_args_explanation'] + self.state['last_action_info'] + \
+               self.state['last_action_error_info'] + self.states[-1]['new_base_and_ves_info']
+    self.text_task = self.state['communication_input'] + self.state['communication_target'] + self.state['task_info']
+    self.text_prompt = self.text_obs + self.text_task + self.final_prompt
+
+    if not agent.config.ENABLE_COMMUNICATION:
+      logger.warning(f"[ID {self.log_id}] {self.agent_name} DeveloperTranslatorO: Developer can not communicate with other agents due to agent.config.ENABLE_COMMUNICATION=False")
+    text_o = self.text_prompt
+    return text_o
+
 # TODO: You can specialize your TranslatorO here
 
 
@@ -1083,6 +1340,7 @@ PROTOSS_FACTORY = {
   'combatgroup': CombatGroupTranslatorO,  # CombatGroup Observation
   'commander': CommanderTranslatorO,  # only information relevant to macro decision, military
   'developer': DeveloperTranslatorO,  # only information relevant to macro decision, development
+  'builder': BuilderTranslatorO,
 }
 TERRAN_FACTORY = {}
 ZERG_FACTORY = {}

@@ -11,13 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import copy
 
 from llm_pysc2.lib.llm_communicate import communication_info_transmission
 from llm_pysc2.lib.log.data_recorder import DataRecorder
 from llm_pysc2.agents.main_agent_funcs import *
 from llm_pysc2.agents.llm_pysc2_agent import LLMAgent
-from llm_pysc2.cfg import ProtossAgentConfig
+from llm_pysc2.cfg.config import ProtossAgentConfig
 
 from pysc2.agents import base_agent
 from pysc2.lib import actions
@@ -30,6 +30,7 @@ import datetime
 import random
 import math
 import time
+import copy
 import sys
 import os
 
@@ -39,10 +40,16 @@ llm_pysc2_global_log_id = 0
 
 # multi thread query, target function
 def thread_act(agent, obs):
-  try:
-    agent.query(obs)
-  except Exception as e:
-    logger.error(f"error {e} occur in agent {agent.name} query")
+  # agent_copy = copy.deepcopy(agent)
+  agent.query(obs)
+  # try:
+  #   agent.query(obs)
+  # except Exception as e:
+  #   # agent = copy.deepcopy(agent_copy)
+  #   agent._after_query(f'error {e} occur in agent {agent.name} query')
+  #   logger.error(f"error {e} occur in agent {agent.name} query")
+
+
 
 
 # Main Agent, for interacting with pysc2 env
@@ -105,6 +112,7 @@ class MainAgent(base_agent.BaseAgent):
     self.unit_uid_appear = list()
     self.unit_uid_total = list()
     self.unit_disappear_steps = dict()
+    self.unit_tag_builder = list()
 
     # self.possible_disappear_unit_list = list()
     self.func_id_history = deque(maxlen=20)
@@ -232,6 +240,11 @@ class MainAgent(base_agent.BaseAgent):
       self.main_loop_lock = False
       logger.success(f"[ID {self.log_id}] " + '========== ' + '==' * 25 + f" Loop {self.main_loop_step} " + '==' * 25 + ' ==========')
     logger.success(f"[ID {self.log_id}] " + '---------- ' + '--' * 25 + f" Step {self.steps} " + '--' * 25 + ' ----------')
+    last_20_func = list(self.func_id_history)
+    if len(set(last_20_func)) == 1 and len(last_20_func) >= 20 and 0 not in last_20_func:
+      logger.error(f"[ID {self.log_id}] Detect Possible Endless Loop !")
+      logger.error(f"[ID {self.log_id}] last 20 funcs: {actions.FUNCTIONS[self.func_id_history[0]]}")
+      time.sleep(1)
     func_id, func_call = (0, actions.FUNCTIONS.no_op())
 
     # initial steps and camera calibration (necessary)
@@ -353,8 +366,11 @@ class MainAgent(base_agent.BaseAgent):
             logger.debug(f"[ID {self.log_id}] len(agent.team_unit_obs_list) = {len(agent.team_unit_obs_list)}")
             logger.debug(f"[ID {self.log_id}] len(agent.team_unit_tag_list) = {len(agent.team_unit_tag_list)}")
             logger.debug(f"[ID {self.log_id}] len(agent.team_unit_team_list) = {len(agent.team_unit_team_list)}")
-            agent.thread = threading.Thread(target=thread_act, args=(agent, obs))
-            agent.thread.start()
+            if not self.config.ENABLE_MULTI_THREAD_QUERY:
+              agent.query(obs)
+            else:
+              agent.thread = threading.Thread(target=thread_act, args=(agent, obs))
+              agent.thread.start()
             agent.query_llm_times += 1
             self.agent_id = (self.agent_id + 1) % len(self.AGENT_NAMES)
             self.unit_selected_tag_list = []

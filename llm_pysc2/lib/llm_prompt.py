@@ -15,6 +15,7 @@
 
 BASIC_COMBAT_RULES = \
 """
+  (If you controls military units)
   1. Concentrating firepower is always necessary, attack different unit at the same time will definitely reduce killing speed and leading to terrible result. Always concentrating all teams' fire at one unit that (1)with highest DPS(most valuable) (2)most vulnerable (3)closest.
 """
 
@@ -182,7 +183,7 @@ FACTORY = {
 
 
 if __name__ == "__main__":
-  from llm_pysc2.agents.configs.config import ProtossAgentConfig
+  from llm_pysc2.cfg.config import ProtossAgentConfig
   config = ProtossAgentConfig()
   prompt = CombatGroupPrompt('CombatGroup1', log_id=0, config=config)
 

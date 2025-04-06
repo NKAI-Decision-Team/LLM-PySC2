@@ -42,7 +42,7 @@ class BuildCommand(distutils.command.build.build):
 
 setup(
     name='llm-pysc2',
-    version='0.1',
+    version='0.2.0',
     description='LLM Starcraft II environment and library for training agents.',
     long_description=description,
     author='NKAI',
@@ -63,6 +63,7 @@ setup(
         'llm_pysc2',
         'llm_pysc2.agents',
         'llm_pysc2.bin',
+        'llm_pysc2.cfg',
         'llm_pysc2.lib',
     ],
     install_requires=[

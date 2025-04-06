@@ -214,14 +214,14 @@ PROTOSS_ACTION_RESEARCH = [
 PROTOSS_ACTION_BUILD = [
   # tag for Vespene Geyser
   {'name': 'Build_Nexus_Near', 'arg': ['tag'],
-   'func': [(573, F.llm_pysc2_move_camera, ('world_tag')), (65, F.Build_Nexus_screen, ('queued', 'screen_tag'))]},
+   'func': [(573, F.llm_pysc2_move_camera, ('world_tag')), (573, F.llm_pysc2_move_camera, ('world_tag')), (65, F.Build_Nexus_screen, ('queued', 'screen_tag'))]},
   # tag for Vespene Geyser
   {'name': 'Build_Assimilator_Near', 'arg': ['tag'],
-   'func': [(40, F.Build_Assimilator_screen, ('queued', 'screen_tag'))]},
-  {'name': 'Build_Nexus_Screen', 'arg': ['screen'],
-   'func': [(65, F.Build_Nexus_screen, ('queued', 'screen'))]},
-  {'name': 'Build_Assimilator_Screen', 'arg': ['screen'],
-   'func': [(40, F.Build_Assimilator_screen, ('queued', 'screen'))]},
+   'func': [(573, F.llm_pysc2_move_camera, ('world_tag')), (573, F.llm_pysc2_move_camera, ('world_tag')), (40, F.Build_Assimilator_screen, ('queued', 'screen_tag'))]},
+  # {'name': 'Build_Nexus_Screen', 'arg': ['screen'],
+  #  'func': [(65, F.Build_Nexus_screen, ('queued', 'screen'))]},
+  # {'name': 'Build_Assimilator_Screen', 'arg': ['screen'],
+  #  'func': [(40, F.Build_Assimilator_screen, ('queued', 'screen'))]},
   {'name': 'Build_Pylon_Screen', 'arg': ['screen'],
    'func': [(70, F.Build_Pylon_screen, ('queued', 'screen'))]},
   {'name': 'Build_Gateway_Screen', 'arg': ['screen'],
@@ -621,33 +621,71 @@ def get_arg_screen_build(obs, screen: list, size_screen, action_name) -> (tuple,
   if isinstance(screen, list) and len(screen) == 2 and isinstance(screen[0], (int, float)) and isinstance(screen[1], (
   int, float)) and building_size != 0:
     ratio = size_screen / SCREEN_WORLD_GRID
-    x0 = int(min(max(0, screen[0]), size_screen))
-    y0 = int(min(max(0, screen[1]), size_screen))
-    x1 = int(min(max(0, screen[0]), size_screen) - ratio * (building_size - 1) / 2)
-    y1 = int(min(max(0, screen[1]), size_screen) - ratio * (building_size - 1) / 2)
-    if building_name in POWER_BUILDING_NAMES and obs.observation.feature_screen.power[x0][y0] == 0:
-      return f'({x0}, {y0}) need power', False
-    if building_name in CREEP_BUILDING_NAMES and obs.observation.feature_screen.creep[x0][y0] == 0:
-      return f'({x0}, {y0}) need creep', False
-    for i in range(building_size):
-      for j in range(building_size):
-        x = int(x1 + i * ratio)
-        y = int(y1 + j * ratio)
-        x1, x2, y1, y2 = is_valid_screen_range(obs, [x, y], size_screen)
-        if not (x1 <= x <= x2 or y1 <= y <= y2):
-          return f'Build failed! x({int(x/ratio)}) and y({int(y/ratio)}) coordinate exceeds the boundary, valid ranges are {int(x1 / ratio)} < x < {int(x2 / ratio)}, {int(y1 / ratio)} < y < {int(y2 / ratio)}', False
-        if not x1 <= x <= x2:
-          return f"Build failed! x({int(x/ratio)}) exceeds the boundary, valid range is {int(x1 / ratio)} < x < {int(x2 / ratio)}", False
-        if not y1 <= y <= y2:
-          return f"Build failed! y({int(y/ratio)}) exceeds the boundary, valid range is {int(y1 / ratio)} < y < {int(y2 / ratio)}", False
-        if obs.observation.feature_screen.buildable[x][y] != 1:
-          return f'area near ({x0}, {y0}) not buildable', False
-        if obs.observation.feature_screen.pathable[x][y] != 1:
-          return f'area near ({x0}, {y0}) not pathable', False
-        if obs.observation.feature_screen.player_relative[x][y] not in [0, 1]:
-          return f'area near ({x0}, {y0}) blocked', False
-    return (x0, y0), True
+    pysc2_arg0, func_valid0 = 'unknown error in arg', False
+    for retry in range(10):
+      i, j = (0, 0) if retry == 0 else ((retry-1)//3 - 1, (retry-1)%3 - 1)
+      x0 = int(min(max(0, screen[0] + i * ratio), size_screen))
+      y0 = int(min(max(0, screen[1] + j * ratio), size_screen))
+      x1 = int(min(max(0, screen[0] + i * ratio), size_screen) - ratio * (building_size - 1) / 2)
+      y1 = int(min(max(0, screen[1] + j * ratio), size_screen) - ratio * (building_size - 1) / 2)
+      pysc2_arg, func_valid = (x0, y0), True
+      if building_name in POWER_BUILDING_NAMES and obs.observation.feature_screen.power[x0][y0] == 0:
+        pysc2_arg, func_valid = f'({int(x0/ratio)}, {int(y0/ratio)}) is not in power field, you need to build Pylon first or build near an existing Pylon', False
+      if building_name in CREEP_BUILDING_NAMES and obs.observation.feature_screen.creep[x0][y0] == 0:
+        pysc2_arg, func_valid = f'({int(x0 / ratio)}, {int(y0 / ratio)}) is not in creep, you need to create creep tumor by Queen', False
+      for i in range(building_size):
+        for j in range(building_size):
+          x = int(x1 + i * ratio)
+          y = int(y1 + j * ratio)
+          x1, x2, y1, y2 = is_valid_screen_range(obs, [x, y], size_screen)
+          if not (x1 <= x <= x2 or y1 <= y <= y2):
+            pysc2_arg, func_valid = f'Build failed! x({int(x / ratio)}) and y({int(y / ratio)}) coordinate exceeds the boundary, valid ranges are {int(x1 / ratio)} < x < {int(x2 / ratio)}, {int(y1 / ratio)} < y < {int(y2 / ratio)}', False
+          if not x1 <= x <= x2:
+            pysc2_arg, func_valid = f"Build failed! x({int(x / ratio)}) exceeds the boundary, valid range is {int(x1 / ratio)} < x < {int(x2 / ratio)}", False
+          if not y1 <= y <= y2:
+            pysc2_arg, func_valid = f"Build failed! y({int(y / ratio)}) exceeds the boundary, valid range is {int(y1 / ratio)} < y < {int(y2 / ratio)}", False
+          if obs.observation.feature_screen.buildable[x][y] != 1:
+            pysc2_arg, func_valid = f'area near ({int(x0 / ratio)}, {int(y0 / ratio)}) not buildable', False
+          if obs.observation.feature_screen.pathable[x][y] != 1:
+            pysc2_arg, func_valid = f'area near ({int(x0 / ratio)}, {int(y0 / ratio)}) not pathable', False
+          if obs.observation.feature_screen.player_relative[x][y] not in [0, 1]:
+            pysc2_arg, func_valid = f'area near ({int(x0 / ratio)}, {int(y0 / ratio)}) blocked', False
+
+      if retry == 0:
+        pysc2_arg0, func_valid0 = pysc2_arg, func_valid
+      if not isinstance(pysc2_arg, str):
+        return pysc2_arg, func_valid
+
+    return pysc2_arg0, func_valid0
   return f'input arg error: screen={screen}', False
+
+  #   x0 = int(min(max(0, screen[0]), size_screen))
+  #   y0 = int(min(max(0, screen[1]), size_screen))
+  #   x1 = int(min(max(0, screen[0]), size_screen) - ratio * (building_size - 1) / 2)
+  #   y1 = int(min(max(0, screen[1]), size_screen) - ratio * (building_size - 1) / 2)
+  #   if building_name in POWER_BUILDING_NAMES and obs.observation.feature_screen.power[x0][y0] == 0:
+  #     return f'({int(x0/ratio)}, {int(y0/ratio)}) is not in power field, you need to build Pylon first or build near an existing Pylon', False
+  #   if building_name in CREEP_BUILDING_NAMES and obs.observation.feature_screen.creep[x0][y0] == 0:
+  #     return f'({int(x0/ratio)}, {int(y0/ratio)}) is not in creep, you need to create creep tumor by Queen', False
+  #   for i in range(building_size):
+  #     for j in range(building_size):
+  #       x = int(x1 + i * ratio)
+  #       y = int(y1 + j * ratio)
+  #       x1, x2, y1, y2 = is_valid_screen_range(obs, [x, y], size_screen)
+  #       if not (x1 <= x <= x2 or y1 <= y <= y2):
+  #         return f'Build failed! x({int(x/ratio)}) and y({int(y/ratio)}) coordinate exceeds the boundary, valid ranges are {int(x1 / ratio)} < x < {int(x2 / ratio)}, {int(y1 / ratio)} < y < {int(y2 / ratio)}', False
+  #       if not x1 <= x <= x2:
+  #         return f"Build failed! x({int(x/ratio)}) exceeds the boundary, valid range is {int(x1 / ratio)} < x < {int(x2 / ratio)}", False
+  #       if not y1 <= y <= y2:
+  #         return f"Build failed! y({int(y/ratio)}) exceeds the boundary, valid range is {int(y1 / ratio)} < y < {int(y2 / ratio)}", False
+  #       if obs.observation.feature_screen.buildable[x][y] != 1:
+  #         return f'area near ({int(x0/ratio)}, {int(y0/ratio)}) not buildable', False
+  #       if obs.observation.feature_screen.pathable[x][y] != 1:
+  #         return f'area near ({int(x0/ratio)}, {int(y0/ratio)}) not pathable', False
+  #       if obs.observation.feature_screen.player_relative[x][y] not in [0, 1]:
+  #         return f'area near ({int(x0/ratio)}, {int(y0/ratio)}) blocked', False
+  #   return (x0, y0), True
+  # return f'input arg error: screen={screen}', False
 
 
 # Parameter verification, tag to world coordinate
@@ -882,6 +920,9 @@ def get_arg_world_tag_base_building(obs, tag: int, x_offset, y_offset, world_ran
       y0 = y0 / n
       for i in range(16):
         x0, y0, bad_n = artificial_force_field_iteration_world(mineral_list, x0, y0)
+      if not (isinstance(x0, float) and isinstance(y0, float)):
+        tag = hex(tag) if isinstance(tag, int) else tag
+        return f'unknown error in fing base_building position near unit {tag}', False
       x = int(x0 + x_offset)
       y = int(max(0, world_range - y0 + y_offset))
       return (x, y), True
@@ -948,7 +989,12 @@ def get_arg_screen_tag_base_building(obs, tag: int, size_screen, action_name) ->
       bad_n = len(mineral_gas_list)
       for i in range(16):
         x, y, bad_n = artificial_force_field_iteration_screen(mineral_gas_list, x, y)
-      x, y = int(x), int(y)
+      if not (isinstance(x, float) and isinstance(y, float)):
+        tag = hex(tag) if isinstance(tag, int) else tag
+        return f'unknown error in fing base_building position near unit {tag}', False
+      if not ((0 < x < size_screen) and (0 < y < size_screen)):
+        return f'unknown error in fing base_building position near unit {tag}', False
+      x, y = int(min(max(0., x), size_screen)), int(min(max(0., y), size_screen))
       if bad_n > 3:
         return f'({x}, {y}) may be a bad position for base building', False
       if not (0 < x < size_screen and 0 < y < size_screen):
@@ -1010,7 +1056,7 @@ def add_func_for_train_and_research(self, obs, action):
   if not ('Train_' in action_name or 'Research_' in action_name):
     return action
 
-  full_shape_action = None
+  # full_shape_action = None
   queued_source_unit_tag_list = []  # 已经准备训练/升级单位的建筑，用于避免重复选中
   logger.debug(self.action_list)
 
@@ -1036,6 +1082,22 @@ def add_func_for_train_and_research(self, obs, action):
       [(0, actions.FUNCTIONS.no_op, {})]}
 
   return full_shape_action
+
+
+# def add_func_for_build_base_and_ves(self, obs, action):
+#   action_name = action['name']
+#   action_arg = action['arg']
+#   action_func = action['func']
+#   if not 'Build_' in action_name and ('Nexus' in action_name or 'Assimilator' in action_name):
+#     return action
+#
+#   if isinstance(action_arg, list) and len(action_arg) == 1:
+#     full_shape_action = {'name': action_name, 'arg': action_arg, 'func':
+#       [(573, actions.FUNCTIONS.llm_pysc2_move_camera, [action_arg[0]])] + action['func']}
+#   else:
+#     full_shape_action = action
+#
+#   return full_shape_action
 
 
 class BaseTranslatorA:
@@ -1090,7 +1152,8 @@ class DefaultTranslatorA(BaseTranslatorA):
 
     for line in lines:
       line = line.replace('*', '')
-
+      line = line.replace('`', '')
+      line = line.replace('- ', '')
       # ACTION PART
       if ("Actions:" in line) or ("Action:" in line) or \
           ("actions:" in line) or ("action:" in line):
@@ -1118,12 +1181,21 @@ class DefaultTranslatorA(BaseTranslatorA):
           team_name_old = team_name
           team_name = line.split("eam ")[-1].split(":")[0]  # Team/team xxxx:  -->  xxxx
 
+          self.curr_team_config = {}
           if team_name in self.config.AGENTS[self.name]['team'].keys():
             self.curr_team_config = self.config.AGENTS[self.name]['team'][team_name]
+          elif team_name[:-2] in self.config.AGENTS[self.name]['team'].keys():
+            self.curr_team_config = self.config.AGENTS[self.name]['team'][team_name[:-2]]
+
+          if len(self.curr_team_config.keys()) > 0:
             for team_actions_ in self.curr_team_config['actions'].values():
               self.curr_team_action_list += team_actions_
             for team_action in self.curr_team_action_list:
               self.curr_team_action_name_list.append(team_action['name'])  # 可能重复，如同一个小队多个兵种时，可能有多个Move
+
+          # print(self.config.AGENTS[self.name]['team'].keys())
+          # print(f"self.curr_team_config = {self.curr_team_config}")
+          # print(f"self.curr_team_action_list = {self.curr_team_action_list}")
 
           # else:
           #   teams_ = self.config.AGENTS[self.name]['team']
@@ -1213,7 +1285,11 @@ class DefaultTranslatorA(BaseTranslatorA):
                     new_func_args.append('queued')
                 if arg == "queued":
                   if first_function:
-                    new_func_args.append('now')
+                    if "Build" in action_name or self.name == 'Builder':
+                      new_func_args.append('queued')
+                      first_function = False
+                    else:
+                      new_func_args.append('now')
                   else:
                     new_func_args.append('queued')
                 if arg == "select":
@@ -1281,6 +1357,9 @@ class DefaultTranslatorA(BaseTranslatorA):
     self.action['actions'] = processed_text_a
     self.actions.append(self.action)
 
+    if self.name == 'Builder':
+      team_actions.append({'name': 'HoldPosition-Auto', 'arg': [], 'func': [(274, F.HoldPosition_quick, ('queued', ))]})
+
     if len(team_actions) != 0:
       action_lists.append(team_actions)
       action_lists2.append(team_actions2)
@@ -1305,44 +1384,45 @@ if __name__ == "__main__":
   config = ProtossAgentConfig()
 
   # ----------------- show action space -----------------
-  def show(config):
-    for name in config.AGENTS.keys():
-      # agent_actions = config.AGENTS[name]['action']
-      agent_actions = {}
-      for team_config in config.AGENTS[name]['team'].values():
-        agent_actions[team_config['name']] = {}
-        for unit_type in team_config['actions'].keys():
-          agent_actions[team_config['name']][unit_type] = team_config['actions'][unit_type]
-      print(name)
-      for team_name in agent_actions.keys():
-        print(f"\t{team_name}")
-        for unit_type in agent_actions[team_name].keys():
-          print(f"\t{str(units.get_unit_type(unit_type))}")
-          for i in range(len(agent_actions[team_name][unit_type])):
-            action = agent_actions[team_name][unit_type][i]
-            if len(action['arg']) == 0:
-              print(f"\t\t <{action['name']}()>")
-          for i in range(len(agent_actions[team_name][unit_type])):
-            action = agent_actions[team_name][unit_type][i]
-            if len(action['arg']) == 1 and 'minimap' in action['arg']:
-              print(f"\t\t <{action['name']}({action['arg'][0]})>")
-          for i in range(len(agent_actions[team_name][unit_type])):
-            action = agent_actions[team_name][unit_type][i]
-            if len(action['arg']) == 1 and 'screen' in action['arg']:
-              print(f"\t\t <{action['name']}({action['arg'][0]})>")
-          for i in range(len(agent_actions[team_name][unit_type])):
-            action = agent_actions[team_name][unit_type][i]
-            if len(action['arg']) == 1 and 'tag' in action['arg']:
-              print(f"\t\t <{action['name']}({action['arg'][0]})>")
-          for i in range(len(agent_actions[team_name][unit_type])):
-            action = agent_actions[team_name][unit_type][i]
-            if len(action['arg']) == 2:
-              print(f"\t\t <{action['name']}({action['arg'][0]}, {action['arg'][1]})>")
-  show(config)
+  # def show(config):
+  #   for name in config.AGENTS.keys():
+  #     # agent_actions = config.AGENTS[name]['action']
+  #     agent_actions = {}
+  #     for team_config in config.AGENTS[name]['team'].values():
+  #       agent_actions[team_config['name']] = {}
+  #       for unit_type in team_config['actions'].keys():
+  #         agent_actions[team_config['name']][unit_type] = team_config['actions'][unit_type]
+  #     print(name)
+  #     for team_name in agent_actions.keys():
+  #       print(f"\t{team_name}")
+  #       for unit_type in agent_actions[team_name].keys():
+  #         print(f"\t{str(units.get_unit_type(unit_type))}")
+  #         for i in range(len(agent_actions[team_name][unit_type])):
+  #           action = agent_actions[team_name][unit_type][i]
+  #           if len(action['arg']) == 0:
+  #             print(f"\t\t <{action['name']}()>")
+  #         for i in range(len(agent_actions[team_name][unit_type])):
+  #           action = agent_actions[team_name][unit_type][i]
+  #           if len(action['arg']) == 1 and 'minimap' in action['arg']:
+  #             print(f"\t\t <{action['name']}({action['arg'][0]})>")
+  #         for i in range(len(agent_actions[team_name][unit_type])):
+  #           action = agent_actions[team_name][unit_type][i]
+  #           if len(action['arg']) == 1 and 'screen' in action['arg']:
+  #             print(f"\t\t <{action['name']}({action['arg'][0]})>")
+  #         for i in range(len(agent_actions[team_name][unit_type])):
+  #           action = agent_actions[team_name][unit_type][i]
+  #           if len(action['arg']) == 1 and 'tag' in action['arg']:
+  #             print(f"\t\t <{action['name']}({action['arg'][0]})>")
+  #         for i in range(len(agent_actions[team_name][unit_type])):
+  #           action = agent_actions[team_name][unit_type][i]
+  #           if len(action['arg']) == 2:
+  #             print(f"\t\t <{action['name']}({action['arg'][0]}, {action['arg'][1]})>")
+  # show(config)
 
   # ----------------- example of TranslatorA -----------------
 
-  translator = DefaultTranslatorA('CombatGroupSmac1', log_id=0, config=config)
+  # translator = DefaultTranslatorA('CombatGroup0', log_id=0, config=config)
+  translator = DefaultTranslatorA('Builder', log_id=0, config=config)
   text = \
 """
 Analysis:
@@ -1358,13 +1438,16 @@ Actions:
         <Ability_Blink_Screen([33, 96])>                      # invalid in smac
         <Select_Unit_Blink_Screen(0x1007c0001 ,[33, 96])>     # invalid in smac
         <Move_Screen([2, 9])>
+    Team Builder-Probe-1:
+        <Build_Pylon_Screen([8, 12])>  # Build the Pylon safely at a screen location, avoiding the Queens' range.
+        <Build_Gateway_Screen([10, 12])>  # After the Pylon is completed, build the Gateway at a safe distance.
 """
 
-  # translator.size_screen = 128
-  # actions, action_list_dict, processed_text_a = translator.translate(text)
-  #
-  # print(f"\n\ntext to translator:{text}")
-  # print(f"detected action from translator:\n{actions}\n")
-  # print(f"action_list_dict from translator:\n{action_list_dict}\n")
-  # print(f"detected text_a from translator:\n{processed_text_a}\n")
+  translator.size_screen = 128
+  actions, action_list_dict, processed_text_a = translator.translate(text)
+
+  print(f"\n\ntext to translator:{text}")
+  print(f"detected action from translator:\n{actions}\n")
+  print(f"action_list_dict from translator:\n{action_list_dict}\n")
+  print(f"detected text_a from translator:\n{processed_text_a}\n")
 

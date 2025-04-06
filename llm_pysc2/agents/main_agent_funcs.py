@@ -37,9 +37,9 @@ def get_camera_func_smart(self, obs, tag, threshold=0.15, team=None, mode=''):
       unit_f = unit
 
   # 动作时，使用观测时锚定的坐标
-  if team is not None and len(team['pos']) > 0:
-    unit_ = None
+  if team is not None and len(team['pos']) > 0 :
 
+    unit_ = None
     logger.debug(f"[ID {self.log_id}] get_camera_func_smart(): team['obs'] mode")
     agent_name = self.AGENT_NAMES[self.agent_id]
     if len(team['obs']) != len(team['pos']):
@@ -50,6 +50,11 @@ def get_camera_func_smart(self, obs, tag, threshold=0.15, team=None, mode=''):
       for i in range(len(team['obs'])):
         obs_old = team['obs'][i]
         unit_selected_in_obs = False
+
+        x, y = team['pos'][i][0], team['pos'][i][1]
+        if (unit_f is None or not unit_f.is_on_screen) or \
+            (self.func_id_history[-1] == 573 and (self.last_two_camera_pos[-1][0] != x or self.last_two_camera_pos[-1][1] != y)):
+          break
 
         for unit_ in obs_old.observation.feature_units:
           if unit_.tag == tag and unit_.is_selected and unit_.alliance == features.PlayerRelative.SELF and unit_.tag in \
@@ -167,8 +172,12 @@ def main_agent_func0(self, obs):
     if self.num_step == 0:
       for unit in obs.observation.feature_units:
         if unit.alliance == features.PlayerRelative.SELF and unit.unit_type in BASE_BUILDING_TYPE:
-          x, y = min(max(0, unit.x), self.size_screen), min(max(0, unit.y), self.size_screen)
-          func_id, func_call = (2, actions.FUNCTIONS.select_point('select', (x, y)))
+          # x, y = min(max(0, unit.x), self.size_screen), min(max(0, unit.y), self.size_screen)
+          # func_id, func_call = (2, actions.FUNCTIONS.select_point('select', (x, y)))
+          d = self.select_rect_threshold
+          x1, x2 = min(max(0, unit.x - d), self.size_screen), min(max(0, unit.x + d), self.size_screen)
+          y1, y2 = min(max(0, unit.y - d), self.size_screen), min(max(0, unit.y + d), self.size_screen)
+          func_id, func_call = (3, actions.FUNCTIONS.select_rect('select', (x1, y1), (x2, y2)))
           logger.info(f"[ID {self.log_id}] 1.1.1 Func Call: {func_call}")
           func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()
           func_id = func_id if func_id in obs.observation.available_actions else 0
@@ -451,8 +460,12 @@ def main_agent_func1(self, obs):
             y1, y2 = min(max(0, unit_f.y - d), self.size_screen), min(max(0, unit_f.y + d), self.size_screen)
             func_id, func_call = (3, actions.FUNCTIONS.select_rect('select', (x1, y1), (x2, y2)))
           else:
-            x, y = min(max(0, unit_f.x), self.size_screen), min(max(0, unit_f.y), self.size_screen)
-            func_id, func_call = (2, actions.FUNCTIONS.select_point('select', (x, y)))
+            # x, y = min(max(0, unit_f.x), self.size_screen), min(max(0, unit_f.y), self.size_screen)
+            # func_id, func_call = (2, actions.FUNCTIONS.select_point('select', (x, y)))
+            d = self.select_rect_threshold
+            x1, x2 = min(max(0, unit_f.x - d), self.size_screen), min(max(0, unit_f.x + d), self.size_screen)
+            y1, y2 = min(max(0, unit_f.y - d), self.size_screen), min(max(0, unit_f.y + d), self.size_screen)
+            func_id, func_call = (3, actions.FUNCTIONS.select_rect('select', (x1, y1), (x2, y2)))
           logger.info(f"[ID {self.log_id}] 3.4.1 Func Call: {func_call}")
           self.func_id_history.append(func_id)
           return func_call
@@ -645,6 +658,8 @@ def main_agent_func2(self, obs):
 
   # 抱着矿或者气的单位，确定工作场所
   for worker in obs.observation.raw_units:
+    if worker.tag in self.unit_tag_builder:
+      continue
     # 离职处理
     if worker.alliance == features.PlayerRelative.SELF and worker.unit_type in WORKER_TYPE and \
         worker.order_id_0 not in [356, 357, 358, 359, 102, 103, 154, 360, 361, 362]:  # Harvest/HarvestReturn
@@ -982,8 +997,12 @@ def main_agent_func2(self, obs):
             if not self.stop_worker.is_selected:
               for unit in get_feature_unit_list_of_tags(obs, self.stop_worker.tag):
                 if unit.tag == self.stop_worker.tag:
-                  x, y = min(max(0, unit.x), self.size_screen), min(max(0, unit.y), self.size_screen)
-                  func_id, func_call = (2, actions.FUNCTIONS.select_point('select', (unit.x, unit.y)))
+                  # x, y = min(max(0, unit.x), self.size_screen), min(max(0, unit.y), self.size_screen)
+                  # func_id, func_call = (2, actions.FUNCTIONS.select_point('select', (x, y)))
+                  d = self.select_rect_threshold
+                  x1, x2 = min(max(0, unit.x - d), self.size_screen), min(max(0, unit.x + d), self.size_screen)
+                  y1, y2 = min(max(0, unit.y - d), self.size_screen), min(max(0, unit.y + d), self.size_screen)
+                  func_id, func_call = (3, actions.FUNCTIONS.select_rect('select', (x1, y1), (x2, y2)))
                   logger.info(f"[ID {self.log_id}] 4.2.4 Func Call: {func_call}, stop worker at {self.stop_worker_at}")
                   self.func_id_history.append(func_id)
                   return func_call
@@ -1070,7 +1089,13 @@ def main_agent_func3(self, obs):
               if unit_.tag == unit.tag and (
                   0.25 * self.size_screen < unit_.x < 0.75 * self.size_screen and 0.25 * self.size_screen < unit_.y < 0.75 * self.size_screen):
                 func_id, func_call = (2, actions.FUNCTIONS.select_point('select', (unit_.x, unit_.y)))
-                logger.info(f"[ID {self.log_id}] 5.2.2.2 Func Call: {func_call}")
+                # d = self.select_rect_threshold
+                # x1, x2 = min(max(0, unit_.x - d), self.size_screen), min(max(0, unit_.x + d), self.size_screen)
+                # y1, y2 = min(max(0, unit_.y - d), self.size_screen), min(max(0, unit_.y + d), self.size_screen)
+                # func_id, func_call = (3, actions.FUNCTIONS.select_rect('select', (x1, y1), (x2, y2)))
+                unit_info1 = f'unit {hex(unit.tag)}({str(units.get_unit_type(unit.unit_type))})'
+                unit_info2 = f'unit {hex(unit_.tag)}({str(units.get_unit_type(unit.unit_type))})'
+                logger.info(f"[ID {self.log_id}] 5.2.2.2 Func Call: {func_call}, target screen pos{(unit_.x, unit_.y)}, {unit_info1}, {unit_info2}")
                 self.func_id_history.append(func_id)
                 return func_call
           if unit.is_selected:
@@ -1091,7 +1116,7 @@ def main_agent_func3(self, obs):
   return func_call
 
 
-def get_select_func_smart(obs, log_id, tags, size_screen, strict: "0, 1, 2" = 0, disable_rect=False,
+def get_select_func_smart(self, obs, log_id, tags, size_screen, strict: "0, 1, 2" = 0, disable_rect=False,
                           disable_all_type=False
                           ):
   """
@@ -1209,8 +1234,13 @@ def get_select_func_smart(obs, log_id, tags, size_screen, strict: "0, 1, 2" = 0,
       flag_select = 'select_all_type' if len(unit_selected_list) == 0 else 'add_all_type'
       for unit in unit_toselect_list:
         if unit.unit_type == max_unit_type:
-          x0, y0 = max(0, min(unit.x, size_screen)), max(0, min(unit.y, size_screen))
-          return (2, actions.FUNCTIONS.select_point(flag_select, (x0, y0)))  # 同类全选
+          # x0, y0 = max(0, min(unit.x, size_screen)), max(0, min(unit.y, size_screen))
+          # return (2, actions.FUNCTIONS.select_point(flag_select, (x0, y0)))  # 同类全选
+          d = self.select_rect_threshold
+          x1, x2 = min(max(0, unit.x - d), self.size_screen), min(max(0, unit.x + d), self.size_screen)
+          y1, y2 = min(max(0, unit.y - d), self.size_screen), min(max(0, unit.y + d), self.size_screen)
+          func_id, func_call = (3, actions.FUNCTIONS.select_rect('select', (x1, y1), (x2, y2)))
+          return (func_id, func_call)  # 同类全选
     if c == max(abc_list) and (rect_screen_x < rect_screen2_x) and (rect_screen_x < rect_screen2_x):
       flag_select = 'select' if len(unit_selected_list) == 0 else 'add'
       x0, y0 = max(0, min(rect_screen_x, size_screen)), max(0, min(rect_screen_y, size_screen))
@@ -1317,7 +1347,7 @@ def main_agent_func4(self, obs):
         #     self.temp_head_unit = None
         #     self.temp_curr_unit = None
         if len(screen_team_unit_unselected) > 0:
-          func_id, func_call = get_select_func_smart(obs, self.log_id, self.temp_team_unit_tags, self.size_screen)
+          func_id, func_call = get_select_func_smart(self, obs, self.log_id, self.temp_team_unit_tags, self.size_screen)
           if func_id != 0:
             logger.debug(f"[ID {self.log_id}] main_agent_func4: get_select_func_smart call func {func_call}")
           if func_id == 0:

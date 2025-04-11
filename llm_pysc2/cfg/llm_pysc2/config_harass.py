@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from llm_pysc2.cfg.config import ProtossAgentConfig
-from llm_pysc2.lib.llm_action import *
+from llm_pysc2.lib.action.space import *
 from pysc2.lib import units
 
 

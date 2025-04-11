@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from llm_pysc2.lib.llm_action import *
+from llm_pysc2.lib.action.space import *
 from llm_pysc2.lib.llm_client import vision_model_names  #, video_model_names
 
 from pysc2.lib import units
@@ -228,7 +228,12 @@ class ProtossAgentConfig(AgentConfig):
         'team': {
           'Protoss-Buildings': {
             'name': 'Protoss-Buildings', 'unit_type': [], 'game_group': -1, 'select_type': 'select',
-            'actions': {'ALWAYS': PROTOSS_ACTION_RESEARCH + PROTOSS_ACTION_TRAIN + PROTOSS_ACTION_BUILD + PROTOSS_ACTION_EASY_BUILD + PROTOSS_ACTION_WARPTRAIN + PROTOSS_ACTION_EASY_WARPTRAIN}
+            'actions': {'ALWAYS': PROTOSS_ACTION_RESEARCH + PROTOSS_ACTION_TRAIN + PROTOSS_ACTION_WARPTRAIN + PROTOSS_ACTION_EASY_WARPTRAIN}  #  + PROTOSS_ACTION_BUILD + PROTOSS_ACTION_EASY_BUILD
+          },
+          'Protoss-Workers': {
+            'name': 'Protoss-Buildings', 'unit_type': [], 'game_group': -1, 'select_type': 'select',
+            'actions': {
+              'ALWAYS': PROTOSS_ACTION_BUILD + PROTOSS_ACTION_EASY_BUILD}
           },
         },
       },

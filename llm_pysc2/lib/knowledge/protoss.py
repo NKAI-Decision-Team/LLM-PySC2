@@ -31,65 +31,65 @@ protoss_map_research_quick_to_level = {
 protoss_research_conditions = {
   # CyberneticsCore BY
   actions.FUNCTIONS.Research_ProtossAirArmorLevel1_quick.id:
-    {'m': 100, 'g': 100, 'b': units.Protoss.CyberneticsCore, 't': 180},  # map from Research_ProtossAirArmor_quick
+    {'m': 100, 'g': 100, 'b': [units.Protoss.CyberneticsCore], 't': 180},  # map from Research_ProtossAirArmor_quick
   actions.FUNCTIONS.Research_ProtossAirWeaponsLevel1_quick.id:
-    {'m': 100, 'g': 100, 'b': units.Protoss.CyberneticsCore, 't': 180},  # map from Research_ProtossAirWeapons_quick
+    {'m': 100, 'g': 100, 'b': [units.Protoss.CyberneticsCore], 't': 180},  # map from Research_ProtossAirWeapons_quick
   actions.FUNCTIONS.Research_ProtossAirArmorLevel2_quick.id:
-    {'m': 175, 'g': 175, 'b': units.Protoss.CyberneticsCore, 'u': u.ProtossAirArmorsLevel1, 't': 215},
+    {'m': 175, 'g': 175, 'b': [units.Protoss.CyberneticsCore, units.Protoss.FleetBeacon], 'u': u.ProtossAirArmorsLevel1, 't': 215},
   actions.FUNCTIONS.Research_ProtossAirWeaponsLevel2_quick.id:
-    {'m': 175, 'g': 175, 'b': units.Protoss.CyberneticsCore, 'u': u.ProtossAirWeaponsLevel1, 't': 215},
+    {'m': 175, 'g': 175, 'b': [units.Protoss.CyberneticsCore, units.Protoss.FleetBeacon], 'u': u.ProtossAirWeaponsLevel1, 't': 215},
   actions.FUNCTIONS.Research_ProtossAirArmorLevel3_quick.id:
-    {'m': 250, 'g': 250, 'b': units.Protoss.CyberneticsCore, 'u': u.ProtossAirArmorsLevel2, 't': 250},
+    {'m': 250, 'g': 250, 'b': [units.Protoss.CyberneticsCore, units.Protoss.FleetBeacon], 'u': u.ProtossAirArmorsLevel2, 't': 250},
   actions.FUNCTIONS.Research_ProtossAirWeaponsLevel3_quick.id:
-    {'m': 250, 'g': 250, 'b': units.Protoss.CyberneticsCore, 'u': u.ProtossAirWeaponsLevel2, 't': 250},
+    {'m': 250, 'g': 250, 'b': [units.Protoss.CyberneticsCore, units.Protoss.FleetBeacon], 'u': u.ProtossAirWeaponsLevel2, 't': 250},
   actions.FUNCTIONS.Research_WarpGate_quick.id:
-    {'m': 50, 'g': 50, 'b': units.Protoss.CyberneticsCore, 't': 140},
+    {'m': 50, 'g': 50, 'b': [units.Protoss.CyberneticsCore], 't': 140},
   # Forge BF
   actions.FUNCTIONS.Research_ProtossGroundArmorLevel1_quick.id:
-    {'m': 100, 'g': 100, 'b': units.Protoss.Forge, 't': 170},  # map from Research_ProtossGroundArmor_quick
+    {'m': 100, 'g': 100, 'b': [units.Protoss.Forge], 't': 170},  # map from Research_ProtossGroundArmor_quick
   actions.FUNCTIONS.Research_ProtossGroundWeaponsLevel1_quick.id:
-    {'m': 100, 'g': 100, 'b': units.Protoss.Forge, 't': 170},  # map from Research_ProtossGroundWeapon_quick
+    {'m': 100, 'g': 100, 'b': [units.Protoss.Forge], 't': 170},  # map from Research_ProtossGroundWeapon_quick
   actions.FUNCTIONS.Research_ProtossShieldsLevel1_quick.id:
-    {'m': 150, 'g': 150, 'b': units.Protoss.Forge, 't': 170},  # map from Research_ProtossShield_quick
+    {'m': 150, 'g': 150, 'b': [units.Protoss.Forge], 't': 170},  # map from Research_ProtossShield_quick
   actions.FUNCTIONS.Research_ProtossGroundArmorLevel2_quick.id:
-    {'m': 150, 'g': 150, 'b': units.Protoss.Forge, 'u': u.ProtossGroundArmorsLevel1, 't': 203},
+    {'m': 150, 'g': 150, 'b': [units.Protoss.Forge, units.Protoss.TwilightCouncil], 'u': u.ProtossGroundArmorsLevel1, 't': 203},
   actions.FUNCTIONS.Research_ProtossGroundWeaponsLevel2_quick.id:
-    {'m': 150, 'g': 150, 'b': units.Protoss.Forge, 'u': u.ProtossGroundWeaponsLevel1, 't': 203},
+    {'m': 150, 'g': 150, 'b': [units.Protoss.Forge, units.Protoss.TwilightCouncil], 'u': u.ProtossGroundWeaponsLevel1, 't': 203},
   actions.FUNCTIONS.Research_ProtossShieldsLevel2_quick.id:
-    {'m': 200, 'g': 200, 'b': units.Protoss.Forge, 'u': u.ProtossShieldsLevel1, 't': 203},
+    {'m': 200, 'g': 200, 'b': [units.Protoss.Forge, units.Protoss.TwilightCouncil], 'u': u.ProtossShieldsLevel1, 't': 203},
   actions.FUNCTIONS.Research_ProtossGroundArmorLevel3_quick.id:
-    {'m': 200, 'g': 200, 'b': units.Protoss.Forge, 'u': u.ProtossGroundArmorsLevel2, 't': 235},
+    {'m': 200, 'g': 200, 'b': [units.Protoss.Forge, units.Protoss.TwilightCouncil], 'u': u.ProtossGroundArmorsLevel2, 't': 235},
   actions.FUNCTIONS.Research_ProtossGroundWeaponsLevel3_quick.id:
-    {'m': 200, 'g': 200, 'b': units.Protoss.Forge, 'u': u.ProtossGroundWeaponsLevel2, 't': 235},
+    {'m': 200, 'g': 200, 'b': [units.Protoss.Forge, units.Protoss.TwilightCouncil], 'u': u.ProtossGroundWeaponsLevel2, 't': 235},
   actions.FUNCTIONS.Research_ProtossShieldsLevel3_quick.id:
-    {'m': 250, 'g': 250, 'b': units.Protoss.Forge, 'u': u.ProtossShieldsLevel2, 't': 235},
+    {'m': 250, 'g': 250, 'b': [units.Protoss.Forge, units.Protoss.TwilightCouncil], 'u': u.ProtossShieldsLevel2, 't': 235},
   # TwilightCouncil VC
   actions.FUNCTIONS.Research_AdeptResonatingGlaives_quick.id:
-    {'m': 100,'g': 100, 'b':units.Protoss.TwilightCouncil, 't': 140},
+    {'m': 100,'g': 100, 'b':[units.Protoss.TwilightCouncil], 't': 140},
   actions.FUNCTIONS.Research_Blink_quick.id:
-    {'m': 150,'g': 150, 'b':units.Protoss.TwilightCouncil, 't': 170},
+    {'m': 150,'g': 150, 'b':[units.Protoss.TwilightCouncil], 't': 170},
   actions.FUNCTIONS.Research_Charge_quick.id:
-    {'m': 100, 'g': 100, 'b': units.Protoss.TwilightCouncil, 't': 140},
+    {'m': 100, 'g': 100, 'b': [units.Protoss.TwilightCouncil], 't': 140},
   # FleetBeacon VF
   actions.FUNCTIONS.Research_PhoenixAnionPulseCrystals_quick.id:
-    {'m': 150, 'g': 150, 'b': units.Protoss.FleetBeacon, 't': 90},
+    {'m': 150, 'g': 150, 'b': [units.Protoss.FleetBeacon], 't': 90},
   # actions.FUNCTIONS.Research_VoidRayFluxVanes_quick.id:
   #   {'m': 100, 'g': 100, 'b': units.Protoss.FleetBeacon, 't': 80},  # Do not realised in pysc2
   # actions.FUNCTIONS.Research_TempestTectonicDestabilizers_quick.id:
   #   {'m': 150, 'g': 150, 'b': units.Protoss.FleetBeacon, 't': 140},  # Do not realised in pysc2
   # RoboticsBay VB
   actions.FUNCTIONS.Research_ExtendedThermalLance_quick.id:
-    {'m': 150, 'g': 150, 'b': units.Protoss.RoboticsBay, 't': 140},
+    {'m': 150, 'g': 150, 'b': [units.Protoss.RoboticsBay], 't': 140},
   actions.FUNCTIONS.Research_GraviticBooster_quick.id:
-    {'m': 100, 'g': 100, 'b': units.Protoss.RoboticsBay, 't': 80},
+    {'m': 100, 'g': 100, 'b': [units.Protoss.RoboticsBay], 't': 80},
   actions.FUNCTIONS.Research_GraviticDrive_quick.id:
-    {'m': 100, 'g': 100, 'b': units.Protoss.RoboticsBay, 't': 80},
+    {'m': 100, 'g': 100, 'b': [units.Protoss.RoboticsBay], 't': 80},
   # TemplarArchive VT
   actions.FUNCTIONS.Research_PsiStorm_quick.id:
-    {'m': 200, 'g': 200, 'b': units.Protoss.TemplarArchive, 't': 110},
+    {'m': 200, 'g': 200, 'b': [units.Protoss.TemplarArchive], 't': 110},
   # DarkShrine VD
   actions.FUNCTIONS.Research_ShadowStrike_quick.id:
-    {'m': 100, 'g': 100, 'b': units.Protoss.DarkShrine, 't': 140},
+    {'m': 100, 'g': 100, 'b': [units.Protoss.DarkShrine], 't': 140},
 }
 
 # minerals gas building time supply
@@ -147,7 +147,7 @@ protoss_build_conditions = {
   actions.FUNCTIONS.Build_CyberneticsCore_screen.id:
     {'m': 150, 'g': 0, 'b': [units.Protoss.Gateway], 't': 50, 'l': 3},
   actions.FUNCTIONS.Build_Forge_screen.id:
-    {'m': 150, 'g': 0, 'b': [units.Protoss.Gateway], 't': 45, 'l': 3},
+    {'m': 150, 'g': 0, 'b': [], 't': 45, 'l': 3},
   actions.FUNCTIONS.Build_PhotonCannon_screen.id:
     {'m': 150, 'g': 0, 'b': [units.Protoss.Forge], 't': 40, 'l': 2},
   actions.FUNCTIONS.Build_ShieldBattery_screen.id:

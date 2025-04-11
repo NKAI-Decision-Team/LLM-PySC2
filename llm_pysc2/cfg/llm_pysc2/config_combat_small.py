@@ -13,12 +13,9 @@
 # limitations under the License.
 
 from llm_pysc2.cfg.config import ProtossAgentConfig
-from llm_pysc2.lib.llm_action import *
-from llm_pysc2.lib.llm_client import vision_model_names  #, video_model_names
+from llm_pysc2.lib.action.space import *
 
 from pysc2.lib import units
-from loguru import logger
-import time
 
 
 class ConfigPysc2_Combat_Small(ProtossAgentConfig):

@@ -18,7 +18,6 @@ a = actions.FUNCTIONS
 u = upgrades.Upgrades
 
 terran_map_research_quick_to_level = {}
-
 terran_research_conditions = {}
 terran_train_conditions = {}
 terran_build_conditions = {}

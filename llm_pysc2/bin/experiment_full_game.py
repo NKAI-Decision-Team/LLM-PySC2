@@ -18,6 +18,7 @@ from llm_pysc2.agents import *
 import os
 
 map_name = f"Simple64"
+# map_name = f"debug_map"
 difficult_level = 1  # 1 to 10
 
 difficulties = ['very_easy', 'easy', 'medium',
@@ -25,8 +26,8 @@ difficulties = ['very_easy', 'easy', 'medium',
                 'cheat_vision', 'cheat_money', 'cheat_insane']
 difficulty = difficulties[difficult_level-1]  # from sc2_env.Difficulty
 
-enable_image_rgb, enable_image_feature = True, False
-# enable_image_rgb, enable_image_feature = False, False
+# enable_image_rgb, enable_image_feature = True, False
+enable_image_rgb, enable_image_feature = False, False
 # enable_image_rgb, enable_image_feature = False, True
 
 
@@ -40,28 +41,41 @@ class MainAgentLLMPysc2(MainAgent):
     config.reset_llm(model_name, api_base, api_key, enable_image_rgb, enable_image_feature)
 
     for name in config.AGENTS.keys():
-      if name not in ['Builder']:
+      if name not in ['Builder', 'Commander', 'Developer']:
         # config.AGENTS[name]['llm']['model_name'] = 'YOUR-MODEL-NAME'
         # config.AGENTS[name]['llm']['api_base'] = 'YOUR-API-BASE'
         # config.AGENTS[name]['llm']['api_key'] = 'YOUR-API-KEY'
         config.AGENTS[name]['llm']['img_rgb'] = False
         config.AGENTS[name]['llm']['img_fea'] = False
-      if name not in ['Builder', 'Developer']:
+      else:
+        config.AGENTS[name]['llm']['feature_map_names'] = ['power', 'pathable', 'buildable','height_map', 'player_relative']
+      if name not in ['Commander', 'Developer']:  # , 'Developer'
         config.AGENTS_ALWAYS_DISABLE.append(name)
 
-    # config.LLM_SIMULATION_TIME = 1
+    config.SAFE_MODE = False
+    config.LLM_SIMULATION_TIME = 0.5
+    config.IGNORE_INIT_WARNINGS = True
     # config.ENABLE_MULTI_THREAD_QUERY = False
     config.MAX_LLM_DECISION_FREQUENCY = 0.2
     config.ENABLE_COMMUNICATION = True
-    config.IGNORE_INIT_WARNINGS = True
+    config.ENABLE_EASY_BUILD = True
+    config.ENABLE_EASY_CONTROL = True
+    config.ENABLE_EASY_WARP = True
+    config.ENABLE_INIT_STEPS = True
+
+    # config.ENABLE_AUTO_WORKER_MANAGE = False
+    # config.ENABLE_EASY_BUILD = False
 
     super(MainAgentLLMPysc2, self).__init__(config, LLMAgent)
 
   def step(self, obs):
     from pysc2.lib import units
+    state = []
     for unit in obs.observation.raw_units:
-      if unit.build_progress != 100:
-        print(f'unit {hex(unit.tag)}({str(units.get_unit_type(unit.unit_type))} {unit.build_progress}%)')
+      if unit.unit_type == units.Protoss.Probe:
+        # not in [356, 357, 358, 359, 102, 103, 154, 360, 361, 362]
+        state.append(unit.order_id_0)
+    # print(f'{set(state)}')
     return super().step(obs)
 
 

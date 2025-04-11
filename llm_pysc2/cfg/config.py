@@ -46,12 +46,16 @@ class AgentConfig:
     # For debug
     self.ENABLE_MULTI_THREAD_QUERY = True
     self.IGNORE_INIT_WARNINGS = False
+    self.SAFE_MODE = True
 
     # Game settings
     self.ENABLE_INIT_STEPS = True
     self.ENABLE_AUTO_WORKER_MANAGE = True
     self.ENABLE_AUTO_WORKER_TRAINING = True
     self.ENABLE_COMMUNICATION = False
+    self.ENABLE_EASY_BUILD = False
+    self.ENABLE_EASY_CONTROL = False
+    self.ENABLE_EASY_WARP = False
 
     # Image settings
     self.ENABLE_IMAGE_RGB = False
@@ -138,26 +142,27 @@ class ProtossAgentConfig(AgentConfig):
 
     self.AGENTS_ALWAYS_DISABLE = []
     self.AGENTS = {
-      'Airborne': {
-        'describe': "Protoss airborne commander, controls units airborne/warptrain from WarpPrism. "
-                    "Responsible for quick reinforcing nearby units or executing multiline combat.",
-        'llm': {
-          'basic_prompt': self.basic_prompt,
-          'translator_o': self.translator_o,
-          'translator_a': self.translator_a,
-          'img_fea': self.ENABLE_IMAGE_FEATURE,
-          'img_rgb': self.ENABLE_IMAGE_RGB,
-          'model_name': self.model_name,
-          'api_base': self.api_base,
-          'api_key': self.api_key,
-        },
-        'team': {
-          'Airborne-Zealot-1': {
-            'name': 'Airborne-Zealot-1', 'unit_type': [units.Protoss.Zealot], 'game_group': -1, 'select_type': 'select_all_type',
-            'actions': {units.Protoss.Zealot: PROTOSS_BASIC_ACTION_2}
-          },
-        },
-      },
+      # 'Airborne': {
+      #   'describe': "Protoss airborne commander, controls units airborne/warptrain from WarpPrism. "
+      #               "Responsible for quick reinforcing nearby units or executing multiline combat.",
+      #   'llm': {
+      #     'basic_prompt': self.basic_prompt,
+      #     'translator_o': self.translator_o,
+      #     'translator_a': self.translator_a,
+      #     'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
+      #     'img_fea': self.ENABLE_IMAGE_FEATURE,
+      #     'img_rgb': self.ENABLE_IMAGE_RGB,
+      #     'model_name': self.model_name,
+      #     'api_base': self.api_base,
+      #     'api_key': self.api_key,
+      #   },
+      #   'team': {
+      #     'Airborne-Zealot-1': {
+      #       'name': 'Airborne-Zealot-1', 'unit_type': [units.Protoss.Zealot], 'game_group': -1, 'select_type': 'select_all_type',
+      #       'actions': {units.Protoss.Zealot: PROTOSS_BASIC_ACTION_2}
+      #     },
+      #   },
+      # },
 
       'Builder': {
         'describe': "Protoss builder, controls several Probe. Responsible for build buildings",
@@ -165,6 +170,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': 'builder',
           'translator_a': self.translator_a,
+          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -173,8 +179,9 @@ class ProtossAgentConfig(AgentConfig):
         },
         'team': {
           'Builder-Probe': {
-            'name': 'Builder-Probe', 'unit_type': [units.Protoss.Probe], 'game_group': -1, 'select_type': 'select',
+            'name': 'Builder-Probe', 'unit_type': [units.Protoss.Probe], 'game_group': 1, 'select_type': 'group',
             'actions': {units.Protoss.Probe: PROTOSS_BASIC_ACTION_2 + PROTOSS_ACTION_BUILD}
+            # 具体输出的valid actions 在 llm_observation.get_valid_actions_build 函数中
           },
         },
       },
@@ -188,6 +195,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': 'commander',
           'translator_a': self.translator_a,
+          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -195,9 +203,9 @@ class ProtossAgentConfig(AgentConfig):
           'api_key': self.api_key,
         },
         'team': {
-          'Empty': {
-            'name': 'Empty', 'unit_type': [], 'game_group': -1, 'select_type': 'select',
-            'action': {'EmptyGroup': []}
+          'Protoss-Units': {
+            'name': 'Protoss-Units', 'unit_type': [], 'game_group': -1, 'select_type': 'select',
+            'actions': {'ALWAYS': PROTOSS_ACTION_EASY_CONTROL}
           },
         },
       },
@@ -210,6 +218,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': 'developer',
           'translator_a': self.translator_a,
+          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -217,41 +226,33 @@ class ProtossAgentConfig(AgentConfig):
           'api_key': self.api_key,
         },
         'team': {
-          'WarpGate-1': {
-            'name': 'WarpGate-1', 'unit_type': [units.Protoss.WarpGate], 'game_group': -1, 'select_type': 'select_all_type',
-            'actions': {units.Protoss.WarpGate: PROTOSS_ACTION_WARPTRAIN}
-          },
-          'Empty': {
-            'name': 'Empty', 'unit_type': [], 'game_group': -1, 'select_type': 'select',
-            'actions': {'EmptyGroup': PROTOSS_BASIC_ACTION_1 + PROTOSS_ACTION_RESEARCH + PROTOSS_ACTION_TRAIN + [
-              {'name': 'Stop_Building_Unit', 'arg': ['tag'],
-               'func': [(573, F.llm_pysc2_move_camera, ('world_tag')),
-                        (3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
-                        (454, F.Stop_Building_quick, ('queued'))]}
-            ]}
+          'Protoss-Buildings': {
+            'name': 'Protoss-Buildings', 'unit_type': [], 'game_group': -1, 'select_type': 'select',
+            'actions': {'ALWAYS': PROTOSS_ACTION_RESEARCH + PROTOSS_ACTION_TRAIN + PROTOSS_ACTION_BUILD + PROTOSS_ACTION_EASY_BUILD + PROTOSS_ACTION_WARPTRAIN + PROTOSS_ACTION_EASY_WARPTRAIN}
           },
         },
       },
 
-      'Defender': {
-        'describe': "Protoss garrison troops commander, controls several Stalkers. "
-                    "Responsible for intercepting enemy infiltrating forces.",
-        'llm': {
-          'basic_prompt': self.basic_prompt,
-          'translator_o': self.translator_o,
-          'translator_a': self.translator_a,
-          'img_fea': self.ENABLE_IMAGE_FEATURE,
-          'img_rgb': self.ENABLE_IMAGE_RGB,
-          'model_name': self.model_name,
-          'api_base': self.api_base,
-          'api_key': self.api_key,
-        },
-        'team': {
-          'Stalker-1': {
-            'name': 'Stalker-1', 'unit_type': [units.Protoss.Stalker], 'game_group': 1, 'select_type': 'group',
-            'actions': {units.Protoss.Stalker: STANDARD_ACTION_STALKER}},
-        },
-      },
+      # 'Defender': {
+      #   'describe': "Protoss garrison troops commander, controls several Stalkers. "
+      #               "Responsible for intercepting enemy infiltrating forces.",
+      #   'llm': {
+      #     'basic_prompt': self.basic_prompt,
+      #     'translator_o': self.translator_o,
+      #     'translator_a': self.translator_a,
+      #     'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
+      #     'img_fea': self.ENABLE_IMAGE_FEATURE,
+      #     'img_rgb': self.ENABLE_IMAGE_RGB,
+      #     'model_name': self.model_name,
+      #     'api_base': self.api_base,
+      #     'api_key': self.api_key,
+      #   },
+      #   'team': {
+      #     'Stalker-1': {
+      #       'name': 'Stalker-1', 'unit_type': [units.Protoss.Stalker], 'game_group': 1, 'select_type': 'group',
+      #       'actions': {units.Protoss.Stalker: STANDARD_ACTION_STALKER}},
+      #   },
+      # },
 
       'CombatGroup0': {
         'describe': "Protoss frontline commander, controls several Zealots. "
@@ -260,6 +261,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': self.translator_o,
           'translator_a': self.translator_a,
+          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -283,6 +285,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': self.translator_o,
           'translator_a': self.translator_a,
+          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -309,6 +312,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': self.translator_o,
           'translator_a': self.translator_a,
+          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -335,6 +339,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': self.translator_o,
           'translator_a': self.translator_a,
+          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -365,6 +370,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': self.translator_o,
           'translator_a': self.translator_a,
+          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -390,6 +396,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': self.translator_o,
           'translator_a': self.translator_a,
+          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -413,6 +420,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': self.translator_o,
           'translator_a': self.translator_a,
+          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -435,6 +443,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': self.translator_o,
           'translator_a': self.translator_a,
+          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -460,6 +469,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': self.translator_o,
           'translator_a': self.translator_a,
+          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -485,6 +495,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': self.translator_o,
           'translator_a': self.translator_a,
+          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,

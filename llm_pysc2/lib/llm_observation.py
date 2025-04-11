@@ -16,8 +16,12 @@ from llm_pysc2.lib import events, llm_action
 from llm_pysc2.lib.knowledge import protoss, zerg, terran
 from llm_pysc2.lib.utils import *
 
-from pysc2.lib import features, units, buffs
+from pysc2.lib import features, units, buffs, actions, upgrades
 from pysc2.lib import renderer_human, colors
+
+a = actions.FUNCTIONS
+u = upgrades.Upgrades
+
 
 from PIL import ImageDraw, ImageFont, Image, ImageEnhance
 from loguru import logger
@@ -140,6 +144,98 @@ def get_img_obs_fea(self, obs):
 
   return base64_image
 
+
+def get_img_obs_fea_map(self, obs, feature_map_name):
+  if isinstance(obs, list):
+    observation = obs[0].observation
+  else:
+    observation = obs.observation
+    logger.debug(f"[ID {self.log_id}] LLMAgent {self.name}: Accessed observation via obs.observation")
+  # Log the keys of the observation (for debugging)
+  logger.debug(f"[ID {self.log_id}] LLMAgent {self.name}: Observation keys: {list(observation.keys())}")
+
+  if feature_map_name in obs.observation.feature_screen._index_names[0].keys():
+    feature_map_index = obs.observation.feature_screen._index_names[0][feature_map_name]
+    fea_screen = observation.feature_screen[feature_map_index]
+  else:
+    return None
+
+  # Convert data type to uint8
+  # Convert NumPy array to PIL Image object
+  # rgb_screen = np.array(rgb_screen)[:, :, ::-1]  # BGR to RGB
+  if np.max(fea_screen) - np.min(fea_screen) != 0:
+    fea_screen = (fea_screen - np.min(fea_screen)) * (255 / (np.max(fea_screen) - np.min(fea_screen)))
+  fea_screen = fea_screen.T
+  rgb_screen = np.array([fea_screen, fea_screen, fea_screen]).T
+  rgb_screen = rgb_screen.astype('uint8')
+  img = Image.fromarray(rgb_screen, 'RGB')
+  # img = img.convert('RGB')
+  # Get image dimensions
+  img_width, img_height = img.size
+  # Create a drawing object
+  draw = ImageDraw.Draw(img)
+  # Fixed coordinate range
+  # coord_range = self.size_screen  # Coordinate axes range from 0 to 128
+  coord_range = 24  # Coordinate axes range from 0 to 128
+  # Set the number of ticks and grid lines
+  num_ticks = 9  # Adjust as needed
+  # Compute fixed coordinate ticks, e.g., [0, 16, 32, ..., 128]
+  fixed_ticks = np.linspace(0, coord_range, num_ticks)  # Fixed coordinate ticks
+  # Map fixed coordinates to image pixel positions
+  x_positions = (fixed_ticks / coord_range) * img_width  # Map to image x-axis positions
+  y_positions = (fixed_ticks / coord_range) * img_height  # Map to image y-axis positions
+
+  # Draw vertical grid lines
+  for x in x_positions:
+    draw.line([(x, 0), (x, img_height)], fill='white', width=1)
+  # Draw horizontal grid lines
+  for y in y_positions:
+    draw.line([(0, y), (img_width, y)], fill='white', width=1)
+
+  # Try to load a font
+  try:
+    font = ImageFont.truetype("arial.ttf", size=12)
+    logger.debug(f"[ID {self.log_id}] LLMAgent {self.name}: Loaded 'arial.ttf' font for drawing text.")
+  except IOError:
+    # Use default font if specified font is not available
+    font = ImageFont.load_default()
+    logger.warning(f"[ID {self.log_id}] LLMAgent {self.name}: Could not load 'arial.ttf'. Using default font.")
+
+  # Draw X-axis tick labels
+  for x, label in zip(x_positions, fixed_ticks.astype(int)):
+    # Adjust label position slightly to prevent clipping
+    draw.text((x + 2, 2), str(label), fill='white', font=font)
+  # Draw Y-axis tick labels
+  for y, label in zip(y_positions, fixed_ticks.astype(int)):
+    # Adjust label position slightly to prevent clipping
+    draw.text((2, y + 2), str(label), fill='white', font=font)
+
+  # Save the image to a byte stream in memory
+  buffered = io.BytesIO()
+  img.save(buffered, format="PNG")
+  buffered.seek(0)
+
+  # Convert image byte stream to Base64 encoded string
+  base64_image = base64.b64encode(buffered.getvalue()).decode('utf-8')
+  # Save the image to a local file if saving is enabled in the configuration
+  if self.config.ENABLE_SAVE_IMAGES:
+    # Get the game loop step from the observation as the step information
+    step = observation['game_loop'][0]
+    # Construct the save path, including the log directory, agent name, and "rgb_images" subdirectory
+    image_save_dir = os.path.join(self.log_dir_path, f"{self.name}", f"{feature_map_name}")
+    os.makedirs(image_save_dir, exist_ok=True)
+    # Construct the file name, including the step
+    image_filename = f"{feature_map_name}_loop{self.main_loop_step}_step{step}.png"
+    image_path = os.path.join(image_save_dir, image_filename)
+    # Save the image
+    try:
+      img.save(image_path)
+      logger.info(
+        f"[ID {self.log_id}] LLMAgent {self.name}: Saved RGB image at step {step}, filename: {image_filename}")
+    except Exception as e:
+      logger.error(f"[ID {self.log_id}] LLMAgent {self.name}: Failed to save RGB image: {e}")
+
+  return base64_image
 
 # use in SubAgent
 def get_img_obs_rgb(self, obs):
@@ -711,6 +807,230 @@ def get_relevant_knowledge(agent) -> str:
   return knowledge_info
 
 
+def get_condition_elements(agent, easy_build=False) -> tuple:
+  obs = agent.team_unit_obs_list[0]
+  rc, tc, bc = {}, {}, {}
+  rc.update(protoss.protoss_research_conditions)
+  rc.update(terran.terran_research_conditions)
+  rc.update(zerg.zerg_research_conditions)
+  tc.update(protoss.protoss_train_conditions)
+  tc.update(terran.terran_train_conditions)
+  tc.update(zerg.zerg_train_conditions)
+  bc.update(protoss.protoss_build_conditions)
+  bc.update(terran.terran_build_conditions)
+  bc.update(zerg.zerg_build_conditions)
+
+  if agent.race == 'protoss':
+    research_actions, train_actions = llm_action.PROTOSS_ACTION_RESEARCH, llm_action.PROTOSS_ACTION_TRAIN
+    build_actions = llm_action.PROTOSS_ACTION_BUILD if not easy_build else llm_action.PROTOSS_ACTION_EASY_BUILD
+  elif agent.race == 'terran':
+    research_actions, train_actions = [], []
+    build_actions = []
+  elif agent.race == 'zerg':
+    research_actions, train_actions = [], []
+    build_actions = []
+  else:
+    research_actions, train_actions = llm_action.PROTOSS_ACTION_RESEARCH, llm_action.PROTOSS_ACTION_TRAIN
+    build_actions = llm_action.PROTOSS_ACTION_BUILD if not easy_build else llm_action.PROTOSS_ACTION_EASY_BUILD
+    logger.error(f"[ID {agent.log_id}] unknown agent.race: {agent.race}")
+
+  player = obs.observation.player
+  m = player.minerals  # mineral
+  g = player.vespene  # gas
+  s = player.food_cap - player.food_used  # supply
+  u = obs.observation.upgrades  # upgrade
+  b = []  # building
+
+  obs = agent.team_unit_obs_list[0]
+  for unit in obs.observation.raw_units:
+    if unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100 and unit.active == 0 and \
+        unit.unit_type in BUILDING_TYPE and unit.unit_type not in b:
+      b.append(unit.unit_type)
+
+  ra, ta, = research_actions, train_actions
+  ba = build_actions + llm_action.PROTOSS_BASIC_ACTION_2 if agent.name == 'Builder' else build_actions
+  return ra, ta, ba, rc, tc, bc, m, g, s, u, b
+
+
+def map_research_quick_to_level(func_id, u) -> int:
+  global_map = {}
+  global_map.update(protoss.protoss_map_research_quick_to_level)
+  global_map.update(terran.terran_map_research_quick_to_level)
+  global_map.update(zerg.zerg_map_research_quick_to_level)
+  if func_id in global_map.keys():
+    func_id_level_low_to_up = global_map[func_id]
+    for func_id_ in func_id_level_low_to_up:
+      if func_id_ not in u:
+        return func_id_
+    return -1
+  else:
+    return func_id
+
+
+def all_building_condition_reached(conditions_building_types, curr_building_types):
+  for building_type in conditions_building_types:
+    if building_type not in curr_building_types:
+      return False
+  return True
+
+
+def get_valid_actions_build(agent) -> (list, str):
+  obs = agent.team_unit_obs_list[0]
+  _, _, ba, _, _, bc, m, g, s, u, b = get_condition_elements(agent, agent.config.ENABLE_EASY_BUILD)
+
+  building_types = []
+  for unit in obs.observation.raw_units:
+    if unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100 and unit.unit_type in BUILDING_TYPE:
+      building_types.append(unit.unit_type)
+
+  valid_actions = []
+  valid_actions_info = ''
+  basic_actions_info = ''
+
+
+  for action in ba:
+    func_id, valid = action['func'][-1][0], True
+    arg_to_show = '' if agent.config.ENABLE_EASY_BUILD else action['arg'][0]
+    if func_id in bc.keys():
+      conditions = bc[func_id]
+      # condition = {'m': 175, 'g': 175, 'b': units.Protoss.CyberneticsCore, 'u': u.ProtossAirArmorsLevel1, 't': 215},
+      cs = conditions
+      valid = False if ('m' in cs.keys() and m < cs['m']) else valid
+      valid = False if ('g' in cs.keys() and g < cs['g']) else valid
+      valid = False if ('s' in cs.keys() and s < cs['s']) else valid
+      valid = False if ('b' in cs.keys() and not all_building_condition_reached(cs['b'], building_types)) else valid
+      valid = False if ('u' in cs.keys() and cs['u'] not in u) else valid
+      if valid:
+        valid_actions.append(action)
+        valid_actions_info += f"\n\t\t<{action['name']}({arg_to_show})> \t\t cost: mineral{cs['m']}, gas{cs['g']}, time{cs['t']}s"
+    else:
+      valid_actions.append(action['name'])
+      basic_actions_info += f"\n\t\t<{action['name']}({arg_to_show})> "
+
+  # if valid_actions_info != '':
+  #   valid_actions_info = "Valid Research Actions: " + valid_actions_info + "\n\n"
+  return valid_actions, basic_actions_info + valid_actions_info
+
+
+def get_valid_actions_research(agent) -> (list, str):
+  obs = agent.team_unit_obs_list[0]
+  ra, _, _, rc, _, _, m, g, s, u, b = get_condition_elements(agent)
+
+  valid_actions = []
+  valid_actions_info = ''
+  for action in ra:
+    func_id = map_research_quick_to_level(action['func'][0][0], u)
+    if func_id == -1:
+      continue
+    conditions, valid = rc[func_id], True
+    # condition = {'m': 175, 'g': 175, 'b': units.Protoss.CyberneticsCore, 'u': u.ProtossAirArmorsLevel1, 't': 215},
+    cs = conditions
+    valid = False if ('m' in cs.keys() and m < cs['m']) else valid
+    valid = False if ('g' in cs.keys() and g < cs['g']) else valid
+    valid = False if ('s' in cs.keys() and s < cs['s']) else valid
+    valid = False if ('b' in cs.keys() and cs['b'] not in b) else valid
+    valid = False if ('u' in cs.keys() and cs['u'] not in u) else valid
+    if valid:
+      valid_actions.append(action['name'])
+      valid_actions_info += f"\n\t\t<{action['name']}()> \t\t cost: mineral{cs['m']}, gas{cs['g']}, time{cs['t']}s"
+
+  # if valid_actions_info != '':
+  #   valid_actions_info = "Valid Research Actions: " + valid_actions_info + "\n\n"
+  return valid_actions, valid_actions_info
+
+
+def get_valid_actions_train(agent) -> (list, str):
+  obs = agent.team_unit_obs_list[0]
+  _, ta, _, _, tc, _, m, g, s, u, b = get_condition_elements(agent)
+
+  building_types = []
+  for unit in obs.observation.raw_units:
+    if unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100 and unit.unit_type in BUILDING_TYPE:
+      building_types.append(unit.unit_type)
+
+  valid_actions = []
+  valid_actions_info = ''
+  for action in ta:
+    func_id = action['func'][0][0]
+    conditions, valid = tc[func_id], True
+    # condition = {'m': 125, 'g': 50, 'b': units.Protoss.Gateway, 't': 42, 's': 2},
+    cs = conditions
+    valid = False if ('m' in cs.keys() and m < cs['m']) else valid
+    valid = False if ('g' in cs.keys() and g < cs['g']) else valid
+    valid = False if ('s' in cs.keys() and s < cs['s']) else valid
+    valid = False if ('b' in cs.keys() and not all_building_condition_reached(cs['b'], building_types)) else valid
+    valid = False if ('u' in cs.keys() and cs['u'] not in u) else valid
+    if valid:
+      valid_actions.append(action['name'])
+      valid_actions_info += f"\n\t\t<{action['name']}()> \t\t cost: mineral{cs['m']}, gas{cs['g']}, supply{cs['s']}, time{cs['t']}s"
+
+  # if valid_actions_info != '':
+  #   valid_actions_info = "Valid Unit Training Actions: " + valid_actions_info + "\n\n"
+  return valid_actions, valid_actions_info
+
+
+def get_valid_actions_developer(agent):
+  teams_valid_actions_info = ''
+
+  if agent.name != 'Developer':
+    logger.error(f"[ID {agent.log_id}] LLMAgent {agent.name}: use get_valid_actions_developer but agent name is not Developer")
+
+  for team in agent.teams:
+    if team['select_type'] == 'select':
+      for i in range(len(team['obs'])):
+        teams_valid_actions_info += f"\n\tTeam {team['name']}-{i + 1}:"
+    else:
+      teams_valid_actions_info += f"\n\tTeam {team['name']}:"
+
+    valid_actions_info = ''
+    _, valid_actions_info_  = get_valid_actions_research(agent)
+    valid_actions_info += valid_actions_info_
+    _, valid_actions_info_  = get_valid_actions_train(agent)
+    valid_actions_info += valid_actions_info_
+    if agent.config.ENABLE_EASY_BUILD:
+      _, valid_actions_info_  = get_valid_actions_build(agent)
+      valid_actions_info += valid_actions_info_
+
+    if valid_actions_info == '':
+      teams_valid_actions_info += '\n\t\t currently none, build buildings and to unlock training and researching actions.'
+    else:
+      teams_valid_actions_info += valid_actions_info
+
+  teams_valid_actions_info = 'Valid actions:' + teams_valid_actions_info + '\n\n'
+  return teams_valid_actions_info
+
+
+def get_valid_actions_builder(agent):
+  teams_valid_actions_info = ''
+
+  for team in agent.teams:
+
+    if agent.name == 'Builder':
+      if team['select_type'] == 'select':
+        for i in range(len(team['obs'])):
+          teams_valid_actions_info += f"\n\tTeam {team['name']}-{i + 1}:"
+      else:
+        teams_valid_actions_info += f"\n\tTeam {team['name']}:"
+    else:
+      teams_valid_actions_info += f"\n\tAgent Builder's probe's valid actions:"
+
+    valid_actions_info = ''
+    _, valid_actions_info_ = get_valid_actions_build(agent)
+    valid_actions_info += valid_actions_info_
+
+    if valid_actions_info == '':
+      teams_valid_actions_info += '\n\t\t currently none, waiting for more resource to unlock build actions.'
+    else:
+      teams_valid_actions_info += valid_actions_info
+
+  if agent.name == 'Builder':
+    teams_valid_actions_info = 'Valid actions:' + teams_valid_actions_info + '\n\n'
+  else:
+    teams_valid_actions_info = "Agent Builder's Valid actions:" + teams_valid_actions_info + '\n\n'
+  return teams_valid_actions_info
+
+
+
 # 根据obs获取合法动作，以文本格式输出，这个需要作为input prompt的一个独立部分
 def get_valid_actions(agent) -> str:
 
@@ -937,9 +1257,20 @@ def get_alert_info(agent) -> str:   # for Commander only
   for i in range(len(idx[0])):
     alert_info += f"\n\tEngage with enemies in minimap [{idx[1][i]}, {idx[0][i]}]"
   if len(alert_info) != 0:
-    alert_info = "Alert Info:" + alert_info
-    alert_info += "\n\n"
+    alert_info = "Alert Info:" + alert_info +  "\n\n"
   return alert_info
+
+
+def get_upgrades_info(agent) -> str:
+  upgrades_info = ''
+  obs = agent.team_unit_obs_list[0]
+  for upgrade in obs.observation.upgrades:
+    upgrades_info += f"\n\t {str(upgrades.Upgrades(upgrade))}"
+  if len(upgrades_info) != 0:
+    upgrades_info = "Upgrade Info:" + upgrades_info + "\n\n"
+  else:
+    upgrades_info = "Upgrade Info:" + "we do not have any technology upgrade" + "\n\n"
+  return upgrades_info
 
 
 def get_warp_info(agent) -> str:  # for Developer only
@@ -962,10 +1293,10 @@ def get_warp_info(agent) -> str:  # for Developer only
 
   warp_target_info = pylon_info + prism_info
   if len(warp_source_info) > 0:
-    warp_source_info = f"Available WarpGate:" + warp_source_info + \
-                       f"\n{obs.observation.player.warp_gate_count} WarpGate in total" + "\n\n"
-  if len(warp_target_info) > 0:
+    warp_source_info = f"Available WarpGates:\n{obs.observation.player.warp_gate_count} WarpGate in total" + "\n\n"
     warp_target_info = f"Available WarpTrain Field Provider:" + warp_target_info + "\n\n"
+  else:
+    warp_target_info = ''
 
   return warp_source_info + warp_target_info
 
@@ -1022,53 +1353,9 @@ def get_action_error_info(agent):
 
 
 def get_ves_and_base_info(agent):
-  ves_all = []
-  ves_near, ves_near_tags = [], []
-  ves_new_base, ves_new_base_tags = [], []
-  base_build, base_build_tags = [], []
-  base_built, base_built_tags = [], []
 
   obs = agent.team_unit_obs_list[0]
-  for unit in obs.observation.raw_units:
-    if unit.unit_type in GAS_TYPE:
-      ves_all.append(unit)
-  for unit in obs.observation.raw_units:
-    if unit.unit_type in BASE_BUILDING_TYPE and unit.alliance == features.PlayerRelative.SELF:
-      if unit.build_progress == 100:
-        base_built.append(unit)
-        base_built_tags.append(unit.tag)
-      else:
-        base_build.append(unit)
-        base_build_tags.append(unit.tag)
-  base_all = base_build + base_built
-
-  # 保留距离最近的
-  for ves_unit in ves_all:
-    d_min = 99
-    for base_unit in base_built:
-      d = get_dist(ves_unit, base_unit)
-      d_min = d if d < d_min else d_min
-    if d_min < 10:
-      ves_near.append(ves_unit)
-      ves_near_tags.append(ves_unit.tag)
-    elif d_min < 35:
-      ves_new_base.append(ves_unit)
-      # ves_new_base_tags.append(ves_unit.tag)
-
-  # 去重，2气对应1矿，保留一个气的tag即可
-  ves_new_base_ = []
-  for ves_unit in ves_new_base:
-    d_min = 99
-    for ves_unit_ in ves_new_base_:
-      d = get_dist(ves_unit, ves_unit_)
-      d_min = d if d < d_min else d_min
-    if d_min >= 10 or len(ves_new_base_) == 0:
-      ves_new_base_.append(ves_unit)
-      ves_new_base_tags.append(ves_unit.tag)
-
-  # 去除半场外的
-  if 4 * len(base_all) >= len(ves_all):
-    ves_new_base_tags = []
+  _, _, ves_new_base_tags, ves_near_tags = get_ves_for_base_and_gas_building(obs)
 
   out_put_info = ''
   if len(ves_new_base_tags) > 0:
@@ -1093,6 +1380,16 @@ def get_unit_count_info(agent, return_type):
   unit_self_other = {}
   build_process_building = {}
   build_process_other = {}
+
+  unit_count = {}
+  unit_count['building_military'], unit_count['num_building_military'] = {}, {}
+  unit_count['building_research'], unit_count['num_building_research'] = {}, {}
+  unit_count['building_military_idle'], unit_count['num_building_military_idle'] = {}, {}
+  unit_count['building_research_idle'], unit_count['num_building_research_idle'] = {}, {}
+  unit_count['building_military_working'], unit_count['num_building_military_working'] = {}, {}
+  unit_count['building_research_working'], unit_count['num_building_research_working'] = {}, {}
+  unit_count['text_building_military'], unit_count['text_building_research'] = {}, {}
+  unit_count['text_building_process'], unit_count['text_unbuilding_process'] = {}, {}
   # unit_info = f'unit {hex(unit.tag)}({str(units.get_unit_type(unit.unit_type))})'
 
   def add_to_dict(my_dict, key, value):
@@ -1115,37 +1412,72 @@ def get_unit_count_info(agent, return_type):
       if unit.build_progress != 100 and unit.unit_type not in BUILDING_TYPE:
         add_to_dict(build_process_other, str(units.get_unit_type(unit.unit_type)), unit)
 
+      if unit.unit_type in BUILDING_TYPE_MILITARY and unit.build_progress == 100:
+        add_to_dict(unit_count['building_military'], str(units.get_unit_type(unit.unit_type)), unit)
+        if unit.active == 0:
+          add_to_dict(unit_count['building_military_idle'], str(units.get_unit_type(unit.unit_type)), unit)
+        else:
+          add_to_dict(unit_count['building_military_working'], str(units.get_unit_type(unit.unit_type)), unit)
+      if unit.unit_type in BUILDING_TYPE_RESEARCH and unit.build_progress == 100:
+        add_to_dict(unit_count['building_research'], str(units.get_unit_type(unit.unit_type)), unit)
+        if unit.active == 0:
+          add_to_dict(unit_count['building_research_idle'], str(units.get_unit_type(unit.unit_type)), unit)
+        else:
+          add_to_dict(unit_count['building_research_working'], str(units.get_unit_type(unit.unit_type)), unit)
+
   num_unit_oppo = {}
   num_unit_self_building = {}
   num_unit_self_other = {}
   num_build_process_building = {}
   num_build_process_other = {}
-  for key in unit_oppo:
+  for key in unit_oppo.keys():
     num_unit_oppo[key] = len(unit_oppo[key])
-  for key in unit_self_building:
+  for key in unit_self_building.keys():
     num_unit_self_building[key] = len(unit_self_building[key])
-  for key in unit_self_other:
+  for key in unit_self_other.keys():
     num_unit_self_other[key] = len(unit_self_other[key])
-  for key in build_process_building:
-    num_build_process_building[key] = len(build_process_building[key])
-  for key in build_process_other:
-    num_build_process_other[key] = len(build_process_other[key])
+
+  for key in build_process_building.keys():
+    num_build_process_building[key], text_details =len(build_process_building[key]), ''
+    for unit in build_process_building[key]:
+      text_details += f'{hex(unit.tag)} {unit.build_progress}%' if text_details == '' else f', {hex(unit.tag)} {unit.build_progress}%'
+    unit_count['text_building_process'][key] = f"{num_build_process_building[key]} in total ({text_details})"
+  for key in build_process_other.keys():
+    num_build_process_other[key], text_details = len(build_process_other[key]), ''
+    for unit in build_process_other[key]:
+      text_details += f'{hex(unit.tag)} {unit.build_progress}%' if text_details == '' else f', {hex(unit.tag)} {unit.build_progress}%'
+    unit_count['text_unbuilding_process'][key] = f"{num_build_process_other[key]} in total ({text_details})"
+
+  for key in unit_count['building_military'].keys():
+    unit_count['num_building_military'][key] = len(unit_count['building_military'][key])
+    unit_count['num_building_military_idle'][key] = len(unit_count['building_military_idle'][key]) if key in unit_count['building_military_idle'].keys() else 0
+    unit_count['num_building_military_working'][key] = len(unit_count['building_military_working'][key]) if key in unit_count['building_military_working'].keys() else 0
+    unit_count['text_building_military'][key] = f"{unit_count['num_building_military'][key]} ({unit_count['num_building_military_working'][key]} is working, {unit_count['num_building_military_idle'][key]} is idle)"
+  for key in unit_count['building_research'].keys():
+    unit_count['num_building_research'][key] = len(unit_count['building_research'][key])
+    unit_count['num_building_research_idle'][key] = len(unit_count['building_research_idle'][key]) if key in unit_count['building_research_idle'].keys() else 0
+    unit_count['num_building_research_working'][key] = len(unit_count['building_research_working'][key]) if key in unit_count['building_research_working'].keys() else 0
+    unit_count['text_building_research'][key] = f"{unit_count['num_building_research'][key]} ({unit_count['num_building_research_working'][key]} is working, {unit_count['num_building_research_idle'][key]} is idle)"
 
   out_put_info = 'Unit Counts:'
   if return_type in [1]:
     out_put_info += f"\n\tOur Unit: \n\t {num_unit_self_other}"
     out_put_info += f"\n\tOur Buildings: \n\t {num_unit_self_building}"
-    out_put_info += f"\n\tOur Unit (in warping/morphing): \n\t {num_build_process_other}"
-    out_put_info += f"\n\tOur Buildings (in construction): \n\t {num_build_process_building}"
+    out_put_info += f"\n\tMilitary Buildings: \n\t {unit_count['text_building_military'] if len(unit_count['text_building_military'].keys()) > 0 else None}"
+    out_put_info += f"\n\tResearch Buildings: \n\t {unit_count['text_building_research'] if len(unit_count['text_building_research'].keys()) > 0 else None}"
+    out_put_info += f"\n\tOur Unit (in warping/morphing): \n\t {unit_count['text_unbuilding_process'] if len(num_build_process_other.keys()) > 0 else None}"
+    out_put_info += f"\n\tOur Buildings (in construction): \n\t {unit_count['text_building_process'] if len(num_build_process_building.keys()) > 0 else None}"
     out_put_info += f"\n\tSpotted Enemy Unit: \n\t {num_unit_oppo}"
   if return_type in [2]:
     out_put_info += f"\n\tOur Unit: \n\t {num_unit_self_other}"
     out_put_info += f"\n\tOur Buildings: \n\t {num_unit_self_building}"
-    out_put_info += f"\n\tOur Unit (in warping/morphing): \n\t {num_build_process_other}"
-    out_put_info += f"\n\tOur Buildings (in construction): \n\t {num_build_process_building}"
+    out_put_info += f"\n\tMilitary Buildings: \n\t {unit_count['text_building_military'] if len(unit_count['text_building_military'].keys()) > 0 else None}"
+    out_put_info += f"\n\tResearch Buildings: \n\t {unit_count['text_building_research'] if len(unit_count['text_building_research'].keys()) > 0 else None}"
+    out_put_info += f"\n\tOur Unit (in warping/morphing): \n\t {unit_count['text_unbuilding_process'] if len(num_build_process_other.keys()) > 0 else None}"
+    out_put_info += f"\n\tOur Buildings (in construction): \n\t {unit_count['text_building_process'] if len(num_build_process_building.keys()) > 0 else None}"
   if return_type in [3]:
     out_put_info += f"\n\tOur Buildings: \n\t {num_unit_self_building}"
-    out_put_info += f"\n\tOur Buildings (in construction): \n\t {num_build_process_building}"
+    out_put_info += f"\n\tOur Buildings (in construction): \n\t {unit_count['text_building_process'] if len(num_build_process_building.keys()) > 0 else None}"
   out_put_info += '\n\n'
 
   return out_put_info
@@ -1182,6 +1514,7 @@ class BaseTranslatorO:
       'valid_args_explanation': get_valid_action_args_explanation(agent),
       'last_action_info': get_last_action_info(agent),
       'last_action_error_info': get_action_error_info(agent),
+      'upgrades_info': get_upgrades_info(agent),
       'task_info': get_task_info(agent),
       'final_prompt': self.final_prompt,
     }
@@ -1253,9 +1586,9 @@ class CommanderTranslatorO(BaseTranslatorO):
     if not self.obs_list_safe(agent):
       return f"obs_list error, no obs found"
     self.states[-1]['unit_count_info'] = get_unit_count_info(agent, return_type=1)
+    self.states[-1]['other_agents_info'] = get_other_agents_info(agent)
 
     # observation
-    self.states[-1]['other_agents_info'] = get_other_agents_info(agent)
     self.text_obs = self.state['game_info'] + self.states[-1]['other_agents_info'] + self.states[-1]['unit_count_info']
     self.text_task = self.state['communication_input'] + self.state['communication_target'] + self.state['task_info']
     self.text_prompt = self.text_obs + self.text_task + self.final_prompt
@@ -1287,12 +1620,13 @@ class DeveloperTranslatorO(BaseTranslatorO):
     if not self.obs_list_safe(agent):
       return f"obs_list error, no obs found"
     self.states[-1]['unit_count_info'] = get_unit_count_info(agent, return_type=2)
+    self.states[-1]['valid_actions'] = get_valid_actions_developer(agent) + get_valid_actions_builder(agent)
 
     # observation
     self.states[-1]['warp_info'] = get_warp_info(agent)
-    self.text_obs = self.state['game_info'] + \
-               self.state['valid_actions'] + self.state['valid_args_explanation'] + self.state['last_action_info'] + \
-               self.states[-1]['unit_count_info'] + self.states[-1]['warp_info']
+    self.text_obs = self.state['game_info'] + self.states[-1]['unit_count_info'] + \
+               self.states[-1]['valid_actions'] + self.state['valid_args_explanation'] + self.state['last_action_info'] + \
+               self.states[-1]['warp_info']
     self.text_task = self.state['communication_input'] + self.state['communication_target'] + self.state['task_info']
     self.text_prompt = self.text_obs + self.text_task + self.final_prompt
 
@@ -1306,10 +1640,12 @@ class BuilderTranslatorO(BaseTranslatorO):
   def __init__(self, name, log_id, config):
     super(BuilderTranslatorO, self).__init__(name, log_id, config)
     if config.ENABLE_COMMUNICATION:
-      self.final_prompt = f"As a builder, you should build buildings in correct position." \
+      self.final_prompt = f"As a builder, you need to move the worker to an open location and complete the construction of the building." \
+                          f"If you have enough supply (such as more than 10), build base building / gas building / unit training buildings or research building" \
                           f"\nNow, start generating your analysis, actions and communication:"
     else:
-      self.final_prompt = f"As a builder, you should build buildings in correct position." \
+      self.final_prompt = f"As a builder, you need to move the worker to an open location and complete the construction of the building." \
+                          f"If you have enough supply (such as more than 10), build base building / gas building / unit training buildings or research building" \
                           f"\nNow, start generating your analysis, actions:"
     logger.info(f"[ID {log_id}] {name} DeveloperTranslatorO initialized")
 
@@ -1319,10 +1655,11 @@ class BuilderTranslatorO(BaseTranslatorO):
       return f"obs_list error, no obs found"
     self.states[-1]['unit_count_info'] = get_unit_count_info(agent, return_type=3)
     self.states[-1]['new_base_and_ves_info'] = get_ves_and_base_info(agent)
+    self.states[-1]['valid_actions'] = get_valid_actions_builder(agent)
 
     # observation
-    self.text_obs = self.state['game_info'] + self.state['units_info'] + self.state['event_info'] + \
-               self.state['valid_actions'] + self.state['valid_args_explanation'] + self.state['last_action_info'] + \
+    self.text_obs = self.state['game_info'] + self.state['units_info'] + self.states[-1]['unit_count_info'] + self.state['event_info'] + \
+               self.states[-1]['valid_actions'] + self.state['valid_args_explanation'] + self.state['last_action_info'] + \
                self.state['last_action_error_info'] + self.states[-1]['new_base_and_ves_info']
     self.text_task = self.state['communication_input'] + self.state['communication_target'] + self.state['task_info']
     self.text_prompt = self.text_obs + self.text_task + self.final_prompt

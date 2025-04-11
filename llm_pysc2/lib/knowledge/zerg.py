@@ -12,7 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pysc2.lib import units
+from pysc2.lib import units, actions, upgrades
+
+a = actions.FUNCTIONS
+u = upgrades.Upgrades
+
+zerg_map_research_quick_to_level = {}
+
+zerg_research_conditions = {}
+zerg_train_conditions = {}
+zerg_build_conditions = {}
 
 DATA_ZERG = {
 

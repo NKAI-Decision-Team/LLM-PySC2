@@ -172,6 +172,8 @@ class GptClient:
     ]
     if (base64_images is not None and self.model_name in vision_model_names):
       for key in base64_images:
+        if base64_images[key] is None:
+          continue
         self.messages.append({"role": "user", "content": [
           {"type": "text", "text": f'This is the {key} image:'},  # obs_prompt
           {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{base64_images[key]}"}}]}

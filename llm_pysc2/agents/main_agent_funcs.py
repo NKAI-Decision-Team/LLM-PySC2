@@ -182,7 +182,7 @@ def main_agent_func0(self, obs):
           func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()
           func_id = func_id if func_id in obs.observation.available_actions else 0
           self.func_id_history.append(func_id)
-          return func_call
+          return func_id, func_call
     if self.num_step == 1:
       for unit in obs.observation.feature_units:
         if unit.alliance == features.PlayerRelative.SELF and unit.unit_type in BASE_BUILDING_TYPE:
@@ -191,7 +191,7 @@ def main_agent_func0(self, obs):
           func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()
           func_id = func_id if func_id in obs.observation.available_actions else 0
           self.func_id_history.append(func_id)
-          return func_call
+          return func_id, func_call
     if self.num_step == 2:
       for unit in obs.observation.feature_units:
         if unit.alliance == features.PlayerRelative.SELF and unit.unit_type in BASE_BUILDING_TYPE:
@@ -200,7 +200,7 @@ def main_agent_func0(self, obs):
           func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()
           func_id = func_id if func_id in obs.observation.available_actions else 0
           self.func_id_history.append(func_id)
-          return func_call
+          return func_id, func_call
     if self.num_step == 3:
       for unit in obs.observation.feature_units:
         if unit.alliance == features.PlayerRelative.SELF and unit.unit_type in BASE_BUILDING_TYPE:
@@ -210,7 +210,7 @@ def main_agent_func0(self, obs):
           func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()
           func_id = func_id if func_id in obs.observation.available_actions else 0
           self.func_id_history.append(func_id)
-          return func_call
+          return func_id, func_call
   if self.race == 'zerg' and self.config.ENABLE_INIT_STEPS:
     pass
   if self.race == 'terran' and self.config.ENABLE_INIT_STEPS:
@@ -284,7 +284,7 @@ def main_agent_func0(self, obs):
       func_id, func_call = (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))  # 修改了pysc2的action
       logger.info(f"[ID {self.log_id}] 2.2 Func Call: {func_call}")
       self.func_id_history.append(func_id)
-      return func_call
+      return func_id, func_call
     else:
       self.world_xy_calibration = False
 
@@ -341,10 +341,81 @@ def main_agent_func0(self, obs):
       func_id, func_call = (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))  # 修改了pysc2的action
       logger.info(f"[ID {self.log_id}] 2.3 Func Call: {func_call}")
       self.func_id_history.append(func_id)
-      return func_call
+      return func_id, func_call
   # endregion
 
-  return func_call
+  # 获取必要的初始信息
+  self.ctrl_base_list, self.ctrl_base_pos_list, self.ctrl_base_tag_list = [], [], []
+  self.oppo_base_list, self.oppo_base_pos_list, self.oppo_base_tag_list = [], [], []
+  all_ves_list, all_ves_tag_list, all_ves_pos_list, pos0 = [], [], [], []
+  for unit in obs.observation.raw_units:
+    if unit.unit_type in BASE_BUILDING_TYPE and unit.alliance == features.PlayerRelative.SELF:
+      if self.first_ctrl_base_tag is None:
+        self.first_ctrl_base_tag = unit.tag
+        self.first_ctrl_base_pos = [unit.x, unit.y]
+      self.ctrl_base_list.append(unit)
+      self.ctrl_base_tag_list.append(unit.tag)
+      self.ctrl_base_pos_list.append([unit.x, unit.y])
+    if unit.unit_type in BASE_BUILDING_TYPE and unit.alliance == features.PlayerRelative.ENEMY:
+      self.oppo_base_list.append(unit)
+      self.oppo_base_tag_list.append(unit.tag)
+      self.oppo_base_pos_list.append([unit.x, unit.y])
+    if unit.unit_type in GAS_TYPE:
+      all_ves_list.append(unit)
+      all_ves_tag_list.append(unit.tag)
+      all_ves_pos_list.append([unit.x, unit.y])
+
+  if self.first_ctrl_base_tag not in self.ctrl_base_tag_list:
+    d_min, index_min = get_dis_pos_poses1(self.first_ctrl_base_pos, self.ctrl_base_pos_list, 'min')
+    self.first_ctrl_base_tag = self.ctrl_base_list[index_min].tag if d_min != 0 else None
+    self.first_ctrl_base_pos = [self.ctrl_base_list[index_min].x, self.ctrl_base_list[index_min].y]
+
+  if len(self.oppo_base_pos_list) >= 0:
+    d_max, index_max = get_dis_pos_poses1(self.first_ctrl_base_pos, self.oppo_base_pos_list, 'max')
+    self.first_oppo_base_tag = self.oppo_base_list[index_max].tag if d_max != 0 else None
+  # if len(self.oppo_base_pos_list) >= 0:
+  #   d_min, index_min = get_dis_pos_poses1(self.first_ctrl_base_pos, self.oppo_base_pos_list, 'min')
+  #   self.closest_oppo_base_tag = self.oppo_base_list[index_min].tag
+  if self.first_oppo_base_tag is None:
+    d_max, index_max = get_dis_pos_poses1(self.first_ctrl_base_pos, all_ves_pos_list, 'max')
+    self.first_oppo_base_tag = all_ves_list[index_max].tag if d_max != 0 else None
+  # if self.closest_oppo_base_tag is None:
+  #   d_max, index_max = get_dis_pos_poses1(self.first_ctrl_base_pos, all_ves_pos_list, 'max')
+  #   self.closest_oppo_base_tag = all_ves_list[index_max].tag
+
+  if self.first_oppo_base_tag not in all_ves_tag_list + self.oppo_base_tag_list:
+    self.first_oppo_base_tag = None
+    # unit_list = self.oppo_base_list if len(self.oppo_base_list) > 0 else all_ves_list
+    # unit_pos_list = self.oppo_base_pos_list if len(self.oppo_base_list) > 0 else all_ves_pos_list
+    # d_max, index_max = get_dis_pos_poses1(self.first_ctrl_base_pos, unit_pos_list, 'max')
+    # self.first_oppo_base_tag = unit_list[index_max].tag
+
+  if self.first_ctrl_base_tag is None:
+    logger.error(f"[ID {self.log_id}] main_agent_func0: Can not find our first base position?")
+  if self.first_oppo_base_tag is None:
+    logger.error(f"[ID {self.log_id}] main_agent_func0: Can not find enemy base position?")
+  for agent_name in self.AGENT_NAMES:
+    agent = self.agents[agent_name]
+    agent.first_ctrl_base_tag = self.first_ctrl_base_tag
+    agent.first_oppo_base_tag = self.first_oppo_base_tag
+
+  # if self.first_ctrl_base_tag is None or self.first_oppo_base_tag is None:
+  #   all_ves_list, all_ves_pos_list, pos0 = [], [], []
+  #   for unit in obs.observation.raw_units:
+  #     if unit.unit_type in BASE_BUILDING_TYPE and unit.alliance == features.PlayerRelative.SELF:
+  #       self.first_ctrl_base_tag = unit.tag
+  #       pos0 = [unit.x, unit.y]
+  #     if unit.unit_type in GAS_TYPE:
+  #       all_ves_list.append(unit)
+  #       all_ves_pos_list.append([unit.x, unit.y])
+  #   d_max, index_max = get_dis_pos_poses1(pos0, all_ves_pos_list, 'max')
+  #   self.first_oppo_base_tag = all_ves_list[index_max].tag
+  # for agent_name in self.AGENT_NAMES:
+  #   agent = self.agents[agent_name]
+  #   agent.first_ctrl_base_tag = self.first_ctrl_base_tag
+  #   agent.first_oppo_base_tag = self.first_oppo_base_tag
+
+  return func_id, func_call
 
 
 def main_agent_func1(self, obs):
@@ -445,7 +516,7 @@ def main_agent_func1(self, obs):
         if func_id == 573:
           logger.info(f"[ID {self.log_id}] 3.3 Func Call: {func_call}")
           self.func_id_history.append(func_id)
-          return func_call
+          return func_id, func_call
 
         # 选择单位
         unit_f = None
@@ -468,18 +539,18 @@ def main_agent_func1(self, obs):
             func_id, func_call = (3, actions.FUNCTIONS.select_rect('select', (x1, y1), (x2, y2)))
           logger.info(f"[ID {self.log_id}] 3.4.1 Func Call: {func_call}")
           self.func_id_history.append(func_id)
-          return func_call
+          return func_id, func_call
 
         # if curr_unit.unit_type in WORKER_TYPE:
         #     func_id, func_call = (2, actions.FUNCTIONS.select_point('select', (unit_f.x, unit_f.y)))
         #     logger.info(f"[ID {self.log_id}] 3.4.1 Func Call: {func_call}")
         #     self.func_id_history.append(func_id)
-        #     return func_call
+        #     func_id,
         # else:
         #     func_id, func_call = (2, actions.FUNCTIONS.select_point('select_all_type', (unit_f.x, unit_f.y)))
         #     logger.info(f"[ID {self.log_id}] 3.4.2 Func Call: {func_call}")
         #     self.func_id_history.append(func_id)
-        #     return func_call
+        #     return func_id, func_call
 
       chosen_team = None
       unit_in_team = False
@@ -539,7 +610,7 @@ def main_agent_func1(self, obs):
         if func_id == 573:
           logger.info(f"[ID {self.log_id}] 3.5 Func Call: {func_call}")
           self.func_id_history.append(func_id)
-          return func_call
+          return func_id, func_call
 
       # 加入到单位列表
       self.agents[agent_name].unit_tag_list.append(curr_unit.tag)
@@ -555,7 +626,7 @@ def main_agent_func1(self, obs):
         func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()
         func_id = func_id if func_id in obs.observation.available_actions else 0
         self.func_id_history.append(func_id)
-        return func_call
+        return func_id, func_call
       if chosen_team['select_type'] == 'select_all_type':  # 聚拢单位的功能放到locked_func4
         # 找到单位
         unit_f = None
@@ -568,7 +639,7 @@ def main_agent_func1(self, obs):
           func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()
           func_id = func_id if func_id in obs.observation.available_actions else 0
           self.func_id_history.append(func_id)
-          return func_call
+          return func_id, func_call
       else:
         pass
 
@@ -604,7 +675,7 @@ def main_agent_func1(self, obs):
 
   self.unit_uid_total = set(list(self.unit_uid) + list(self.unit_uid_total))
 
-  return func_call
+  return func_id, func_call
 
 
 def main_agent_func2(self, obs):
@@ -805,7 +876,7 @@ def main_agent_func2(self, obs):
         func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()
         func_id = func_id if func_id in obs.observation.available_actions else 0
         self.func_id_history.append(func_id)
-        return func_call
+        return func_id, func_call
       if len(obs.observation.single_select) == 1 and \
           obs.observation.single_select[0].unit_type in WORKER_TYPE and \
           obs.observation.single_select[0].player_relative == features.PlayerRelative.SELF and \
@@ -822,7 +893,7 @@ def main_agent_func2(self, obs):
             func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()
             func_id = func_id if func_id in obs.observation.available_actions else 0
             self.func_id_history.append(func_id)
-            return func_call
+            return func_id, func_call
       # 选择有工位的、最近的主矿
       min_dist = 999
       min_dist_nexus_i = 0
@@ -846,21 +917,21 @@ def main_agent_func2(self, obs):
         idx = possible_working_place_nexus_tag_list.index(target_nexus.tag)
         working_place_unit_tag_list = self.possible_working_place_tag_list[idx]
 
-        # # 相机移动到主矿
-        # if not target_nexus.is_on_screen:
-        #     x, y = get_camera_xy(self, target_nexus.x, target_nexus.y)
-        #     func_id, func_call = (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))
-        #     logger.info(f"[ID {self.log_id}] 4.1.3 Func Call: {func_call}")
-        #     self.func_id_history.append(func_id)
-        #     return func_call
-        # if target_nexus.is_on_screen:
-        #     unit = get_feature_unit_list_of_tags(obs, target_nexus.tag)[0]
-        #     if not (0.45 * self.size_screen < unit.x < 0.55 * self.size_screen and 0.45 * self.size_screen < unit.y < 0.55 * self.size_screen):
-        #         x, y = get_camera_xy(self, target_nexus.x, target_nexus.y)
-        #         func_id, func_call = (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))
-        #         logger.info(f"[ID {self.log_id}] 4.1.4 Func Call: {func_call}")
-        #         self.func_id_history.append(func_id)
-        #         return func_call
+        # 相机移动到主矿
+        if not target_nexus.is_on_screen:
+            x, y = get_camera_xy(self, target_nexus.x, target_nexus.y)
+            func_id, func_call = (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))
+            logger.info(f"[ID {self.log_id}] 4.1.3 Func Call: {func_call}")
+            self.func_id_history.append(func_id)
+            return func_id, func_call
+        if target_nexus.is_on_screen:
+            unit = get_feature_unit_list_of_tags(obs, target_nexus.tag)[0]
+            if not (0.25 * self.size_screen < unit.x < 0.75 * self.size_screen and 0.25 * self.size_screen < unit.y < 0.75 * self.size_screen):
+                x, y = get_camera_xy(self, target_nexus.x, target_nexus.y)
+                func_id, func_call = (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))
+                logger.info(f"[ID {self.log_id}] 4.1.4 Func Call: {func_call}")
+                self.func_id_history.append(func_id)
+                return func_id, func_call
 
         # 相机移动
         working_place_unit_list = get_raw_unit_list_of_tags(obs, working_place_unit_tag_list)
@@ -868,11 +939,11 @@ def main_agent_func2(self, obs):
           print(working_place_unit_tag_list)
           print(working_place_unit_list)
         target_working_position = working_place_unit_list[0]
-        func_id, func_call = get_camera_func_smart(self, obs, target_working_position.tag)
-        if func_id == 573:
-          logger.info(f"[ID {self.log_id}] 4.1.3 Func Call: {func_call}")
-          self.func_id_history.append(func_id)
-          return func_call
+        # func_id, func_call = get_camera_func_smart(self, obs, target_working_position.tag)
+        # if func_id == 573:
+        #   logger.info(f"[ID {self.log_id}] 4.1.3 Func Call: {func_call}")
+        #   self.func_id_history.append(func_id)
+        #   return func_id, func_call
 
         # 选择工位
         working_place_unit_list = get_feature_unit_list_of_tags(obs, working_place_unit_tag_list)
@@ -911,8 +982,10 @@ def main_agent_func2(self, obs):
             self.possible_working_place_tag_list = []
             func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()
             func_id = func_id if func_id in obs.observation.available_actions else 0
+            # func_call = func_call if 0 in [unit.x, unit.y] else actions.FUNCTIONS.no_op()
+            # func_id = func_id if 0 in [unit.x, unit.y] else 0
             self.func_id_history.append(func_id)
-            return func_call
+            return func_id, func_call
 
       # for unit in obs.observation.feature_units:
       #     if unit.tag in working_place_unit_tag_list:
@@ -969,14 +1042,14 @@ def main_agent_func2(self, obs):
             #     func_id, func_call = (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))
             #     logger.info(f"[ID {self.log_id}] 4.2.1 Func Call: {func_call}")
             #     self.func_id_history.append(func_id)
-            #     return func_call
+            #     return func_id, func_call
 
             if not self.stop_worker.is_on_screen:
               x, y = get_camera_xy(self, self.stop_worker.x, self.stop_worker.y)
               func_id, func_call = (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))
               logger.info(f"[ID {self.log_id}] 4.2.2 Func Call: {func_call}, stop worker at {self.stop_worker_at}")
               self.func_id_history.append(func_id)
-              return func_call
+              return func_id, func_call
             if self.stop_worker.is_on_screen:
               for unit in get_feature_unit_list_of_tags(obs, self.stop_worker.tag):
                 if not (
@@ -985,14 +1058,14 @@ def main_agent_func2(self, obs):
                   func_id, func_call = (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))
                   logger.info(f"[ID {self.log_id}] 4.2.3 Func Call: {func_call}, stop worker at {self.stop_worker_at}")
                   self.func_id_history.append(func_id)
-                  return func_call
+                  return func_id, func_call
 
             # # 相机移动
             # func_id, func_call = get_camera_func_smart(self, obs, self.stop_worker.tag)
             # if func_id == 573:
             #     logger.info(f"[ID {self.log_id}] 4.2.3 Func Call: {func_call}, stop worker at {self.stop_worker_at}")
             #     self.func_id_history.append(func_id)
-            #     return func_call
+            #     return func_id, func_call
 
             if not self.stop_worker.is_selected:
               for unit in get_feature_unit_list_of_tags(obs, self.stop_worker.tag):
@@ -1005,7 +1078,7 @@ def main_agent_func2(self, obs):
                   func_id, func_call = (3, actions.FUNCTIONS.select_rect('select', (x1, y1), (x2, y2)))
                   logger.info(f"[ID {self.log_id}] 4.2.4 Func Call: {func_call}, stop worker at {self.stop_worker_at}")
                   self.func_id_history.append(func_id)
-                  return func_call
+                  return func_id, func_call
             else:
               unit = get_feature_unit_list_of_tags(obs, self.stop_worker.tag)[0]
               # func_id, func_call = (274, actions.FUNCTIONS.HoldPosition_quick('now"))
@@ -1018,7 +1091,7 @@ def main_agent_func2(self, obs):
               func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()
               func_id = func_id if func_id in obs.observation.available_actions else 0
               self.func_id_history.append(func_id)
-              return func_call
+              return func_id, func_call
 
           else:
             self.stop_worker_nexus_tag = None
@@ -1026,7 +1099,7 @@ def main_agent_func2(self, obs):
             self.stop_worker = None
   # endregion
 
-  return func_call
+  return func_id, func_call
 
 
 def main_agent_func3(self, obs):
@@ -1048,14 +1121,14 @@ def main_agent_func3(self, obs):
             func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()
             func_id = func_id if func_id in obs.observation.available_actions else 0
             self.func_id_history.append(func_id)
-            return func_call
+            return func_id, func_call
           if 9 in obs.observation.available_actions:
             func_id, func_call = (9, actions.FUNCTIONS.select_larva())
             logger.info(f"[ID {self.log_id}] 5.1.2 Func Call: {func_call}")
             func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()
             func_id = func_id if func_id in obs.observation.available_actions else 0
             self.func_id_history.append(func_id)
-            return func_call
+            return func_id, func_call
 
     if len(self.possible_working_place_nexus) > 0 and self.race in ['terran', 'protoss']:
       for unit in obs.observation.raw_units:
@@ -1076,7 +1149,7 @@ def main_agent_func3(self, obs):
             func_id, func_call = (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))
             logger.info(f"[ID {self.log_id}] 5.2.1 Func Call: {func_call}")
             self.func_id_history.append(func_id)
-            return func_call
+            return func_id, func_call
           if unit.is_on_screen and not unit.is_selected:
             for unit_ in get_feature_unit_list_of_tags(obs, unit.tag):
               if unit_.tag == unit.tag and not (
@@ -1085,7 +1158,7 @@ def main_agent_func3(self, obs):
                 func_id, func_call = (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))
                 logger.info(f"[ID {self.log_id}] 5.2.2.1 Func Call: {func_call}")
                 self.func_id_history.append(func_id)
-                return func_call
+                return func_id, func_call
               if unit_.tag == unit.tag and (
                   0.25 * self.size_screen < unit_.x < 0.75 * self.size_screen and 0.25 * self.size_screen < unit_.y < 0.75 * self.size_screen):
                 func_id, func_call = (2, actions.FUNCTIONS.select_point('select', (unit_.x, unit_.y)))
@@ -1097,7 +1170,7 @@ def main_agent_func3(self, obs):
                 unit_info2 = f'unit {hex(unit_.tag)}({str(units.get_unit_type(unit.unit_type))})'
                 logger.info(f"[ID {self.log_id}] 5.2.2.2 Func Call: {func_call}, target screen pos{(unit_.x, unit_.y)}, {unit_info1}, {unit_info2}")
                 self.func_id_history.append(func_id)
-                return func_call
+                return func_id, func_call
           if unit.is_selected:
             self.idle_nexus = None
             if self.race == 'protoss':
@@ -1110,10 +1183,10 @@ def main_agent_func3(self, obs):
             func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()
             func_id = func_id if func_id in obs.observation.available_actions else 0
             self.func_id_history.append(func_id)
-            return func_call
+            return func_id, func_call
   # endregion
 
-  return func_call
+  return func_id, func_call
 
 
 def get_select_func_smart(self, obs, log_id, tags, size_screen, strict: "0, 1, 2" = 0, disable_rect=False,
@@ -1263,7 +1336,7 @@ def main_agent_func4(self, obs):
 
   # 第一次交互LLM前无需进行单位聚拢
   if self.main_loop_step == 0:
-    return func_call
+    return func_id, func_call
 
   # for unit in obs.observation.raw_units:  # main_loop_lock放锁之后，大部分情况只有最后一个小组的单位被select
   #     self.unit_selected_tag_list = []
@@ -1327,7 +1400,7 @@ def main_agent_func4(self, obs):
           logger.info(f"[ID {self.log_id}] main_agent_func4: camera to curr unit, Func Call: {func_call}")
           self.func_id_history.append(func_id)
           # time.sleep(5)
-          return func_call
+          return func_id, func_call
 
         # 根据单位选取方案选择该单位
         # unit_f = None
@@ -1357,7 +1430,7 @@ def main_agent_func4(self, obs):
             logger.debug(f"[ID {self.log_id}] main_agent_func4: get_select_func_smart return func_id=0")
           logger.info(f"[ID {self.log_id}] main_agent_func4: smart select curr unit, Func Call: {func_call}")
           self.func_id_history.append(func_id)
-          return func_call
+          return func_id, func_call
 
       # # 全选校验
       # if self.temp_curr_unit.is_selected and self.temp_curr_unit.is_on_screen:
@@ -1374,7 +1447,7 @@ def main_agent_func4(self, obs):
       #             logger.info(f"[ID {self.log_id}] locked_func_4: re—select, Func Call: {func_call}")
       #             # time.sleep(5)
       #             self.func_id_history.append(func_id)
-      #             return func_call
+      #             return func_id, func_call
 
       # 移动相机到小组的head单位
 
@@ -1383,7 +1456,7 @@ def main_agent_func4(self, obs):
         logger.info(f"[ID {self.log_id}] main_agent_func4: camera to head unit, Func Call: {func_call}")
         self.func_id_history.append(func_id)
         # time.sleep(5)
-        return func_call
+        return func_id, func_call
 
       # 令该单位追随小组的head单位
       unit_f = None
@@ -1410,7 +1483,7 @@ def main_agent_func4(self, obs):
         func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()
         func_id = func_id if func_id in obs.observation.available_actions else 0
         self.func_id_history.append(func_id)
-        return func_call
+        return func_id, func_call
 
     if self.flag_locked_func4:
       # else:
@@ -1429,7 +1502,7 @@ def main_agent_func4(self, obs):
       self.temp_curr_unit = None
       time.sleep(5)
 
-  return func_call
+  return func_id, func_call
 
 
 def main_agent_func_critical_data_log(self, obs):
@@ -1455,7 +1528,7 @@ def main_agent_func_critical_data_log(self, obs):
         f"[ID {self.log_id}]       num Actions = {len(agent.func_list)} {len(agent.action_list)} {len(agent.action_lists)}")
       logger.debug(f"[ID {self.log_id}]       Actions = {agent.action_list}")  # 可能打印出来非常长非常混乱
       for team in agent.teams:
-        if len(team['unit_tags']) != 0:
+        if len(team['unit_tags']) != 0 or (agent.flag_enable_empty_unit_group):
           logger.debug(f"[ID {self.log_id}]       Team = team_name:{team['name']} "
                        f"unit_type:{team['unit_type']} game_group:{team['game_group']} "
                        f"select_type:{team['select_type']} num_obs:{len(team['obs'])} num_pos:{len(team['pos'])}")
@@ -1483,4 +1556,4 @@ def main_agent_func_critical_data_log(self, obs):
     logger.error(f"[ID {self.log_id}] Detect Possible Endless Loop !")
     logger.error(f"[ID {self.log_id}] last 20 funcs: {actions.FUNCTIONS[self.func_id_history[0]]}")
     time.sleep(1)
-  return func_call
+  return func_id, func_call

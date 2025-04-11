@@ -11,6 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import math
+
+import numpy as np
 
 from pysc2.lib.actions import FUNCTIONS as F
 from pysc2.lib import features
@@ -70,6 +73,12 @@ SU_ATTACK_02S = {
 SMAC_ACTION_ZEALOT = [ATTACK_00S]
 SMAC_ACTION_STALKER = [ATTACK_02S, MOVE_SCREEN]  #  ,SU_MOVE_SCREEN
 SMAC_ACTION_COLOSSUS = [ATTACK_00S, MOVE_SCREEN, SU_MOVE_SCREEN]
+
+STOP_BUILDING_ACTION = {
+  'name': 'Stop_Building_Unit', 'arg': ['tag'],
+  'func': [(573, F.llm_pysc2_move_camera, ('world_tag')),
+           (2, F.select_point, ('select', 'screen_tag')),
+           (454, F.Stop_Building_quick, ('queued'))]}
 
 # actions for sc2 unit, 1 for buildings
 PROTOSS_BASIC_ACTION_1 = [
@@ -146,6 +155,21 @@ PROTOSS_ACTION_WARPTRAIN = [
   # {'name': 'Warp_One_Zealot_Screen', 'arg': ['screen'],
   #  'func': [(8, F.select_warp_gates, ('select')), (510, F.TrainWarp_Zealot_screen, ('queued', 'screen'))]},
 ]
+PROTOSS_ACTION_EASY_WARPTRAIN = [
+  {'name': 'Warp_Adept', 'arg': [],
+   'func': [(505, F.TrainWarp_Adept_screen, ('queued', 'auto'))]},  # tag for WarpprismPhasing/Pylon
+  {'name': 'Warp_DarkTemplar', 'arg': [],
+   'func': [(506, F.TrainWarp_DarkTemplar_screen, ('queued', 'auto'))]},  # tag for WarpprismPhasing/Pylon
+  {'name': 'Warp_HighTemplar', 'arg': [],
+   'func': [(507, F.TrainWarp_HighTemplar_screen, ('queued', 'auto'))]},  # tag for WarpprismPhasing/Pylon
+  {'name': 'Warp_Sentry', 'arg': [],
+   'func': [(508, F.TrainWarp_Sentry_screen, ('queued', 'auto'))]},  # tag for WarpprismPhasing/Pylon
+  {'name': 'Warp_Stalker', 'arg': [],
+   'func': [(509, F.TrainWarp_Stalker_screen, ('queued', 'auto'))]},  # tag for WarpprismPhasing/Pylon
+  {'name': 'Warp_Zealot', 'arg': [],
+   'func': [(510, F.TrainWarp_Zealot_screen, ('queued', 'auto')), ]},  # tag for WarpprismPhasing/Pylon
+]
+
 # Idle production buildings will be automatically selected by LLMAgent._add_func_for_train_and_research()
 PROTOSS_ACTION_TRAIN = [
   # Nexus, BN
@@ -252,39 +276,46 @@ PROTOSS_ACTION_BUILD = [
 # Simplified build actions
 PROTOSS_ACTION_EASY_BUILD = [
   # tag for Vespene Geyser
-  {'name': 'Build_Nexus_Near', 'arg': ['tag'],
+  {'name': 'Build_Nexus', 'arg': [],
    'func': [(65, F.Build_Nexus_screen, ('queued', 'screen_tag'))]},
   # tag for Vespene Geyser
-  {'name': 'Build_Assimilator_Near', 'arg': ['tag'],
+  {'name': 'Build_Assimilator', 'arg': [],
    'func': [(40, F.Build_Assimilator_screen, ('queued', 'screen_tag'))]},
   # tag for WarpprismPhasing/Pylon
-  {'name': 'Build_Pylon_Near', 'arg': ['tag'],
+  {'name': 'Build_Pylon', 'arg': [],
    'func': [(70, F.Build_Pylon_screen, ('queued', 'screen_tag'))]},
-  {'name': 'Build_Gateway_Near', 'arg': ['tag'],
+  {'name': 'Build_Gateway', 'arg': [],
    'func': [(57, F.Build_Gateway_screen, ('queued', 'screen_tag'))]},
-  {'name': 'Build_CyberneticsCore_Near', 'arg': ['tag'],
+  {'name': 'Build_CyberneticsCore', 'arg': [],
    'func': [(48, F.Build_CyberneticsCore_screen, ('queued', 'screen_tag'))]},
-  {'name': 'Build_Forge_Near', 'arg': ['tag'],
+  {'name': 'Build_Forge', 'arg': [],
    'func': [(55, F.Build_Forge_screen, ('queued', 'screen_tag'))]},
-  {'name': 'Build_PhotonCannon_Near', 'arg': ['tag'],
+  {'name': 'Build_PhotonCannon', 'arg': [],
    'func': [(69, F.Build_PhotonCannon_screen, ('queued', 'screen_tag'))]},
-  {'name': 'Build_ShieldBattery_Near', 'arg': ['tag'],
+  {'name': 'Build_ShieldBattery', 'arg': [],
    'func': [(525, F.Build_ShieldBattery_screen, ('queued', 'screen_tag'))]},
-  {'name': 'Build_TwilightCouncil_Near', 'arg': ['tag'],
+  {'name': 'Build_TwilightCouncil', 'arg': [],
    'func': [(101, F.Build_TwilightCouncil_screen, ('queued', 'screen_tag'))]},
-  {'name': 'Build_TemplarArchive_Near', 'arg': ['tag'],
+  {'name': 'Build_TemplarArchive', 'arg': [],
    'func': [(100, F.Build_TemplarArchive_screen, ('queued', 'screen_tag'))]},
-  {'name': 'Build_DarkShrine_Near', 'arg': ['tag'],
+  {'name': 'Build_DarkShrine', 'arg': [],
    'func': [(49, F.Build_DarkShrine_screen, ('queued', 'screen_tag'))]},
-  {'name': 'Build_Stargate_Near', 'arg': ['tag'],
+  {'name': 'Build_Stargate', 'arg': [],
    'func': [(88, F.Build_Stargate_screen, ('queued', 'screen_tag'))]},
-  {'name': 'Build_FleetBeacon_Near', 'arg': ['tag'],
+  {'name': 'Build_FleetBeacon', 'arg': [],
    'func': [(54, F.Build_FleetBeacon_screen, ('queued', 'screen_tag'))]},
-  {'name': 'Build_RoboticsBay_Near', 'arg': ['tag'],
+  {'name': 'Build_RoboticsBay', 'arg': [],
    'func': [(81, F.Build_RoboticsBay_screen, ('queued', 'screen_tag'))]},
-  {'name': 'Build_RoboticsFacility_Near', 'arg': ['tag'],
+  {'name': 'Build_RoboticsFacility', 'arg': [],
    'func': [(82, F.Build_RoboticsFacility_screen, ('queued', 'screen_tag'))]},
 ]
+PROTOSS_ACTION_EASY_CONTROL = [
+  {'name': 'All_Units_Attack', 'arg': [], 'func': [(0, F.no_op, ())]},
+  {'name': 'All_Units_Concentrate', 'arg': [], 'func': [(0, F.no_op, ())]},
+  {'name': 'All_Units_Retreat', 'arg': [], 'func': [(0, F.no_op, ())]},
+  {'name': 'Worker_Scan', 'arg': [], 'func': [(0, F.no_op, ())]},
+]
+
 # Unit Abilities
 PROTOSS_ACTION_ABILITY = [
   {'name': 'Morph_WarpPrismPhasingMode', 'arg': [],
@@ -615,42 +646,189 @@ def get_arg_screen(obs, screen: list, size_screen, action_name) -> (tuple, bool)
 
 
 # Parameter verification, for build
-def get_arg_screen_build(obs, screen: list, size_screen, action_name) -> (tuple, bool):  # 标准建造，校验地点和建造条件
-  building_name = action_name.split('Build_')[1].split('_Screen')[0]
-  building_size = find_building_size(building_name)
-  if isinstance(screen, list) and len(screen) == 2 and isinstance(screen[0], (int, float)) and isinstance(screen[1], (
-  int, float)) and building_size != 0:
+def get_arg_screen_build(obs, screen: list, size_screen, action_name, easy_build=False, tag=None, max_retry=600) -> (tuple, bool):  # 标准建造，校验地点和建造条件
+  pos00 = [0, 0]
+  if easy_build:
+    building_name = action_name.split('Build_')[1]
+    building_size = find_building_size(building_name)
+    for unit in obs.observation.raw_units:
+      if tag is not None and unit.tag == tag:
+        pos00 = [unit.x, unit.y]
+  else:
+    building_name = action_name.split('Build_')[1].split('_Screen')[0]
+    building_size = find_building_size(building_name)
+
+  if building_size == 0:
+    return f'Do not find the building named as {building_name}, action_name: {action_name}', False
+
+  if isinstance(screen, list) and len(screen) == 2 and isinstance(screen[0], (int, float)) and isinstance(screen[1], (int, float)):
+    x00 = int(min(max(0.1 * size_screen, screen[0] + 0 * (random.randint(0, 10) - 5)), 0.9 * size_screen))
+    y00 = int(min(max(0.1 * size_screen, screen[1] + 0 * (random.randint(0, 10) - 5)), 0.9 * size_screen))
     ratio = size_screen / SCREEN_WORLD_GRID
     pysc2_arg0, func_valid0 = 'unknown error in arg', False
-    for retry in range(10):
-      i, j = (0, 0) if retry == 0 else ((retry-1)//3 - 1, (retry-1)%3 - 1)
-      x0 = int(min(max(0, screen[0] + i * ratio), size_screen))
-      y0 = int(min(max(0, screen[1] + j * ratio), size_screen))
-      x1 = int(min(max(0, screen[0] + i * ratio), size_screen) - ratio * (building_size - 1) / 2)
-      y1 = int(min(max(0, screen[1] + j * ratio), size_screen) - ratio * (building_size - 1) / 2)
-      pysc2_arg, func_valid = (x0, y0), True
-      if building_name in POWER_BUILDING_NAMES and obs.observation.feature_screen.power[x0][y0] == 0:
-        pysc2_arg, func_valid = f'({int(x0/ratio)}, {int(y0/ratio)}) is not in power field, you need to build Pylon first or build near an existing Pylon', False
-      if building_name in CREEP_BUILDING_NAMES and obs.observation.feature_screen.creep[x0][y0] == 0:
-        pysc2_arg, func_valid = f'({int(x0 / ratio)}, {int(y0 / ratio)}) is not in creep, you need to create creep tumor by Queen', False
-      for i in range(building_size):
-        for j in range(building_size):
-          x = int(x1 + i * ratio)
-          y = int(y1 + j * ratio)
-          x1, x2, y1, y2 = is_valid_screen_range(obs, [x, y], size_screen)
-          if not (x1 <= x <= x2 or y1 <= y <= y2):
-            pysc2_arg, func_valid = f'Build failed! x({int(x / ratio)}) and y({int(y / ratio)}) coordinate exceeds the boundary, valid ranges are {int(x1 / ratio)} < x < {int(x2 / ratio)}, {int(y1 / ratio)} < y < {int(y2 / ratio)}', False
-          if not x1 <= x <= x2:
-            pysc2_arg, func_valid = f"Build failed! x({int(x / ratio)}) exceeds the boundary, valid range is {int(x1 / ratio)} < x < {int(x2 / ratio)}", False
-          if not y1 <= y <= y2:
-            pysc2_arg, func_valid = f"Build failed! y({int(y / ratio)}) exceeds the boundary, valid range is {int(y1 / ratio)} < y < {int(y2 / ratio)}", False
-          if obs.observation.feature_screen.buildable[x][y] != 1:
-            pysc2_arg, func_valid = f'area near ({int(x0 / ratio)}, {int(y0 / ratio)}) not buildable', False
-          if obs.observation.feature_screen.pathable[x][y] != 1:
-            pysc2_arg, func_valid = f'area near ({int(x0 / ratio)}, {int(y0 / ratio)}) not pathable', False
-          if obs.observation.feature_screen.player_relative[x][y] not in [0, 1]:
-            pysc2_arg, func_valid = f'area near ({int(x0 / ratio)}, {int(y0 / ratio)}) blocked', False
 
+    screen_m_pos, screen_g_pos, screen_base_pos, screen_pylon_pos, = [], [], [], []
+    screen_building1_pos, screen_building2_pos, screen_building3_pos, screen_building5_pos = [], [], [], []
+    pylon_in_construction = []
+    unit_list = obs.observation.raw_units if easy_build else obs.observation.feature_units
+    ratio_ = 1. if easy_build else ratio
+
+    for unit in unit_list:
+      if not unit.is_on_screen:
+        continue
+      if unit.unit_type in MINERAL_TYPE:
+        screen_m_pos.append([unit.x / ratio_, unit.y / ratio_])
+        screen_building2_pos.append([unit.x / ratio_, unit.y / ratio_])
+      if (unit.unit_type in GAS_BUILDING_TYPE and unit.alliance in [1]) or unit.unit_type in GAS_TYPE:
+        screen_g_pos.append([unit.x / ratio_, unit.y / ratio_])
+        screen_building3_pos.append([unit.x / ratio_, unit.y / ratio_])
+      if unit.unit_type in BASE_BUILDING_TYPE and unit.alliance in [1]:
+        screen_base_pos.append([unit.x / ratio_, unit.y / ratio_])
+      if unit.unit_type == units.Protoss.Pylon and unit.alliance in [1]:
+        screen_pylon_pos.append([unit.x / ratio_, unit.y / ratio_])
+        if unit.build_progress != 100:
+          pylon_in_construction.append(unit)
+      if unit.unit_type in BUILDING_TYPE:
+        unit_name = str(units.get_unit_type(unit.unit_type)).split('.')[-1] if len(str(unit.unit_type).split('.')) > 0 else ''
+        pos = [unit.x / ratio_, unit.y / ratio_]
+        print(f"unit_name={unit_name} pos={pos}")
+        if find_building_size(unit_name) == 1:
+          screen_building1_pos.append(pos)
+        if find_building_size(unit_name) == 2:
+          screen_building2_pos.append(pos)
+        if find_building_size(unit_name) == 3:
+          screen_building3_pos.append(pos)
+        if find_building_size(unit_name) == 5:
+          screen_building5_pos.append(pos)
+
+    for retry in range(max_retry):
+      # r = 12 - retry // 12 - 3 * random.random() if building_name in ['Pylon']
+      # rad = 2 * math.pi * random.random()  #  * random.random()  * ((retry % 20) / 20)
+      # r = 11 - retry // n - 2 * random.random() if easy_build else retry // n
+      # rad = ((retry % n) / n) * math.pi * 2
+      if easy_build:
+        length, r, rad = SCREEN_WORLD_GRID, 0, 0
+        i0, j0 = (0, 0) if retry == 0 else (length * (random.random()-0.5), length * (random.random()-0.5))
+        # n = max_retry // 10
+        # r = 3 * random.random() + retry // n
+        # rad = 2 * math.pi * random.random()
+        # i0, j0 = (0, 0) if retry == 0 else (r * math.cos(rad), r * math.sin(rad))
+        if building_name in ['Pylon']:
+          r = 12 - retry // 12 - 3 * random.random()
+          rad = 2 * math.pi * random.random()  #  * random.random()  * ((retry % 20) / 20)
+          i0, j0 = (0, 0) if retry == 0 else (r * math.cos(rad), r * math.sin(rad))
+      else:
+        n = max_retry // 10
+        r = 1 * random.random() + retry // n
+        rad = 2 * math.pi * random.random()
+        i0, j0 = (0, 0) if retry == 0 else (r * math.cos(rad), r * math.sin(rad))
+
+        # length, r, rad = SCREEN_WORLD_GRID, 0, 0
+        # i0, j0 = (0, 0) if retry == 0 else (length * (random.random() - 0.5), length * (random.random() - 0.5))
+        # if building_name in ['Pylon']:
+        #   r = 12 - retry // 12 - 3 * random.random()
+        #   rad = 2 * math.pi * random.random()  # * random.random()  * ((retry % 20) / 20)
+        #   i0, j0 = (0, 0) if retry == 0 else (r * math.cos(rad), r * math.sin(rad))
+
+      # x0 = int(min(max(0.1 * size_screen, x00 + ratio * i0), 0.9 * size_screen))
+      # y0 = int(min(max(0.1 * size_screen, y00 + ratio * j0), 0.9 * size_screen))
+      # x1_ = int(min(max(0.1 * size_screen, x0 - ratio * (1 + building_size / 2)), 0.9 * size_screen))
+      # y1_ = int(min(max(0.1 * size_screen, y0 - ratio * (1 + building_size / 2)), 0.9 * size_screen))
+      # x2_ = int(min(max(0.1 * size_screen, x0 + ratio * (1 + building_size / 2)), 0.9 * size_screen))
+      # y2_ = int(min(max(0.1 * size_screen, y0 + ratio * (1 + building_size / 2)), 0.9 * size_screen))
+      x0 = int(x00 + ratio * i0)
+      y0 = int(y00 + ratio * j0)
+      x1_ = int(x0 - ratio * (building_size // 2))
+      y1_ = int(y0 - ratio * (building_size // 2))
+      x2_ = int(x0 + ratio * (building_size // 2))
+      y2_ = int(y0 + ratio * (building_size // 2))
+      pysc2_arg, func_valid = (x0, y0), True
+      down_bound, up_bound = (0, size_screen - 1) if building_size < 3 else (0.05 * size_screen, 0.95 * size_screen - 1)
+
+      if not (down_bound < min(x0, y0, x1_, y1_, x2_, y2_) and max(x0, y0, x1_, y1_, x2_, y2_) < up_bound):
+        pysc2_arg, func_valid = 'position out of boundary', False
+        continue
+      x1, x2, y1, y2 = is_valid_screen_range(obs, [x0, y0], size_screen)
+
+      if building_name in POWER_BUILDING_NAMES and obs.observation.feature_screen.power[x0][y0] == 0:
+        pysc2_arg, func_valid = f'Build failed! ({int(x0 / ratio)}, {int(y0 / ratio)}) is not in power field, you need to build Pylon first or build near an existing Pylon', False
+      if building_name in CREEP_BUILDING_NAMES and obs.observation.feature_screen.creep[x0][y0] == 0:
+        pysc2_arg, func_valid = f'Build failed! ({int(x0 / ratio)}, {int(y0 / ratio)}) is not in creep, you need to create creep tumor by Queen', False
+
+      pos0 = [pos00[0] + i0, pos00[1] + j0] if easy_build else [x0 / ratio_, y0 / ratio_]
+      d1, d2 = get_dis_pos_poses1(pos0, screen_base_pos, 'min')[0], get_dis_pos_poses1(pos0, screen_m_pos, 'min')[0]
+      d3, d4 = get_dis_pos_poses1(pos0, screen_g_pos, 'min')[0], get_dis_pos_poses1(pos0, screen_pylon_pos, 'min')[0]
+      db1 = get_dis_pos_poses1_manhattan(pos0, screen_building1_pos, flag='min', axis='xy_max')[0]
+      db2 = get_dis_pos_poses1_manhattan(pos0, screen_building2_pos, flag='min', axis='xy_max')[0]
+      db3 = get_dis_pos_poses1_manhattan(pos0, screen_building3_pos, flag='min', axis='xy_max')[0]
+      db5 = get_dis_pos_poses1_manhattan(pos0, screen_building5_pos, flag='min', axis='xy_max')[0]
+      db2_pylon = get_dis_pos_poses1_manhattan(pos0, screen_pylon_pos, flag='min', axis='xy_max')[0]
+
+      if func_valid and 0 < db1 < (building_size + 1) / 2:
+        pysc2_arg, func_valid = f"Build failed! Too close to another building", False
+      if func_valid and 0 < db2 < (building_size + 2) / 2:
+        pysc2_arg, func_valid = f"Build failed! Too close to another building", False
+      if func_valid and 0 < db3 < (building_size + 3) / 2:
+        pysc2_arg, func_valid = f"Build failed! Too close to another building", False
+      if func_valid and 0 < db5 < (building_size + 5) / 2:
+        pysc2_arg, func_valid = f"Build failed! Too close to another building", False
+      if func_valid and (0 < d1 + d2 < 9):
+        pysc2_arg, func_valid = f"Build failed! This location obstructs mining minerals", False
+      if func_valid and (0 < d1 + d3 < 9):
+        pysc2_arg, func_valid = f"Build failed! This location obstructs mining gas", False
+      if func_valid and building_name in POWER_BUILDING_NAMES:
+        if len(screen_pylon_pos) != 0 and not 2.5 < d4 < 5.5:  # 2.5 < d4 < 5.5
+          pysc2_arg, func_valid = f"Build failed! Too far away from a Pylon", False
+      # if func_valid and building_name in POWER_BUILDING_NAMES:
+      #   if len(screen_pylon_pos) != 0 and not 0 < db2_pylon < 6:  # 2.5 < d4 < 5.5     0 < db2_pylon < 6
+      #     pysc2_arg, func_valid = f"Build failed! Too far away from a Pylon", False
+      if func_valid and building_name == 'Pylon':
+        supply = 7 * len(pylon_in_construction) + obs.observation.player.food_cap - obs.observation.player.food_used
+        if len(screen_pylon_pos) != 0 and 0 <= d4 < 6 and len(screen_pylon_pos) / len(screen_base_pos) < 6:  #     len(screen_pylon_pos) / len(screen_base_pos) < 6
+          pysc2_arg, func_valid = f"Build failed! Too close to another Pylon", False
+        if 0 < obs.observation.player.food_cap <= 75 and supply > 20 and obs.observation.player.minerals < 300:
+          pysc2_arg, func_valid = f"Build failed! Too Many Pylon", False
+        if 75 < obs.observation.player.food_cap < 125 and supply > 25 and obs.observation.player.minerals < 500:
+          pysc2_arg, func_valid = f"Build failed! Too Many Pylon", False
+        if 125 <= obs.observation.player.food_cap < 200 and supply > 50 and obs.observation.player.minerals < 1000:
+          pysc2_arg, func_valid = f"Build failed! Too Many Pylon", False
+        if obs.observation.player.food_cap == 200 and len(screen_pylon_pos) / len(screen_base_pos) > 6:
+          pysc2_arg, func_valid = f"Build failed! Too Many Pylon", False
+
+      for i in range(building_size + 1):
+        for j in range(building_size + 1):
+          if not func_valid:
+            continue
+          x = int(x1_ + i * ratio)
+          y = int(y1_ + j * ratio)
+          # x = int(x0 + i * ratio)
+          # y = int(y0 + j * ratio)
+          # x = int(min(max(0, x), size_screen - 1))
+          # y = int(min(max(0, y), size_screen - 1))
+
+          down_bound, up_bound = (0.03 * size_screen, 0.97 * size_screen - 1) if building_size < 3 else (0.05 * size_screen, 0.95 * size_screen - 1)
+          if func_valid and not (down_bound < x < up_bound and down_bound <= y < up_bound):
+            pysc2_arg, func_valid = 'out of boundary', False
+          # if not (x1 <= x <= x2 or y1 <= y <= y2):
+          #   pysc2_arg, func_valid = f'Build failed! x({int(x / ratio)}) and y({int(y / ratio)}) coordinate exceeds the boundary, valid ranges are {int(x1 / ratio)} < x < {int(x2 / ratio)}, {int(y1 / ratio)} < y < {int(y2 / ratio)}', False
+          # if not x1 <= x <= x2:
+          #   pysc2_arg, func_valid = f"Build failed! x({int(x / ratio)}) exceeds the boundary, valid range is {int(x1 / ratio)} < x < {int(x2 / ratio)}", False
+          # if not y1 <= y <= y2:
+          #   pysc2_arg, func_valid = f"Build failed! y({int(y / ratio)}) exceeds the boundary, valid range is {int(y1 / ratio)} < y < {int(y2 / ratio)}", False
+          if func_valid and obs.observation.feature_screen.buildable[x][y] != 1:
+            pysc2_arg, func_valid = f'Build failed! Area near ({int(x0 / ratio)}, {int(y0 / ratio)}) not buildable', False
+          if func_valid and obs.observation.feature_screen.pathable[x][y] != 1:
+            pysc2_arg, func_valid = f'Build failed! Area near ({int(x0 / ratio)}, {int(y0 / ratio)}) not pathable', False
+          if func_valid and obs.observation.feature_screen.player_relative[x][y] not in [0, 1]:
+            pysc2_arg, func_valid = f'Build failed! Area near ({int(x0 / ratio)}, {int(y0 / ratio)}) blocked', False
+          if func_valid and obs.observation.feature_screen.height_map[x][y] != obs.observation.feature_screen.height_map[x00][y00]:
+            pysc2_arg, func_valid = f'Build failed! Area ({int(x0 / ratio)}, {int(y0 / ratio)}) in different height', False
+          if func_valid and obs.observation.feature_screen.placeholder[x][y] != 0:
+            pysc2_arg, func_valid = f'Build failed! Area near ({int(x0 / ratio)}, {int(y0 / ratio)}) blocked by other building', False
+      if func_valid or retry == 0:
+        print(f"pos00, pos0, d1, d2, d3, d4 = {pos00}, {pos0}, {d1}, {d2}, {d3}, {d4}")
+        print(f"db1, db2, db3, db5, n_pylon = {db1}, {db2}, {db3}, {db5} {screen_pylon_pos}")
+        print(f"retry {retry}, r = {r}, rad = {rad}, deg = {math.degrees(rad)},  [x00, y00] = [{x00 / ratio}, {y00 / ratio}], [i0, j0] = [{i0}, {j0}], [x0, y0] = [{x0 / ratio}, {y0 / ratio}], pysc2_arg = {pysc2_arg}")
       if retry == 0:
         pysc2_arg0, func_valid0 = pysc2_arg, func_valid
       if not isinstance(pysc2_arg, str):
@@ -659,33 +837,24 @@ def get_arg_screen_build(obs, screen: list, size_screen, action_name) -> (tuple,
     return pysc2_arg0, func_valid0
   return f'input arg error: screen={screen}', False
 
-  #   x0 = int(min(max(0, screen[0]), size_screen))
-  #   y0 = int(min(max(0, screen[1]), size_screen))
-  #   x1 = int(min(max(0, screen[0]), size_screen) - ratio * (building_size - 1) / 2)
-  #   y1 = int(min(max(0, screen[1]), size_screen) - ratio * (building_size - 1) / 2)
-  #   if building_name in POWER_BUILDING_NAMES and obs.observation.feature_screen.power[x0][y0] == 0:
-  #     return f'({int(x0/ratio)}, {int(y0/ratio)}) is not in power field, you need to build Pylon first or build near an existing Pylon', False
-  #   if building_name in CREEP_BUILDING_NAMES and obs.observation.feature_screen.creep[x0][y0] == 0:
-  #     return f'({int(x0/ratio)}, {int(y0/ratio)}) is not in creep, you need to create creep tumor by Queen', False
-  #   for i in range(building_size):
-  #     for j in range(building_size):
-  #       x = int(x1 + i * ratio)
-  #       y = int(y1 + j * ratio)
-  #       x1, x2, y1, y2 = is_valid_screen_range(obs, [x, y], size_screen)
-  #       if not (x1 <= x <= x2 or y1 <= y <= y2):
-  #         return f'Build failed! x({int(x/ratio)}) and y({int(y/ratio)}) coordinate exceeds the boundary, valid ranges are {int(x1 / ratio)} < x < {int(x2 / ratio)}, {int(y1 / ratio)} < y < {int(y2 / ratio)}', False
-  #       if not x1 <= x <= x2:
-  #         return f"Build failed! x({int(x/ratio)}) exceeds the boundary, valid range is {int(x1 / ratio)} < x < {int(x2 / ratio)}", False
-  #       if not y1 <= y <= y2:
-  #         return f"Build failed! y({int(y/ratio)}) exceeds the boundary, valid range is {int(y1 / ratio)} < y < {int(y2 / ratio)}", False
-  #       if obs.observation.feature_screen.buildable[x][y] != 1:
-  #         return f'area near ({int(x0/ratio)}, {int(y0/ratio)}) not buildable', False
-  #       if obs.observation.feature_screen.pathable[x][y] != 1:
-  #         return f'area near ({int(x0/ratio)}, {int(y0/ratio)}) not pathable', False
-  #       if obs.observation.feature_screen.player_relative[x][y] not in [0, 1]:
-  #         return f'area near ({int(x0/ratio)}, {int(y0/ratio)}) blocked', False
-  #   return (x0, y0), True
-  # return f'input arg error: screen={screen}', False
+def get_arg_screen_tag_build(obs, tag: int, size_screen, action_name) -> (tuple, bool):
+
+  if action_name == 'Build_Nexus' or action_name == 'Build_Hatchery' or action_name == 'Build_CommandCenter':
+    pysc2_arg, func_valid = get_arg_screen_tag_base_building(obs, tag, size_screen, action_name)
+  elif action_name == 'Build_Assimilator' or action_name == 'Build_Refinery' or action_name == 'Build_Extractor':
+    pysc2_arg, func_valid = get_arg_screen_tag_gas_building(obs, tag, size_screen, action_name)
+  else:
+    screen, unit_type = None, None
+    for unit in obs.observation.feature_units:
+      if unit.tag == tag:
+        screen = [float(unit.x), float(unit.y)]
+        unit_type = unit.unit_type
+    # this func only called in easy build mode
+    pysc2_arg, func_valid = get_arg_screen_build(obs, screen, size_screen, action_name, easy_build=True, tag=tag)
+  if func_valid:
+    return pysc2_arg, func_valid
+  else:
+    return f"auto build position, " + pysc2_arg, func_valid
 
 
 # Parameter verification, tag to world coordinate
@@ -708,7 +877,7 @@ def check_attack_target(obs, tag):
   for unit in obs.observation.raw_units:
     if unit.alliance == features.PlayerRelative.SELF and unit.is_on_screen and unit.unit_type not in source_unit_types:
       source_unit_types.append(unit.unit_type)
-    if unit.tag == tag and unit.unit_type not in source_unit_types:
+    if unit.tag == tag and unit.unit_type not in target_unit_types:  # source_unit_types
       target_unit_types.append(unit.unit_type)
       target_unit = unit
   for unit_type in source_unit_types:
@@ -777,12 +946,12 @@ def get_arg_screen_tag_sclect_rect(obs, tag: int, size_screen, func_arg_name) ->
       if not (0 < unit.x < size_screen and 0 < unit.y < size_screen):
         return f'{unit_info} ({unit.x}, {unit.y})) not no screen', False
       if func_arg_name == 'screen' and unit.is_on_screen:
-        x = max(0, min(int(unit.x - size_screen / 64), size_screen))
-        y = max(0, min(int(unit.y - size_screen / 64), size_screen))
+        x = max(0, min(int(unit.x - size_screen / 64), size_screen - 1))
+        y = max(0, min(int(unit.y - size_screen / 64), size_screen - 1))
         return (x, y), True
       if func_arg_name == 'screen2' and unit.is_on_screen:
-        x = max(0, min(int(unit.x + size_screen / 64), size_screen))
-        y = max(0, min(int(unit.y + size_screen / 64), size_screen))
+        x = max(0, min(int(unit.x + size_screen / 64), size_screen - 1))
+        y = max(0, min(int(unit.y + size_screen / 64), size_screen - 1))
         return (x, y), True
   tag = hex(tag) if isinstance(tag, int) else tag
   return f'cannot find unit {tag} on screen', False
@@ -950,7 +1119,7 @@ def get_arg_screen_tag_base_building(obs, tag: int, size_screen, action_name) ->
     ratio = size_screen / SCREEN_WORLD_GRID
     k, r, m = 0.5, 7 * ratio, 1
     vespene_r, vespene_m = 8 * ratio, 1
-    mineral_r, mineral_m = 7 * ratio, 1
+    mineral_r, mineral_m = 8 * ratio, 1
     n, bad_n, fx, fy = 0, 0, 0, 0
     for unit in unit_list:
       bad = False
@@ -965,7 +1134,7 @@ def get_arg_screen_tag_base_building(obs, tag: int, size_screen, action_name) ->
       n += 1
       if unit.unit_type in GAS_TYPE and not (7 * ratio < d < 10 * ratio):
         bad = True
-      if unit.unit_type in MINERAL_TYPE and not (6 * ratio < d < 9 * ratio):
+      if unit.unit_type in MINERAL_TYPE and not (7 * ratio < d < 9 * ratio):
         bad = True
       if bad:
         bad_n += 1
@@ -987,15 +1156,15 @@ def get_arg_screen_tag_base_building(obs, tag: int, size_screen, action_name) ->
       x = x0 / n
       y = y0 / n
       bad_n = len(mineral_gas_list)
-      for i in range(16):
+      for i in range(32):
         x, y, bad_n = artificial_force_field_iteration_screen(mineral_gas_list, x, y)
       if not (isinstance(x, float) and isinstance(y, float)):
         tag = hex(tag) if isinstance(tag, int) else tag
         return f'unknown error in fing base_building position near unit {tag}', False
       if not ((0 < x < size_screen) and (0 < y < size_screen)):
         return f'unknown error in fing base_building position near unit {tag}', False
-      x, y = int(min(max(0., x), size_screen)), int(min(max(0., y), size_screen))
-      if bad_n > 3:
+      x, y = int(min(max(0., x), size_screen - 1)), int(min(max(0., y), size_screen - 1))
+      if bad_n > 1:
         return f'({x}, {y}) may be a bad position for base building', False
       if not (0 < x < size_screen and 0 < y < size_screen):
         return f'({x}, {y}) too close to screen edge', False
@@ -1009,6 +1178,232 @@ def get_arg_screen_tag_base_building(obs, tag: int, size_screen, action_name) ->
         return (x, y), True
   tag = hex(tag) if isinstance(tag, int) else tag
   return f'cannot find unit {tag} on screen', False
+
+
+def tag_for_easy_build_protoss(obs):  # 查找周围空间较大的pylon的screen坐标(先求tag再screen), 然后通过随机坐标甩到周围去
+  all_building_list, all_resource_list, base_list, pylon_list = [], [], [], []
+  all_building_pos_list, all_resource_pos_list, base_pos_list, pylon_pos_list = [], [], [], []
+  for unit in obs.observation.raw_units:
+    if unit.alliance == features.PlayerRelative.SELF:  #  and unit.build_progress == 100
+      if unit.unit_type in MINERAL_TYPE + GAS_TYPE + GAS_BUILDING_TYPE:
+        all_resource_list.append(unit)
+        all_resource_pos_list.append([unit.x, unit.y])
+      if unit.unit_type in BUILDING_TYPE:
+        all_building_list.append(unit)
+        all_building_pos_list.append([unit.x, unit.y])
+      if unit.unit_type in BASE_BUILDING_TYPE:
+        base_list.append(unit)
+        base_pos_list.append([unit.x, unit.y])
+      if unit.unit_type in [units.Protoss.Pylon]:
+        pylon_list.append(unit)
+        pylon_pos_list.append([unit.x, unit.y])
+
+  counts, index = get_nearby_unit_num_of_unit(all_building_pos_list, base_pos_list, r=12, flag='min')
+  tag = None if counts == 0 else base_list[index].tag
+
+  if counts <= 8 and tag is not None:
+    return tag
+  if 8 < counts <= 16 and tag is not None:
+    return base_list[random.randint(0, len(base_list) - 1)].tag
+  if counts > 16 and tag is not None:
+    unit_pos_list = all_resource_pos_list + all_resource_pos_list + all_building_pos_list
+    counts, index = get_nearby_unit_num_of_unit(unit_pos_list, pylon_pos_list, r=7, flag='min')
+    tag = None if counts == 0 else pylon_list[index].tag
+    if 1 < counts < 4:
+      return tag
+    else:
+      return base_list[random.randint(0, len(base_list) - 1)].tag
+
+
+def tag_for_easy_build_pylon(obs):  # 查找周围空间较大的nexus的screen坐标(先求tag再screen), 然后通过随机坐标甩到周围去
+  base_list, pylon_list = [], []
+  base_pos_list, pylon_pos_list = [], []
+  for unit in obs.observation.raw_units:
+    if unit.alliance == features.PlayerRelative.SELF:  #  and unit.build_progress == 100
+      if unit.unit_type in BASE_BUILDING_TYPE:
+        base_list.append(unit)
+        base_pos_list.append([unit.x, unit.y])
+      if unit.unit_type in [units.Protoss.Pylon]:
+        pylon_list.append(unit)
+        pylon_pos_list.append([unit.x, unit.y])
+  counts, index = get_nearby_unit_num_of_unit(base_pos_list + pylon_pos_list, base_pos_list, r=12, flag='min')
+  tag_for_base = None if counts == 0 else base_list[index].tag
+  return tag_for_base
+
+def tag_for_easy_build_base(obs):  # 查找最近的nexus坐标，和obs中的函数一个原理
+  ves_new_base, ves_near, _, _ = get_ves_for_base_and_gas_building(obs)
+  tag_for_base = None if len(ves_new_base) == 0 else ves_new_base[0].tag
+  return tag_for_base
+
+def tag_for_easy_build_gas(obs):  # 查找最近的vespene坐标，和obs中的函数一个原理
+  ves_new_base, ves_near, _, _ = get_ves_for_base_and_gas_building(obs)
+  tag_for_ves = None if len(ves_near) == 0 else ves_near[0].tag
+  return tag_for_ves
+
+def tag_for_easy_warp(obs, first_ctrl_base_tag='', first_oppo_base_tag=''):  # 查找距离一矿次远的水晶塔的tag
+  first_ctrl_base_pos, first_oppo_base_pos = None, None
+  all_unit_list, base_list, pylon_list = [], [], []
+  all_unit_tag_list, base_tag_list, pylon_tag_list = [], [], []
+  all_unit_pos_list, base_pos_list, pylon_pos_list = [], [], []
+  for unit in obs.observation.raw_units:
+    if unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100:
+      all_unit_list.append(unit)
+      all_unit_tag_list.append(unit.tag)
+      all_unit_pos_list.append([unit.x, unit.y])
+      if unit.unit_type in BASE_BUILDING_TYPE:
+        base_list.append(unit)
+        base_tag_list.append(unit.tag)
+        base_pos_list.append([unit.x, unit.y])
+      if unit.unit_type in [units.Protoss.Pylon, units.Protoss.WarpPrismPhasing]:
+        pylon_list.append(unit)
+        pylon_tag_list.append(unit.tag)
+        pylon_pos_list.append([unit.x, unit.y])
+      # if unit.tag == first_ctrl_base_tag:
+      #   first_ctrl_base_pos = [unit.x, unit.y]
+      # if unit.tag == first_oppo_base_tag:
+      #   first_oppo_base_pos = [unit.x, unit.y]
+
+  tag_for_pylon = None
+  if tag_for_pylon is None:
+    counts, index = get_nearby_unit_num_of_unit(all_unit_pos_list, pylon_pos_list, r=7, flag='min')
+    tag_for_pylon = None if counts == 0 else pylon_list[index].tag
+
+  # if first_oppo_base_pos is not None:
+  #   d_min, index_min = get_dis_pos_poses1(first_oppo_base_pos, base_pos_list, 'min')
+  #   tag_for_pylon = None if d_min == 0 else pylon_list[index_min].tag
+
+  return tag_for_pylon
+
+def tag_for_closest_worker(obs, tag, mining_only=True):
+  target_unit = None
+  worker_list, worker_pos_list = [], []
+  for unit in obs.observation.raw_units:
+    if unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100:
+      if unit.unit_type in WORKER_TYPE:
+        if mining_only and unit.order_id_0 in [356, 357, 358, 359, 102, 103, 154, 360, 361, 362]:
+          worker_list.append(unit)
+          worker_pos_list.append([unit.x, unit.y])
+        if not mining_only:
+          worker_list.append(unit)
+          worker_pos_list.append([unit.x, unit.y])
+  for unit in obs.observation.raw_units:
+    if unit.tag == tag:
+      target_unit = unit
+  if target_unit is None or len(worker_list) == 0:
+    return None
+  pos = [target_unit.x, target_unit.y]
+  d_min, index_min = get_dis_pos_poses1(pos, worker_pos_list, flag='min')
+  tag_for_worker = None if d_min == 0 else worker_list[index_min].tag
+  return tag_for_worker
+
+
+def tag_for_closest_screen_worker(obs, screen, size_screen, mining_only=True):
+  worker_list, worker_pos_list = [], []
+  down_bound, up_bound = 0.1 * size_screen, 0.9 * size_screen
+  for unit in obs.observation.feature_units:
+    if not unit.is_on_screen or not (down_bound < unit.x < up_bound and down_bound < unit.y < up_bound):
+      continue
+    if unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100:
+      if unit.unit_type in WORKER_TYPE:
+        if mining_only and unit.order_id_0 in [356, 357, 358, 359, 102, 103, 154, 360, 361, 362]:
+          worker_list.append(unit)
+          worker_pos_list.append([unit.x, unit.y])
+        if not mining_only:
+          worker_list.append(unit)
+          worker_pos_list.append([unit.x, unit.y])
+
+  d_min, index_min = get_dis_pos_poses1(screen, worker_pos_list, flag='min')
+  tag_for_worker = None if d_min == 0 else worker_list[index_min].tag
+  return tag_for_worker
+
+
+def add_func_for_build(self, obs, action):
+  action_name = action['name']
+  action_arg = action['arg']
+  action_func = action['func']
+  if self.config.ENABLE_EASY_BUILD:
+    return action
+  if (not 'Build_' in action_name) or ('Near' not in action_name and 'Screen' not in action_name):
+    return action
+  if not (len(action['func'][0][2]) == 2 and len(action['func'][0][2][1]) == 2):
+    print(f"add_func_for_build(): screen = action['func'][0][2][1] = {action['func'][0][2][1]}")
+    return action
+  print(self.size_screen)
+  print(f"add_func_for_build(): screen = action['func'][0][2][1] = {action['func'][0][2][1]}")
+  screen = action['func'][0][2][1]
+  worker_tag = tag_for_closest_screen_worker(obs, screen, self.size_screen)
+
+  if worker_tag is not None:
+    full_shape_action = {'name': action_name, 'arg': [], 'func':
+      [(3, F.select_rect, ['select', int(worker_tag), int(worker_tag)]),
+       (action['func'][0][0], action['func'][0][1], action['func'][0][2])]}
+  else:
+    return action
+
+  return full_shape_action
+
+def add_func_for_easy_build(self, obs, action):
+  action_name = action['name']
+  action_arg = action['arg']
+  action_func = action['func']
+  if (not 'Build_' in action_name) or ('Near' in action_name or 'Screen' in action_name) or not self.config.ENABLE_EASY_BUILD:
+    return action
+
+  target_position_tag, worker_tag = None, None
+  # print(action_name)
+  if action_name == 'Build_Nexus' or action_name == 'Build_Hatchery' or action_name == 'Build_CommandCenter':
+    target_position_tag = tag_for_easy_build_base(obs)
+  elif action_name == 'Build_Assimilator' or action_name == 'Build_Refinery' or action_name == 'Build_Extractor':
+    target_position_tag = tag_for_easy_build_gas(obs)
+  elif action_name == 'Build_Pylon':
+    target_position_tag = tag_for_easy_build_pylon(obs)
+  elif self.race == 'protoss':
+    target_position_tag = tag_for_easy_build_protoss(obs)
+  elif self.race == 'terran':
+    # TODO: ADD SUPPORT FOR TERRAN EASY BUILD
+    logger.error(f"[ID {self.log_id}] Agent {self.name}, add func for terran EASY BUILD actions not realized")
+  elif self.race == 'zerg':
+    # TODO: ADD SUPPORT FOR ZERG EASY BUILD
+    logger.error(f"[ID {self.log_id}] Agent {self.name}, add func for zerg EASY BUILD actions not realized")
+  else:
+    pass
+  worker_tag = tag_for_closest_worker(obs, target_position_tag)
+
+  l = self.size_screen
+  dx = int(2 * (random.random() - 0.5) * 0.2 * l)
+  dy = int(2 * (random.random() - 0.5) * 0.2 * l)
+  # print(target_position_tag)
+  # print(worker_tag)
+  if target_position_tag is not None and worker_tag is not None:
+    full_shape_action = {'name': action_name, 'arg': [], 'func':
+      [(573, F.llm_pysc2_move_camera, [int(worker_tag)]),
+       (573, F.llm_pysc2_move_camera, [int(worker_tag)]),
+       (3, F.select_rect, ['select', int(worker_tag), int(worker_tag)]),
+       (573, F.llm_pysc2_move_camera, [int(target_position_tag)]),
+       (573, F.llm_pysc2_move_camera, [int(target_position_tag)]),
+       (action['func'][0][0], action['func'][0][1], ['now', int(target_position_tag)])]}
+  else:
+    return action
+
+  return full_shape_action
+
+def add_func_for_easy_warp(self, obs, action):
+  pylon_tag = tag_for_easy_warp(obs, self.first_ctrl_base_tag, self.first_oppo_base_tag)
+  action_name = action['name']
+  action_arg = action['arg']
+  action_func = action['func']
+  if not ('Warp_' in action_name and 'Near' not in action_name and self.config.ENABLE_EASY_WARP):
+    return action
+
+  if pylon_tag is not None:
+    full_shape_action = {'name': action['name'], 'arg': [], 'func':
+      [(8, F.select_warp_gates, ['select']),
+       (573, F.llm_pysc2_move_camera, [int(pylon_tag)]),
+       (action['func'][0][0], action['func'][0][1], ['now', int(pylon_tag)])]}
+  else:
+    full_shape_action = {'name': 'No_Operation', 'arg': [], 'func': [(0, actions.FUNCTIONS.no_op, {})]}
+
+  return full_shape_action
 
 
 # 补齐拖农民的前置函数
@@ -1026,8 +1421,9 @@ def add_func_for_select_workers(self, obs, action):
   func_id, func, arg_type = action_func[0]
   source_unit_tag = None
   for unit in obs.observation.raw_units:
+    down_bound, up_bound = 0.1 * self.size_screen, 0.9 * self.size_screen
     if unit.alliance == features.PlayerRelative.SELF and unit.unit_type in WORKER_TYPE and \
-        unit.is_on_screen and (0 < unit.x < self.size_screen and 0 < unit.y < self.size_screen):
+        unit.is_on_screen and (down_bound < unit.x < up_bound  and down_bound < unit.y < up_bound ):
       source_unit_tag = unit.tag
   if source_unit_tag is None:
     logger.error(
@@ -1076,11 +1472,97 @@ def add_func_for_train_and_research(self, obs, action):
   if source_unit_tag is not None:
     full_shape_action = {'name': action_name, 'arg': [], 'func':
       [(573, actions.FUNCTIONS.llm_pysc2_move_camera, [int(source_unit_tag)]),
+       (573, actions.FUNCTIONS.llm_pysc2_move_camera, [int(source_unit_tag)]),
        (2, actions.FUNCTIONS.select_point, ['select', int(source_unit_tag)])] + action['func']}
   else:
     full_shape_action = {'name': 'No_Operation', 'arg': [], 'func':
       [(0, actions.FUNCTIONS.no_op, {})]}
 
+  return full_shape_action
+
+
+def add_func_for_easy_control(self, obs, action):  # goto enemy base
+  action_name = action['name']
+  action_arg = action['arg']
+  action_func = action['func']
+  if not ('All_Units_Attack' in action_name or 'Worker_Scan' in action_name or
+          'All_Units_Retreat' in action_name or 'All_Units_Concentrate' in action_name or 'All_Units_Defend' in action_name):
+    return action
+
+  n_worker = 0
+  for unit in obs.observation.raw_units:
+    if unit.unit_type in WORKER_TYPE and unit.alliance == features.PlayerRelative.SELF:
+      n_worker += 1
+
+  first_ctrl_base_pos, first_oppo_base_pos = None, None
+  target_tag = self.first_oppo_base_tag
+  target_tag2 = None  # front line pylon
+  all_pylon_list, all_pylon_pos_list = [], []
+  all_base_list, all_base_pos_list = [], []
+  all_ves_list, all_ves_pos_list = [], []
+  for unit in obs.observation.raw_units:
+    if unit.unit_type in BASE_BUILDING_TYPE and unit.alliance == features.PlayerRelative.SELF:
+      all_base_list.append(unit)
+      all_base_pos_list.append([unit.x, unit.y])
+    if unit.unit_type == units.Protoss.Pylon and unit.alliance == features.PlayerRelative.SELF:
+      all_pylon_list.append(unit)
+      all_pylon_pos_list.append([unit.x, unit.y])
+    if unit.unit_type in GAS_TYPE:
+      all_ves_list.append(unit)
+      all_ves_pos_list.append([unit.x, unit.y])
+    if unit.tag == self.first_ctrl_base_tag:
+      first_ctrl_base_pos = [unit.x, unit.y]
+    if unit.tag == self.first_oppo_base_tag:
+      first_oppo_base_pos = [unit.x, unit.y]
+
+  if target_tag is None:
+    logger.warning(f"[ID {self.log_id}] Agent {self.name}, add_func_for_easy_control(): Can not find enemy base, randomly choice a vespene as target for scan or attack")
+    target_tag = all_ves_list[random.randint(0, len(all_ves_list) - 1)].tag
+
+  worker_tag = tag_for_closest_worker(obs, target_tag, mining_only=False)
+
+  # if first_ctrl_base_pos is not None:
+  #   d_max, index_max = get_dis_pos_poses1(first_ctrl_base_pos, all_pylon_pos_list, flag='max')
+  #   target_tag2 = all_pylon_list[index_max].tag if d_max != 0 else self.first_ctrl_base_tag
+  if first_oppo_base_pos is not None:
+    d_min, index_min = get_dis_pos_poses1(first_oppo_base_pos, all_pylon_pos_list, flag='min')  # front line pylon
+    target_tag2 = all_pylon_list[index_min].tag if d_min != 0 else self.first_oppo_base_tag
+  else:
+    d_max, indexes_max = get_dis_posse1_poses2(all_base_pos_list, all_pylon_pos_list)
+    target_tag2 = all_pylon_list[indexes_max[1]].tag if d_max != 0 else self.first_ctrl_base_tag
+
+  full_shape_action = {'name': 'No_Operation', 'arg': [], 'func': [(0, actions.FUNCTIONS.no_op, {})]}
+  if ('All_Units_Attack' in action_name):
+    supply = obs.observation.player.food_cap - obs.observation.player.food_used
+    print(target_tag, target_tag2, worker_tag)
+    if target_tag is not None:  # and obs.observation.player.food_used - n_worker > 100 or supply < 10
+      full_shape_action = {'name': action_name, 'arg': [], 'func': [
+        (7, F.select_army, ['select']),
+        (573, F.llm_pysc2_move_camera, [int(target_tag)]),
+        (573, F.llm_pysc2_move_camera, [int(target_tag)]),
+        (12, F.Attack_screen, ('now', int(target_tag)))]}
+  elif ('Worker_Scan' in action_name):
+    print(target_tag, target_tag2, worker_tag)
+    if target_tag is not None and target_tag2 is not None and worker_tag is not None:
+      full_shape_action = {'name': action_name, 'arg': [], 'func':
+        [(573, F.llm_pysc2_move_camera, [int(worker_tag)]),
+         (573, F.llm_pysc2_move_camera, [int(worker_tag)]),
+         (2, F.select_point, ['select', int(worker_tag)]),
+         (573, F.llm_pysc2_move_camera, [int(target_tag)]),
+         (573, F.llm_pysc2_move_camera, [int(target_tag)]),
+         (331, F.Move_screen, ('now', int(target_tag))),
+         ]}
+  elif ('All_Units_Retreat' in action_name or 'All_Units_Concentrate' in action_name or 'All_Units_Defend' in action_name):
+    if target_tag2 is not None:
+      full_shape_action = {'name': action_name, 'arg': [], 'func': [
+        (7, F.select_army, ['select']),
+        (573, F.llm_pysc2_move_camera, [int(target_tag2)]),
+        (573, F.llm_pysc2_move_camera, [int(target_tag2)]),
+        (331, F.Move_screen, ('now', int(target_tag2))),
+        ]}
+  else:
+    full_shape_action = {'name': 'No_Operation', 'arg': [], 'func': [
+      (0, actions.FUNCTIONS.no_op, [])]}
   return full_shape_action
 
 
@@ -1132,7 +1614,7 @@ class DefaultTranslatorA(BaseTranslatorA):
     logger.info(f"[ID {self.log_id}] {name} DefaultTranslatorA initialized")
 
   # text actions recognition
-  def translate(self, raw_text_a: str):
+  def translate(self, raw_text_a: str, obs = None):
     self.action = {'analysis': '', 'actions': ''}
 
     action_list_dict = {}
@@ -1185,9 +1667,11 @@ class DefaultTranslatorA(BaseTranslatorA):
           if team_name in self.config.AGENTS[self.name]['team'].keys():
             self.curr_team_config = self.config.AGENTS[self.name]['team'][team_name]
           elif team_name[:-2] in self.config.AGENTS[self.name]['team'].keys():
-            self.curr_team_config = self.config.AGENTS[self.name]['team'][team_name[:-2]]
+            self.curr_team_config = self.config.AGENTS[self.name]['team'][team_name[:-2]]  # single select 类型
 
           if len(self.curr_team_config.keys()) > 0:
+            self.curr_team_action_list = []
+            self.curr_team_action_name_list = []
             for team_actions_ in self.curr_team_config['actions'].values():
               self.curr_team_action_list += team_actions_
             for team_action in self.curr_team_action_list:
@@ -1225,17 +1709,25 @@ class DefaultTranslatorA(BaseTranslatorA):
           # print(f"team_name={team_name}, self.curr_team_action_name_list={self.curr_team_action_name_list}")
 
 
-        elif "<" in line and ">" in line:
+        elif "<" in line and ">" in line and '(' in line and ')' in line:
           line.replace('tag=', '')
           line.replace('screen=', '')
           line.replace('minimap=', '')
-          action_text = line.split("<")[1].split(">")[0]
-          action_name = action_text.split("(")[0]
-          action_args = action_text.split("(")[-1].split(")")[0]
+          try:
+            action_text = line.split("<")[1].split(">")[0]
+            action_name = action_text.split("(")[0]
+            action_args = action_text.split("(")[-1].split(")")[0]
+            print(action_text)
+          except Exception as e:
+            logger.error(f"translator find invalid action in line: {line}")
+            continue
           action_valid, tag, tag2, tag3, x, y = True, None, None, None, None, None
           action = {'name': 'No_Operation', 'arg': [], 'func': [(0, F.no_op, ())]}
           if action_name not in self.curr_team_action_name_list:
             logger.error(f"translator unable to find {action_name} in team_config {self.curr_team_action_list}")
+            continue
+          if action_name not in self.curr_team_action_name_list:
+            logger.error(f"translator unable to find {action_name} in current team config: {self.curr_team_config}")
             continue
           # if not first_action_attack and "Attack" in action_name and \
           #     "Select_Unit" not in action_name and "Ability" not in action_name:
@@ -1251,8 +1743,12 @@ class DefaultTranslatorA(BaseTranslatorA):
               tag3 = int(re.findall(r'0x\w+', action_args)[2], 16)
           if "[" in action_args:
             ratio = 1 if "Minimap" in action_name else self.size_screen / SCREEN_WORLD_GRID
-            x = float(re.findall(r'\[-?\d+\.?\d*e?-?\d*?', action_args)[0].split("[")[1]) * ratio
-            y = float(re.findall(r'-?\d+\.?\d*e?-?\d*?\]', action_args)[0].split("]")[0]) * ratio
+            try:
+              x = float(re.findall(r'\[-?\d+\.?\d*e?-?\d*?', action_args)[0].split("[")[1]) * ratio
+              y = float(re.findall(r'-?\d+\.?\d*e?-?\d*?\]', action_args)[0].split("]")[0]) * ratio
+            except Exception as e:
+              logger.error(f"translator find invalid action in line: {line}")
+              continue
 
           for action_ in self.curr_team_action_list:
             if action_name == action_['name']:
@@ -1276,6 +1772,8 @@ class DefaultTranslatorA(BaseTranslatorA):
               if not isinstance(func_args, tuple):
                 func_args = [func_args]
               for arg in list(func_args):
+                if arg == 'auto':
+                  new_func_args.append('auto')
                 if arg == "now":
                   if "Move" not in action_name:
                     new_func_args.append('now')
@@ -1285,11 +1783,12 @@ class DefaultTranslatorA(BaseTranslatorA):
                     new_func_args.append('queued')
                 if arg == "queued":
                   if first_function:
-                    if "Build" in action_name or self.name == 'Builder':
-                      new_func_args.append('queued')
-                      first_function = False
-                    else:
-                      new_func_args.append('now')
+                    new_func_args.append('now')
+                    # if "Build" in action_name or self.name == 'Builder':
+                    #   new_func_args.append('queued')
+                    #   first_function = False
+                    # else:
+                    #   new_func_args.append('now')
                   else:
                     new_func_args.append('queued')
                 if arg == "select":
@@ -1297,6 +1796,8 @@ class DefaultTranslatorA(BaseTranslatorA):
                 if arg in ["screen_tag", "minimap_tag", "world_tag", "screen1_tag", "screen2_tag"]:
                   if tag is not None:
                     new_func_args.append(tag)
+                  elif 'Build' in action_name and self.config.ENABLE_EASY_BUILD:
+                    new_func_args.append('auto')
                   else:
                     new_func_args.append('error')
                 if arg in ["screen_tag2", "minimap_tag2", "world_tag2", "screen1_tag2", "screen2_tag2"]:
@@ -1359,6 +1860,18 @@ class DefaultTranslatorA(BaseTranslatorA):
 
     if self.name == 'Builder':
       team_actions.append({'name': 'HoldPosition-Auto', 'arg': [], 'func': [(274, F.HoldPosition_quick, ('queued', ))]})
+    if self.name == 'Developer' and obs is not None:
+      gateway_list, morph_action_list = [], []
+      for unit in obs.observation.raw_units:
+        if unit.unit_type == units.Protoss.Gateway and unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100 and unit.active == 0:
+          gateway_list.append(unit)
+
+      if upgrades.Upgrades.WarpGateResearch in obs.observation.upgrades and len(gateway_list) > 0:
+        a1 = (573, F.llm_pysc2_move_camera, [int(gateway_list[0].tag)])
+        a2 = (2, F.select_point, ['select_all_type', int(gateway_list[0].tag)])
+        a3 = (328, F.Morph_WarpGate_quick, [])
+        team_actions.append({'name': 'Auto_Morph_Warpgate', 'arg': [], 'func': [a1, a2, a3]})
+        processed_text_a += '\n\t\t<Auto_Morph_Warpgate()>'
 
     if len(team_actions) != 0:
       action_lists.append(team_actions)
@@ -1422,12 +1935,17 @@ if __name__ == "__main__":
   # ----------------- example of TranslatorA -----------------
 
   # translator = DefaultTranslatorA('CombatGroup0', log_id=0, config=config)
-  translator = DefaultTranslatorA('Builder', log_id=0, config=config)
+  translator = DefaultTranslatorA('Developer', log_id=0, config=config)
+  # translator = DefaultTranslatorA('Builder', log_id=0, config=config)
   text = \
 """
 Analysis:
     We should do xxx and xxx.
-
+    
+Actions:
+    Builder-Probe-1:
+        <Build_Nexus_Near(0x200ea0001)>
+        
 Actions:
     **Team Zealot-1**:
         <Attack_Unit(0x200540001)> 
@@ -1441,6 +1959,12 @@ Actions:
     Team Builder-Probe-1:
         <Build_Pylon_Screen([8, 12])>  # Build the Pylon safely at a screen location, avoiding the Queens' range.
         <Build_Gateway_Screen([10, 12])>  # After the Pylon is completed, build the Gateway at a safe distance.
+        <Build_Nexus_Near(0x200ea0001)>
+    Team Protoss-Buildings-1:
+        <Research_Charge()>
+        <Research_Blink()>
+        <Train_Stalker()>
+        <Warp_Zealot()>
 """
 
   translator.size_screen = 128

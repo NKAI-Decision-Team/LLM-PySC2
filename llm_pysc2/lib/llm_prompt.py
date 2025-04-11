@@ -15,8 +15,7 @@
 
 BASIC_COMBAT_RULES = \
 """
-  (If you controls military units)
-  1. Concentrating firepower is always necessary, attack different unit at the same time will definitely reduce killing speed and leading to terrible result. Always concentrating all teams' fire at one unit that (1)with highest DPS(most valuable) (2)most vulnerable (3)closest.
+1. Concentrating firepower is always necessary, attack different unit at the same time will definitely reduce killing speed and leading to terrible result. Always concentrating all teams' fire at one unit that (1)with highest DPS(most valuable) (2)most vulnerable (3)closest.
 """
 
 # BASIC_COMBAT_RULES = \
@@ -49,6 +48,14 @@ BASIC_DEVELOP_RULES = \
 
 BASIC_BUILD_RULES = \
 """
+Analyse following aspect in your decision process:
+\t1. (Supply) If run out of supply (less than 10), build Pylon/OverLord/SupplyDepot (depend on your race).
+\t2. (Economy Building: Base) If you have enough minerals (more than 400), build Nexus/Hatchery/CommandCenter (depend on your race).
+\t3. (Economy Building: Gas) If you run out of gas (much less than minerals), build Assimilator/Extractor/Refinery (depend on your race).
+\t4. (Unit Training Building) If you have too less unit training buildings, or there are abundant resources but all the unit training buildings are working, build unit training buildings.
+\t5. (Research Building) If you have too less research buildings, or there are abundant resources but all the research buildings are working, build research buildings.
+\t6. (Move) You should move to a plain location near the base building, and build buildings there. Do not move if moving is unnecessary.
+\t7. (Move) Don't be far from the base building unless you are building a new one.
 """
 
 # BASIC_COMBAT_RULES_REFLECTION = \
@@ -60,6 +67,16 @@ BASIC_BUILD_RULES = \
 # whether the position of moving is appropriate in the micro-operation.
 # """
 
+def get_rules(agent_name):
+  if 'Commander' in agent_name:
+    return BASIC_COMMAND_RULES
+  if 'Developer' in agent_name:
+    return BASIC_DEVELOP_RULES
+  if 'CombatGroup' in agent_name:
+    return BASIC_COMBAT_RULES
+  if 'Builder' in agent_name:
+    return BASIC_BUILD_RULES
+  return 'No specific rule, make decisions according to the situation'
 
 class BasePrompt:
 
@@ -85,8 +102,6 @@ class CombatGroupPrompt(BasePrompt):
 """
 Analysis:
   xxxxx
-Strategy:
-  xxxxx
 Actions:
   Team TeamName-1:
     <ActionName1(...)>  # format like **ActionName1(...)** and -ActionName1(...)- are not valid, must use <>
@@ -103,7 +118,7 @@ f"""
   Your should command your troops, complete the tactical tasks assigned by the superior. You will have several teams of units, you can command these teams to fight together or perform different tasks.
 
 2.Rules
-{BASIC_COMBAT_RULES}
+{get_rules(self.name)}
 
 3.Action Output
   You should make decisions according to observed information, tactic task and rules, give analysis and decisions for each team. For example, if you have 2 teams name as 'TeamName-1' and 'TeamName-2', you should output as:

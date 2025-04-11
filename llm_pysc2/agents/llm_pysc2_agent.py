@@ -102,7 +102,7 @@ class LLMAgent:
     # [{'name': 'Z1', 'unit_type': [units.Protoss.Zealot], 'game_group': 1, 'select_type': 'group',
     #   'unit_tags': [0x00012c0001, 0x00013a0001, 0x0001500001], 'unit_tags_selected': [0x00012c0001],
     #   'obs':[], 'pos':[]}],
-    self.flag_enable_empty_unit_group = False
+    self.flag_enable_empty_unit_group = False if self.name not in ['Commander', 'Developer'] else True
     self.teams = list(self.config.AGENTS[self.name]['team'].values())
     self.teams_history = {}
     for team in self.teams:
@@ -323,9 +323,9 @@ class LLMAgent:
     return text_o, base64_images
 
 
-  def _after_query(self, raw_text_a):
+  def _after_query(self, raw_text_a, obs):
     self.get_info_c_out(raw_text_a)
-    action_lists, action_list_dict = self.get_func_a(raw_text_a)
+    action_lists, action_list_dict = self.get_func_a(raw_text_a, obs)
     logger.success(f"[ID {self.log_id}] LLMAgent {self.name}: LLM Interaction Finished")
     logger.debug(f"[ID {self.log_id}] LLMAgent {self.name}: Listen to {self.communication_message_i}")
     logger.debug(f"[ID {self.log_id}] LLMAgent {self.name}: Send info to {self.communication_message_o}")
@@ -353,7 +353,7 @@ class LLMAgent:
     if self.name not in self.config.AGENTS_ALWAYS_DISABLE and self.enable:
       utils.write_to_file(json.dumps({self.main_loop_step: text_o}), self.log_dir_path + f"/{self.name}/o.txt")
 
-    self._after_query(self.raw_text_a)
+    self._after_query(self.raw_text_a, obs)
 
 
   # query step1: all teams' pysc2 obs to a llm obs text (or multimodal llm text)
@@ -367,6 +367,12 @@ class LLMAgent:
     if self.config.AGENTS[self.name]['llm']['img_rgb']:
       base64_images['screen'] = llm_observation.get_img_obs_rgb(self, obs)
       base64_images['minimap'] = llm_observation.get_img_obs_rgb_minimap(self, obs)
+      if 'feature_map_names' in self.config.AGENTS[self.name]['llm'].keys():
+        feature_map_names = self.config.AGENTS[self.name]['llm']['feature_map_names']
+      else:
+        feature_map_names = []
+      for feature_map_name in feature_map_names:
+        base64_images[feature_map_name] = llm_observation.get_img_obs_fea_map(self, obs, feature_map_name)
     elif self.config.AGENTS[self.name]['llm']['img_fea']:
       base64_images['screen'] = llm_observation.get_img_obs_fea(self, obs)
     else:
@@ -403,7 +409,7 @@ class LLMAgent:
     return text_a
 
   # query step3: text action to pysc2 functions
-  def get_func_a(self, raw_text_a) -> (list, dict):
+  def get_func_a(self, raw_text_a, obs) -> (list, dict):
     new_action_lists = []
     action_list_dict = {}
     processed_text_a = ''
@@ -413,7 +419,7 @@ class LLMAgent:
     #   print(f"\nprocessed_text_a=\n{processed_text_a}")
     # except Exception as e:
     #   logger.error(f"[ID {self.log_id}] Error in {self.name} get_func_a(): {e}")
-    new_action_lists, action_list_dict, processed_text_a = self.translator_a.translate(raw_text_a)
+    new_action_lists, action_list_dict, processed_text_a = self.translator_a.translate(raw_text_a, obs)
     logger.debug(f"\nprocessed_text_a=\n{processed_text_a}")
     self.last_text_a_pro = processed_text_a
 
@@ -484,6 +490,10 @@ class LLMAgent:
       self.action_valid_check_1 = True
       action = llm_action.add_func_for_select_workers(self, obs, action)
       action = llm_action.add_func_for_train_and_research(self, obs, action)
+      action = llm_action.add_func_for_easy_build(self, obs, action)
+      action = llm_action.add_func_for_easy_control(self, obs, action)
+      action = llm_action.add_func_for_easy_warp(self, obs, action)
+      action = llm_action.add_func_for_build(self, obs, action)
       self.func_list = action['func']
       # self.func_list_standard = llm_a.get_text_action(self.name, action['name'])
       self.curr_action_name = action['name']
@@ -547,7 +557,12 @@ class LLMAgent:
               pysc2_arg = 'WrongType-Arg'  # 错误处理，接受func_valid = False，使用no_op代替该动作
           elif isinstance(llm_pysc2_arg, int):
             func_valid = False
-            if func_id == 573 and ('Build_Nexus_' in self.curr_action_name or 'Lock_Nexus_' in self.curr_action_name):
+            print(self.curr_action_name)
+            print(i, func.args, func)
+            if func.args[i].name == 'screen' and 'Build' in func.name:  # 建造  and self.config.ENABLE_EASY_BUILD
+              pysc2_arg, func_valid = llm_action.get_arg_screen_tag_build(
+                obs, llm_pysc2_arg, self.size_screen, self.curr_action_name)  # 建筑的屏幕坐标合法性判断
+            elif func_id == 573 and ('Build_Nexus_' in self.curr_action_name or 'Lock_Nexus_' in self.curr_action_name):
               pysc2_arg, func_valid = llm_action.get_arg_world_tag_base_building(
                 obs, llm_pysc2_arg, self.world_x_offset, self.world_y_offset, self.world_range)
             elif func_id == 573:

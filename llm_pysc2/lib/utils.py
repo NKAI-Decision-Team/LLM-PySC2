@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pysc2.lib import units, upgrades, buffs, actions
+from pysc2.lib import units, upgrades, buffs, actions, features
 import numpy as np
 import math
 import os
@@ -109,6 +109,8 @@ POWER_BUILDING_NAMES = ['Gateway', 'Stargate', 'RoboticsFacility', 'CyberneticsC
                         'FleetBeacon', 'RoboticsBay', 'TemplarArchive', 'DarkShrine', 'PhotonCannon', 'ShieldBattery']
 
 SIZE5_BUILDING_NAMES = ['Nexus', 'Hatchery', 'Hive', 'Lair', 'CommandCenter', 'OrbitalCommand', 'PlanetaryFortress']
+# + [str(units.Protoss.Nexus), str(units.Zerg.Hatchery), str(units.Zerg.Hive), str(units.Zerg.Lair)] + \
+# [str(units.Terran.CommandCenter), str(units.Terran.OrbitalCommand), str(units.Terran.PlanetaryFortress)]
 SIZE3_BUILDING_NAMES = ['Gateway', 'Stargate', 'RoboticsFacility', 'CyberneticsCore', 'Forge', 'TwilightCouncil',
                         'FleetBeacon', 'RoboticsBay', 'TemplarArchive', 'Assimilator', 'AssimilatorRich'] + \
                        [] + \
@@ -146,6 +148,14 @@ TERRAN_BUILDING_TYPE = [
   units.Terran.BarracksTechLab, units.Terran.FactoryTechLab, units.Terran.StarportTechLab,
 ]
 BUILDING_TYPE = PROTOSS_BUILDING_TYPE + ZERG_BUILDING_TYPE + TERRAN_BUILDING_TYPE
+
+BUILDING_TYPE_MILITARY = [  # TODO: ADD MORE
+  units.Protoss.Gateway, units.Protoss.WarpGate, units.Protoss.Stargate, units.Protoss.RoboticsFacility
+]
+BUILDING_TYPE_RESEARCH = [  # TODO: ADD MORE
+units.Protoss.CyberneticsCore, units.Protoss.Forge, units.Protoss.TwilightCouncil,
+units.Protoss.TemplarArchive, units.Protoss.FleetBeacon, units.Protoss.RoboticsBay, units.Protoss.DarkShrine
+]
 
 
 BASE_BUILDING_TYPE = [
@@ -273,3 +283,156 @@ UNIT_DONOT_NEED_GATHER = \
 #   'Shadow Strike': [upgrades.Upgrades.ShadowStrike],
 #   'Warp Gate Research': [upgrades.Upgrades.WarpGateResearch]
 # }
+
+
+def get_dis_pos_poses1(pos, pos1_list, flag='min'):
+  if len(pos1_list) == 0:
+    return (0, None)
+  x, y, d_min = pos[0], pos[1], 999
+  arr_pos1 = np.array(pos1_list).T
+  arr_x1, arr_y1 = arr_pos1[0], arr_pos1[1]
+  arr_x0, arr_y0 = np.zeros_like(arr_x1) + x, np.zeros_like(arr_x1) + y
+  d_square = np.square(arr_x1 - arr_x0) + np.square(arr_y1 - arr_y0)
+  d_min, index_min = math.sqrt(np.min(d_square)), np.unravel_index(np.argmin(d_square), d_square.shape)[0]
+  d_max, index_max = math.sqrt(np.max(d_square)), np.unravel_index(np.argmax(d_square), d_square.shape)[0]
+  return (d_min, index_min) if flag == 'min' else (d_max, index_max)
+
+
+def get_dis_pos_poses1_manhattan(pos, pos1_list, flag='min', axis='none'):
+  if len(pos1_list) == 0:
+    return (0, None)
+  x, y, d_min = pos[0], pos[1], 999
+  arr_pos1 = np.array(pos1_list).T
+  arr_x1, arr_y1 = arr_pos1[0], arr_pos1[1]
+  arr_x0, arr_y0 = np.zeros_like(arr_x1) + x, np.zeros_like(arr_x1) + y
+  dx = np.abs(arr_x1 - arr_x0)
+  dy = np.abs(arr_y1 - arr_y0)
+  if axis == 'x':
+    d = dx
+    d_min, index_min = np.min(d), np.unravel_index(np.argmin(d), d.shape)[0]
+    d_max, index_max = np.max(d), np.unravel_index(np.argmax(d), d.shape)[0]
+  elif axis == 'y':
+    d = dy
+    d_min, index_min = np.min(d), np.unravel_index(np.argmin(d), d.shape)[0]
+    d_max, index_max = np.max(d), np.unravel_index(np.argmax(d), d.shape)[0]
+  elif axis == 'xy':
+    dx_min, dx_index_min = np.min(dx), np.unravel_index(np.argmin(dx), dx.shape)[0]
+    dx_max, dx_index_max = np.max(dx), np.unravel_index(np.argmax(dx), dx.shape)[0]
+    dy_min, dy_index_min = np.min(dy), np.unravel_index(np.argmin(dy), dy.shape)[0]
+    dy_max, dy_index_max = np.max(dy), np.unravel_index(np.argmax(dy), dy.shape)[0]
+    d_min, index_min = (dx_min, dx_index_min) if dx_min < dy_min else (dy_min, dy_index_min)
+    d_max, index_max = (dx_max, dx_index_max) if dx_max > dy_max else (dy_max, dy_index_max)
+  elif axis == 'xy_max':
+    d = np.array([max(dx[i], dy[i]) for i in range(len(pos1_list))])
+    d_min, index_min = np.min(d), np.unravel_index(np.argmin(d), d.shape)[0]
+    d_max, index_max = np.max(d), np.unravel_index(np.argmax(d), d.shape)[0]
+  else:
+    d = arr_x1 - arr_x0 + arr_y1 - arr_y0
+    d_min, index_min = np.min(d), np.unravel_index(np.argmin(d), d.shape)[0]
+    d_max, index_max = np.max(d), np.unravel_index(np.argmax(d), d.shape)[0]
+  return (d_min, index_min) if flag == 'min' else (d_max, index_max)
+
+
+def get_dis_posse1_poses2(pos1_list, pos2_list, flag='min'):
+  len1, len2 = len(pos1_list), len(pos2_list)
+  if not (len1 > 0 and len2 > 0):
+    return (0, None)
+  mat_x1, mat_y1 = np.zeros((len1, len2)), np.zeros((len1, len2))
+  mat_x2, mat_y2 = np.zeros((len1, len2)), np.zeros((len1, len2))
+  arr_pos1 = np.array(pos1_list).T
+  arr_pos2 = np.array(pos2_list).T
+  arr_x1, arr_y1 = arr_pos1[0], arr_pos1[1]
+  arr_x2, arr_y2 = arr_pos2[0], arr_pos2[1]
+  mat_x1 = mat_x1 + np.array([arr_x1]).T
+  mat_y1 = mat_y1 + np.array([arr_y1]).T
+  mat_x2 = mat_x2 + np.array([arr_x2])
+  mat_y2 = mat_y2 + np.array([arr_y2])
+  mat_dx, mat_dy = mat_x1 - mat_x2, mat_y1 - mat_y2
+  mat_d_square = np.square(mat_dx) + np.square(mat_dy)
+  d_min, indexes_min = math.sqrt(np.min(mat_d_square)), np.unravel_index(np.argmin(mat_d_square), mat_d_square.shape)
+  d_max, indexes_max = math.sqrt(np.max(mat_d_square)), np.unravel_index(np.argmax(mat_d_square), mat_d_square.shape)
+  return (d_min, indexes_min) if flag=='min' else (d_max, indexes_max)
+
+
+def get_nearby_unit_num_of_unit(pos1_list, pos2_list, r=3, flag='min'):  # pos1_list more, index for pos2_list
+  len1, len2 = len(pos1_list), len(pos2_list)
+  if not (len1 > 0 and len2 > 0):
+    return (0, None)
+  mat_x1, mat_y1 = np.zeros((len1, len2)), np.zeros((len1, len2))
+  mat_x2, mat_y2 = np.zeros((len1, len2)), np.zeros((len1, len2))
+  arr_pos1 = np.array(pos1_list).T
+  arr_pos2 = np.array(pos2_list).T
+  arr_x1, arr_y1 = arr_pos1[0], arr_pos1[1]
+  arr_x2, arr_y2 = arr_pos2[0], arr_pos2[1]
+  mat_x1 = mat_x1 + np.array([arr_x1]).T
+  mat_y1 = mat_y1 + np.array([arr_y1]).T
+  mat_x2 = mat_x2 + np.array([arr_x2])
+  mat_y2 = mat_y2 + np.array([arr_y2])
+  mat_dx, mat_dy = mat_x1 - mat_x2, mat_y1 - mat_y2
+  mat_d = np.sqrt(np.square(mat_dx) + np.square(mat_dy))
+  mat_r = np.zeros_like(mat_d) + r
+  mat_r_min_d = mat_r - mat_d
+  mat_none_zero_for_inner = (mat_r_min_d - abs(mat_r_min_d)).T
+  counts = len(pos1_list) -  np.count_nonzero(mat_none_zero_for_inner, axis=1)
+  counts_min, index_min = np.min(counts), np.argmin(counts)
+  counts_max, index_max = np.max(counts), np.argmax(counts)
+  return (counts_min, index_min) if flag == 'min' else (counts_max, index_max)
+
+
+def get_ves_for_base_and_gas_building(obs):
+  ves_all = []
+  ves_near, ves_near_tags = [], []
+  ves_new_base, ves_new_base_tags = [], []
+  base_build, base_build_tags = [], []
+  base_built, base_built_tags = [], []
+
+  for unit in obs.observation.raw_units:
+    if unit.unit_type in GAS_TYPE:
+      ves_all.append(unit)
+  for unit in obs.observation.raw_units:
+    if unit.unit_type in BASE_BUILDING_TYPE and unit.alliance == features.PlayerRelative.SELF:
+      if unit.build_progress == 100:
+        base_built.append(unit)
+        base_built_tags.append(unit.tag)
+      else:
+        base_build.append(unit)
+        base_build_tags.append(unit.tag)
+  base_all = base_build + base_built
+
+  # 保留距离最近的
+  for ves_unit in ves_all:
+    d_min = 99
+    for base_unit in base_built:
+      d = get_dist(ves_unit, base_unit)
+      d_min = d if d < d_min else d_min
+    if d_min < 10:
+      ves_near.append(ves_unit)
+      ves_near_tags.append(ves_unit.tag)
+    elif d_min < 35:
+      ves_new_base.append(ves_unit)
+      # ves_new_base_tags.append(ves_unit.tag)
+
+  # 去重，2气对应1矿，保留一个气的tag即可
+  ves_new_base_ = []
+  for ves_unit in ves_new_base:
+    d_min = 99
+    for ves_unit_ in ves_new_base_:
+      d = get_dist(ves_unit, ves_unit_)
+      d_min = d if d < d_min else d_min
+    if d_min >= 10 or len(ves_new_base_) == 0:
+      ves_new_base_.append(ves_unit)
+      ves_new_base_tags.append(ves_unit.tag)
+
+  # 去除半场外的
+  if 4 * len(base_all) >= len(ves_all):
+    ves_new_base_ = []
+    ves_new_base_tags = []
+
+  return ves_new_base_, ves_near, ves_new_base_tags, ves_near_tags
+
+
+# # print(str(units.Zerg.Lair).split('.')[-1])
+# a = [[12, 14], [15, 12], [14, 14]]
+# b = [13.5, 13]
+# d, i = get_dis_pos_poses1_manhattan(b, a, 'min', 'xy_max')
+# print(d, i, a[i])

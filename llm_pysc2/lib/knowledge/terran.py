@@ -12,7 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pysc2.lib import units
+from pysc2.lib import units, actions, upgrades
+
+a = actions.FUNCTIONS
+u = upgrades.Upgrades
+
+terran_map_research_quick_to_level = {}
+
+terran_research_conditions = {}
+terran_train_conditions = {}
+terran_build_conditions = {}
 
 DATA_TERRAN = {
 

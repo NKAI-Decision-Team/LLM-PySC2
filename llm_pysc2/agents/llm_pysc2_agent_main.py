@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import copy
 
 from llm_pysc2.lib.llm_communicate import communication_info_transmission
 from llm_pysc2.lib.log.data_recorder import DataRecorder
@@ -41,15 +40,15 @@ llm_pysc2_global_log_id = 0
 # multi thread query, target function
 def thread_act(agent, obs):
   # agent_copy = copy.deepcopy(agent)
-  agent.query(obs)
-  # try:
-  #   agent.query(obs)
-  # except Exception as e:
-  #   # agent = copy.deepcopy(agent_copy)
-  #   agent._after_query(f'error {e} occur in agent {agent.name} query')
-  #   logger.error(f"error {e} occur in agent {agent.name} query")
-
-
+  if agent.config.SAFE_MODE:
+    try:
+      agent.query(obs)
+    except Exception as e:
+      # agent = copy.deepcopy(agent_copy)
+      agent._after_query(f'error {e} occur in agent {agent.name} query')
+      logger.error(f"error {e} occur in agent {agent.name} query")
+  else:
+    agent.query(obs)
 
 
 # Main Agent, for interacting with pysc2 env
@@ -79,6 +78,9 @@ class MainAgent(base_agent.BaseAgent):
     self.game_time_last1 = 0
     self.game_time_last2 = 0
     self.current_game_time = 0
+
+    self.first_ctrl_base_tag = None
+    self.first_oppo_base_tag = None
 
     self.unit_selected_tag_list = []
     self.temp_team_unit_tags = None
@@ -113,6 +115,7 @@ class MainAgent(base_agent.BaseAgent):
     self.unit_uid_total = list()
     self.unit_disappear_steps = dict()
     self.unit_tag_builder = list()
+    self.unit_tag_worker_special = list()
 
     # self.possible_disappear_unit_list = list()
     self.func_id_history = deque(maxlen=20)
@@ -190,7 +193,7 @@ class MainAgent(base_agent.BaseAgent):
       self.agents[agent_name].enable = True if (agent_name in ['Commander', 'Developer']) else False
       # self.agents[agent_name].flag_enable_empty_unit_group = True if (agent_name in ['Developer']) else False
       for team in self.config.AGENTS[agent_name]['team'].values():
-        if team['name'] == 'Empty' and len(team['unit_type']) == 0:
+        if len(team['unit_type']) == 0:
           self.agents[agent_name].flag_enable_empty_unit_group = True
       self.agents_query_llm_times[agent_name] = 0
       self.agents_executing_times[agent_name] = 0
@@ -241,41 +244,48 @@ class MainAgent(base_agent.BaseAgent):
       logger.success(f"[ID {self.log_id}] " + '========== ' + '==' * 25 + f" Loop {self.main_loop_step} " + '==' * 25 + ' ==========')
     logger.success(f"[ID {self.log_id}] " + '---------- ' + '--' * 25 + f" Step {self.steps} " + '--' * 25 + ' ----------')
     last_20_func = list(self.func_id_history)
+    possible_endless_loop = False
     if len(set(last_20_func)) == 1 and len(last_20_func) >= 20 and 0 not in last_20_func:
+      possible_endless_loop = True
       logger.error(f"[ID {self.log_id}] Detect Possible Endless Loop !")
       logger.error(f"[ID {self.log_id}] last 20 funcs: {actions.FUNCTIONS[self.func_id_history[0]]}")
       time.sleep(1)
     func_id, func_call = (0, actions.FUNCTIONS.no_op())
+    safe_mode = self.config.SAFE_MODE
 
     # initial steps and camera calibration (necessary)
-    func_call = main_agent_func0(self, obs)
+    func_id, func_call = main_agent_func0(self, obs)
     if func_call is not None:
-      logger.success(f"[ID {self.log_id}] main_agent_func0: Func Call {func_call}")
-      return func_call
+      if not safe_mode or not (possible_endless_loop and func_id in last_20_func):
+        logger.success(f"[ID {self.log_id}] main_agent_func0: Func Call {func_id} {func_call}")
+        return func_call
 
     # unit grouping, add to relevant agent.teams (necessary)
-    func_call = main_agent_func1(self, obs)
+    func_id, func_call = main_agent_func1(self, obs)
     if func_call is not None:
-      logger.success(f"[ID {self.log_id}] main_agent_func1: Func Call {func_call}")
-      return func_call
+      if not safe_mode or not (possible_endless_loop and func_id in last_20_func):
+        logger.success(f"[ID {self.log_id}] main_agent_func1: Func Call {func_id} {func_call}")
+        return func_call
 
-    # auto worker-management (optional)
-    func_call = main_agent_func2(self, obs)
-    if func_call is not None:
-      logger.success(f"[ID {self.log_id}] main_agent_func2: Func Call {func_call}")
-      return func_call
+    if not (safe_mode and possible_endless_loop):
 
-    # auto worker-training (optional)
-    func_call = main_agent_func3(self, obs)
-    if func_call is not None:
-      logger.success(f"[ID {self.log_id}] main_agent_func3: Func Call {func_call}")
-      return func_call
+      # auto worker-management (optional)
+      func_id, func_call = main_agent_func2(self, obs)
+      if func_call is not None:
+        logger.success(f"[ID {self.log_id}] main_agent_func2: Func Call {func_id} {func_call}")
+        return func_call
 
-    # auto team gathering (optional)
-    func_call = main_agent_func4(self, obs)
-    if func_call is not None:
-      logger.success(f"[ID {self.log_id}] main_agent_func4: Func Call {func_call}")
-      return func_call
+      # auto worker-training (optional)
+      func_id, func_call = main_agent_func3(self, obs)
+      if func_call is not None:
+        logger.success(f"[ID {self.log_id}] main_agent_func3: Func Call {func_id} {func_call}")
+        return func_call
+
+      # auto team gathering (optional)
+      func_id, func_call = main_agent_func4(self, obs)
+      if func_call is not None:
+        logger.success(f"[ID {self.log_id}] main_agent_func4: Func Call {func_id} {func_call}")
+        return func_call
 
     # SubAgent data update
     for agent_name in self.AGENT_NAMES:
@@ -359,7 +369,7 @@ class MainAgent(base_agent.BaseAgent):
             if agent.flag_enable_empty_unit_group:  # Commander Developer最后一个单位群是空群，用于作战部署或发布训练/研究动作
               logger.info(f"[ID {self.log_id}] 7.1.1 Agent {agent_name}: Add obs for empty_unit_group")
               for team in agent.teams:
-                if team['name'] == 'Empty':
+                if len(team['unit_type']) == 0:  # if team['unit_type'] == 'Empty':
                   agent.team_unit_obs_list.append(obs)
                   team['obs'].append(obs)
             logger.info(f"[ID {self.log_id}] 7.1.2 Agent {agent_name}: Obs prepared, try calling LLM api")

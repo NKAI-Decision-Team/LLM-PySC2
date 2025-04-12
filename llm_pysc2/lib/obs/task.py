@@ -214,20 +214,20 @@ def task_smac_2s_vs_1sc(agent):
 def task_default(agent):
   task_dict = {}
   for team in agent.teams:  # agent.config.AGENTS[agent.name]['team'].values()
-    if len(team['obs']) == 0:
-      continue
-    if 'task' not in team.keys():
-      team['task'] = 'Complete the tasks assigned by the Commander'
-    x, y, m, s = get_info(team['obs'][0])
+    # if len(team['obs']) == 0:
+    #   continue
+    # if 'task' not in team.keys():
+    #   team['task'] = 'Complete the tasks assigned by the Commander'
+    # x, y, m, s = get_info(team['obs'][0])
 
-    if team['name'] == 'Empty':
-      if agent.name == 'Commander':
-        team['task'] = 'Organize other agents through communication to win the game'
-      if agent.name == 'Developer':
-        team['task'] = "Develop economy, technology, train units to win the game. organize the agent 'Builder' to build buildings."
-
+    if agent.name == 'Commander':
+      team['task'] = "Command your units through 'Actions' to defeat the enemy." if agent.config.ENABLE_EASY_CONTROL else "Organize other agents through 'Communication' to win the game"
+    if agent.name == 'Developer':
+      team['task'] = "Develop economy, technology, train units through 'Actions' to win the game." if agent.config.ENABLE_EASY_BUILD else "Organize the agent 'Builder' through 'Communication' to build buildings. Develop economy, technology, and train units through 'Actions' to win the game."
     if agent.name == 'Builder':
-      team['task'] = "Build buildings only, according to the tasks assigned by the Developer or Commander, or based on your own judgment."
+      team['task'] = "Build buildings through 'Actions', Complete tasks assigned by the Developer or Commander, or based on your own judgment."
+    if 'CombatGroup' in agent.name:
+      team['task'] = "Controls your unit teams to fight with enemies. Complete tasks assigned by the Commander"
 
   return task_dict
 

@@ -23,6 +23,7 @@ file_name = "o.txt"
 with open(file_name, "r") as f:
     lines = f.readlines()
     for i in range(len(lines)):
-        print("--" * 25 + f" Loop {i} " + "--" * 25)
         dic = json.loads(lines[i])
-        print(dic[f"{i}"])
+        loop_step = list(dic.keys())[0]
+        print("--" * 25 + f" Loop {loop_step} " + "--" * 25)
+        print(dic[loop_step])

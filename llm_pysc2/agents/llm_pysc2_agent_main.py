@@ -696,8 +696,8 @@ class MainAgent(base_agent.BaseAgent):
     return func_call
 
   def send_chat_message(self):
-    if self.steps == 0:
-      return f" Good Luck Have Fun -- by LLM-PySC2 team"
+    if self.steps == 1:
+      return f" Good Luck Have Fun!"
     if self.last_action is not None:
       time_m = self.steps / 22.4 // 60
       time_s = self.steps / 22.4 % 60

@@ -78,7 +78,7 @@ setup(
         'numpy>=1.10',
         'portpicker>=1.2.0',
         'protobuf==3.20.0',
-        'openai==0.28',
+        'openai==1.73.0',
         'pygame',
         'requests',
         's2clientprotocol>=4.10.1.75800.0',

@@ -48,10 +48,7 @@ def get_task_info(agent) -> str:
     if len(team['obs']) == 0:
       continue
     if isinstance(team['task'], str):
-      if team['name'] != 'Empty':
-        task_info += f"\n\tTeam {team['name']}' task: {team['task']}"
-      if team['name'] == 'Empty':
-        task_info += f"\n\tAgent task: {team['task']}"
+      task_info += f"\n\tTeam {team['name']}' task: {team['task']}"
   if task_info != '':
     task_info = f"Tasks:" + task_info
     task_info += "\nPlease note that **Tasks** are the most important information, all your decisions must aimed at completing the tasks.\n\n"

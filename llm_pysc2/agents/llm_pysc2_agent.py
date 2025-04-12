@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from llm_pysc2.cfg import AgentConfig, ProtossAgentConfig
-from llm_pysc2.lib import llm_prompt, llm_communicate, task, utils, llm_client  # , llm_action, llm_observation
+from llm_pysc2.lib import llm_prompt, llm_communicate, utils, llm_client  # , llm_action, llm_observation
 from llm_pysc2.lib import obs as llm_observation
 from llm_pysc2.lib import action as llm_action
 
@@ -307,11 +307,12 @@ class LLMAgent:
     # if obs.observation.map_name not in task.FACTORY.keys():
     #   logger.error(f"task description is not realised in llm_pysc2.lib.task")
     #   raise AssertionError("task description is not realised in llm_pysc2.lib.task")
-    if obs.observation.map_name not in task.FACTORY.keys():
-      logger.warning(f"task description is not realised in llm_pysc2.lib.task, use default task")
-      task_dict = task.FACTORY['default'](self)
+    if obs.observation.map_name not in llm_observation.task.FACTORY.keys():
+      task_dict = llm_observation.task.FACTORY['default'](self)
+      logger.warning(f"task description is not realised, use default task")
     else:
-      task_dict = task.FACTORY[obs.observation.map_name](self)  # return dict[team_name]='text_task_description'
+      task_dict = llm_observation.task.FACTORY[str(obs.observation.map_name)](self)  # return dict[team_name]='text_task_description'
+      logger.success(f"task description find, use default task")
     logger.debug(f'task_dict={task_dict}')
     logger.success(f"[ID {self.log_id}] LLMAgent {self.name}: LLM Interaction Start")
     self.teams_history[self.main_loop_step] = copy.deepcopy(self.teams)
@@ -363,14 +364,17 @@ class LLMAgent:
   def get_img_o(self, obs):
     base64_images = {}
     if self.config.AGENTS[self.name]['llm']['img_rgb']:
-      base64_images['screen'] = llm_observation.get_img_obs_rgb(self, obs)
-      base64_images['minimap'] = llm_observation.get_img_obs_rgb_minimap(self, obs)
-      if 'feature_map_names' in self.config.AGENTS[self.name]['llm'].keys():
-        feature_map_names = self.config.AGENTS[self.name]['llm']['feature_map_names']
+      if 'img_names' in self.config.AGENTS[self.name]['llm'].keys():
+        feature_map_names = self.config.AGENTS[self.name]['llm']['img_names']
       else:
         feature_map_names = []
       for feature_map_name in feature_map_names:
-        base64_images[feature_map_name] = llm_observation.get_img_obs_fea_map(self, obs, feature_map_name)
+        if feature_map_name == 'rgb_screen':
+          base64_images['screen'] = llm_observation.get_img_obs_rgb(self, obs)
+        elif feature_map_name == 'rgb_minimap':
+          base64_images['minimap'] = llm_observation.get_img_obs_rgb_minimap(self, obs)
+        else:
+          base64_images[feature_map_name] = llm_observation.get_img_obs_fea_map(self, obs, feature_map_name)
     elif self.config.AGENTS[self.name]['llm']['img_fea']:
       base64_images['screen'] = llm_observation.get_img_obs_fea(self, obs)
     else:

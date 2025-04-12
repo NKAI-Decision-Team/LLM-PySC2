@@ -149,7 +149,7 @@ class ProtossAgentConfig(AgentConfig):
       #     'basic_prompt': self.basic_prompt,
       #     'translator_o': self.translator_o,
       #     'translator_a': self.translator_a,
-      #     'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
+      #     'img_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
       #     'img_fea': self.ENABLE_IMAGE_FEATURE,
       #     'img_rgb': self.ENABLE_IMAGE_RGB,
       #     'model_name': self.model_name,
@@ -170,7 +170,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': 'builder',
           'translator_a': self.translator_a,
-          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
+          'img_names': ['rgb_screen', 'rgb_minimap'],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -195,7 +195,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': 'commander',
           'translator_a': self.translator_a,
-          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
+          'img_names': ['rgb_minimap'],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -218,7 +218,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': 'developer',
           'translator_a': self.translator_a,
-          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
+          'img_names': ['rgb_minimap'],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -245,7 +245,7 @@ class ProtossAgentConfig(AgentConfig):
       #     'basic_prompt': self.basic_prompt,
       #     'translator_o': self.translator_o,
       #     'translator_a': self.translator_a,
-      #     'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
+      #     'img_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
       #     'img_fea': self.ENABLE_IMAGE_FEATURE,
       #     'img_rgb': self.ENABLE_IMAGE_RGB,
       #     'model_name': self.model_name,
@@ -266,7 +266,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': self.translator_o,
           'translator_a': self.translator_a,
-          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
+          'img_names': ['rgb_screen', 'rgb_minimap'],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -290,7 +290,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': self.translator_o,
           'translator_a': self.translator_a,
-          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
+          'img_names': ['rgb_screen', 'rgb_minimap'],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -317,7 +317,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': self.translator_o,
           'translator_a': self.translator_a,
-          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
+          'img_names': ['rgb_screen', 'rgb_minimap'],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -344,7 +344,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': self.translator_o,
           'translator_a': self.translator_a,
-          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
+          'img_names': ['rgb_screen', 'rgb_minimap'],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -375,7 +375,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': self.translator_o,
           'translator_a': self.translator_a,
-          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
+          'img_names': ['rgb_screen', 'rgb_minimap'],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -401,7 +401,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': self.translator_o,
           'translator_a': self.translator_a,
-          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
+          'img_names': ['rgb_screen', 'rgb_minimap'],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -425,7 +425,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': self.translator_o,
           'translator_a': self.translator_a,
-          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
+          'img_names': ['rgb_screen', 'rgb_minimap'],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -448,7 +448,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': self.translator_o,
           'translator_a': self.translator_a,
-          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
+          'img_names': ['rgb_screen', 'rgb_minimap'],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -474,7 +474,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': self.translator_o,
           'translator_a': self.translator_a,
-          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
+          'img_names': ['rgb_screen', 'rgb_minimap'],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,
@@ -500,7 +500,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': self.translator_o,
           'translator_a': self.translator_a,
-          'feature_map_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
+          'img_names': ['rgb_screen', 'rgb_minimap'],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
           'model_name': self.model_name,

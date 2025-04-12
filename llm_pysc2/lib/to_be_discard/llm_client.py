@@ -12,22 +12,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
+# import google.generativeai as genai
 from llamaapi import LlamaAPI
 from zhipuai import ZhipuAI
-from openai import OpenAI
-
+# from openai import OpenAI
+import openai
 
 from loguru import logger
 from threading import Event
 import threading
 import random
 import time
+# import json
 
 
 def gpt_query_runtime(self, event):
-  llm_response = self.client.chat.completions.create(
-  # llm_response = self.client.ChatCompletion.create(
+  llm_response = self.client.ChatCompletion.create(
+    model=self.model_name,
+    messages=self.messages,
+    temperature=self.temperature
+  )
+  if event.is_set():
+    return
+  # print(llm_response)
+  self.query_token_in = llm_response["usage"]["prompt_tokens"]
+  self.query_token_out = llm_response["usage"]["completion_tokens"]
+  self.llm_response = llm_response["choices"][0]["message"]["content"]
+
+def claude_query_runtime(self, event):
+  llm_response = self.client.ChatCompletion.create(
     model=self.model_name,
     messages=self.messages,
     temperature=self.temperature
@@ -37,9 +50,68 @@ def gpt_query_runtime(self, event):
   self.query_token_in = llm_response.usage.prompt_tokens
   self.query_token_out = llm_response.usage.completion_tokens
   self.llm_response = llm_response.choices[0].message.content
-  print(self.query_token_in)
-  print(self.query_token_out)
-  print(self.llm_response)
+
+def llama_query_runtime(self, event):
+  llm_response = self.client.run({
+    'model': self.model_name,
+    'messages': self.messages,
+    'temperature': self.temperature,}
+  ).json()
+  if event.is_set():
+    return
+  self.query_token_in = llm_response["usage"]["prompt_tokens"] if 'usage' in llm_response.keys() else 0
+  self.query_token_out = llm_response["usage"]["completion_tokens"] if 'usage' in llm_response.keys() else 0
+  self.llm_response = llm_response['choices'][0]["message"]["content"]
+
+def glm_query_runtime(self, event):
+  llm_response = self.client.chat.completions.create(
+    model=self.model_name,  # 填写需要调用的模型名称
+    messages=self.messages,
+    temperature=self.temperature
+  )
+  if event.is_set():
+    return
+  self.query_token_in = 0
+  self.query_token_out = 0
+  self.llm_response = llm_response.choices[0].message.content
+
+def glm4v_query_runtime(self, event):
+  llm_response = self.client.chat.completions.create(
+    model=self.model_name,  # 填写需要调用的模型名称
+    messages=self.messages,
+    temperature=self.temperature
+  )
+  if event.is_set():
+    return
+  self.query_token_in = llm_response.usage.prompt_tokens
+  self.query_token_out = llm_response.usage.completion_tokens
+  self.llm_response = llm_response.choices[0].message.content
+
+# def gemini_query_runtime(self, ):
+#   self.llm_response = self.model.generate_content(
+#     messages=self.messages, generation_config=genai.types.GenerationConfig(temperature=self.temperature)).text
+
+# def qwen2_query_runtime(self, ):
+#   llm_response = self.client.ChatCompletion.create(
+#     model=self.model_name,  # 填写需要调用的模型名称
+#     messages=self.messages,
+#     temperature=self.temperature
+#   )
+#   self.query_token_in = llm_response.usage.prompt_tokens
+#   self.query_token_out = llm_response.usage.completion_tokens
+#   self.llm_response = llm_response.choices[0].message.content
+
+def deepseek_query_runtime(self, event):
+  llm_response = self.client.ChatCompletion.create(
+    model=self.model_name,
+    messages=self.messages,
+    # temperature=self.temperature
+  )
+  if event.is_set():
+    return
+  self.query_token_in = llm_response.usage.prompt_tokens
+  self.query_token_out = llm_response.usage.completion_tokens
+  self.llm_response = llm_response.choices[0].message.content
 
 
 class GptClient:
@@ -51,10 +123,10 @@ class GptClient:
     self.api_key = config.AGENTS[name]['llm']['api_key']
     self.temperature = config.temperature
 
-    self.client = OpenAI(
-      api_key=self.api_key,
-      base_url=self.api_base,
-    )
+    # openai.api_base = self.api_base
+    # openai.api_key = self.api_key
+    # openai.base_url = self.api_base
+    self.client = openai
     self.client.api_base = self.api_base
     self.client.api_key = self.api_key
 
@@ -183,24 +255,126 @@ class GptClient:
     logger.error(f"[ID {self.log_id}] {self.agent_name} Can not get llm response after try {max_retries} times!")
     return f'[ID {self.log_id}] {self.agent_name} Can not get llm response after try {max_retries} times!'
 
+class O1Client(GptClient):
+  def __init__(self, name, log_id, config):
+    super(O1Client, self).__init__(name, log_id, config)
+    self.query_runtime = gpt_query_runtime
+    self.temperature = 1  # Only the default (1) value is supported.
+    self.client = openai
+    logger.info(f"[ID {self.log_id}] {self.agent_name} {self.model_name} O1Client initialized")
+
+  def wrap_message(self, obs_prompt, base64_image):
+    super().wrap_message(obs_prompt, base64_image)
+    # 不包含图像的消息
+    self.messages = [
+      {"role": "user", "content": self.system_prompt},
+      {"role": "assistant", "content": "Understand."},
+      {"role": "user", "content": self.example_i_prompt},
+      {"role": "assistant", "content": self.example_o_prompt},
+      {"role": "user", "content": obs_prompt}
+    ]
+
+
+class ClaudeClient(GptClient):
+  def __init__(self, name, log_id, config):
+    super(ClaudeClient, self).__init__(name, log_id, config)
+    self.query_runtime = claude_query_runtime
+    self.client = openai
+    logger.info(f"[ID {self.log_id}] {self.agent_name} {self.model_name} ClaudeClient initialized")
+
+class LlamaClient(GptClient):
+  def __init__(self, name, log_id, config):
+    super(LlamaClient, self).__init__(name, log_id, config)
+    self.query_runtime = llama_query_runtime
+    self.client = LlamaAPI(self.api_key, hostname=self.api_base)
+    logger.info(f"[ID {self.log_id}] {self.agent_name} {self.model_name} LlamaClient initialized")
+
+class GlmClient(GptClient):
+  def __init__(self, name, log_id, config):
+    super(GlmClient, self).__init__(name, log_id, config)
+    self.query_runtime = glm_query_runtime
+    self.client = ZhipuAI(api_key=self.api_key)
+    logger.info(f"[ID {self.log_id}] {self.agent_name} {self.model_name} GlmClient initialized")
+
+class DeepseekClient(GptClient):
+  def __init__(self, name, log_id, config):
+    super(DeepseekClient, self).__init__(name, log_id, config)
+    self.query_runtime = deepseek_query_runtime
+    openai.base_url = "https://api.deepseek.com"
+    self.client = openai
+    # self.client.api_base = "https://api.deepseek.com"
+    # self.client.api_key = self.api_key
+    logger.info(f"[ID {self.log_id}] {self.agent_name} {self.model_name} DeepseekClient initialized")
+
+  # class GeminiClient(GptClient):
+#   def __init__(self, name, log_id, config):
+#     super(GeminiClient).__init__(self, name, log_id, config)
+#     self.query_runtime = gemini_query_runtime
+#     self.model = genai.GenerativeModel(config.model_name)
+
+# class QWen2Client(GptClient):
+#   def __init__(self, name, log_id, config):
+#     super(QWen2Client, self).__init__(name, log_id, config)
+#     self.query_runtime = qwen2_query_runtime
+#     self.client = openai
+
 # for config's auto check
 vision_model_names = [
-  'gpt-4o', 'gpt-4o-all', 'gpt-4o-mini',
+  'gpt-4o', 'gpt-4-1106-vision-preview',
+  'gpt-4o-all', 'gpt-4o-mini',  # ?
+  'gpt-4v-1106', 'gpt-4v-0409',  # ?
+  'glm-4v', 'glm-4v-plus'
 ]
-video_model_names = [
-
-]
+video_model_names = []
 
 FACTORY = {
   'default': GptClient,
   'gpt-3.5-turbo': GptClient,
+  'gpt-3.5-turbo-1106': GptClient,
 
   'gpt-4o': GptClient,
-  'gpt-4o-all': GptClient,
   'gpt-4o-mini': GptClient,
+  'gpt-4-turbo': GptClient,
+  'gpt-4o-all': GptClient,
 
+  # 'gpt-4-1106-vision-preview': GptClient,
+  # 'gpt-4v-1106': GptClient,
+  # 'gpt-4v-0409': GptClient,
+
+  'o1-mini': O1Client,
+  'o1-preview': O1Client,
+
+  'claude-3-opus': ClaudeClient,
+  'claude-3-haiku': ClaudeClient,
+  'claude-3-sonnet': ClaudeClient,
+
+  'llama3-8b': LlamaClient,
+  'llama3-70b': LlamaClient,
+  'llama3.1-8b': LlamaClient,
+  'llama3.1-70b': LlamaClient,
+  'llama3.1-405b': LlamaClient,
+
+  'glm-4': GlmClient,
+  'glm-4-long': GlmClient,
+  'glm-4-plus': GlmClient,
+  'glm-4-air': GlmClient,
+  'glm-4-airx': GlmClient,
+  'glm-4-flash': GlmClient,
+  'glm-4-flashx': GlmClient,
+
+  # 'glm-4v': GlmClient,
+  # 'glm-4v-plus': GlmClient,
+
+  # 'qwen2.5-7b-instruct': QWen2Client,
+  # 'qwen2:72b': QWen2Client,  # debug for LAN LLM
+  # 'gemini': GeminiClient,
+  'deepseek-r1-250120': GptClient,
   'deepseek-v3': GptClient,
   'deepseek-r1': GptClient,
+  'deepseek-chat': GptClient,
+  'deepseek-reasoner': DeepseekClient,
+  'deepseek-ai/DeepSeek-R1': DeepseekClient,  # silicon flow
+  'deepseek-ai/DeepSeek-V3': DeepseekClient,  # silicon flow
 }
 
 if __name__ == "__main__":
@@ -210,6 +384,6 @@ if __name__ == "__main__":
   api_base = 'https://api.xty.app/v1'
   api_key = ''
   config.reset_llm(model_name, api_base, api_key)
-  c = GptClient('CombatGroup0', 0, config)
+  c = DeepseekClient('CombatGroup0', 0, config)
   response = c.query('hello')
   print(response)

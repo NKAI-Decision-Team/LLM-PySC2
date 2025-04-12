@@ -169,7 +169,7 @@ def main_agent_func0(self, obs):
   # region 1初始动作
   # 选择枢纽，训练probe，加速枢纽
   if self.race == 'protoss' and self.config.ENABLE_INIT_STEPS:
-    if self.num_step == 0:
+    if self.num_step == 1:
       for unit in obs.observation.feature_units:
         if unit.alliance == features.PlayerRelative.SELF and unit.unit_type in BASE_BUILDING_TYPE:
           # x, y = min(max(0, unit.x), self.size_screen), min(max(0, unit.y), self.size_screen)
@@ -183,7 +183,7 @@ def main_agent_func0(self, obs):
           func_id = func_id if func_id in obs.observation.available_actions else 0
           self.func_id_history.append(func_id)
           return func_id, func_call
-    if self.num_step == 1:
+    if self.num_step == 2:
       for unit in obs.observation.feature_units:
         if unit.alliance == features.PlayerRelative.SELF and unit.unit_type in BASE_BUILDING_TYPE:
           func_id, func_call = (485, actions.FUNCTIONS.Train_Probe_quick('now'))
@@ -192,7 +192,7 @@ def main_agent_func0(self, obs):
           func_id = func_id if func_id in obs.observation.available_actions else 0
           self.func_id_history.append(func_id)
           return func_id, func_call
-    if self.num_step == 2:
+    if self.num_step == 3:
       for unit in obs.observation.feature_units:
         if unit.alliance == features.PlayerRelative.SELF and unit.unit_type in BASE_BUILDING_TYPE:
           func_id, func_call = (343, actions.FUNCTIONS.Rally_Workers_screen('now', (unit.x, unit.y)))
@@ -201,7 +201,7 @@ def main_agent_func0(self, obs):
           func_id = func_id if func_id in obs.observation.available_actions else 0
           self.func_id_history.append(func_id)
           return func_id, func_call
-    if self.num_step == 3:
+    if self.num_step == 4:
       for unit in obs.observation.feature_units:
         if unit.alliance == features.PlayerRelative.SELF and unit.unit_type in BASE_BUILDING_TYPE:
           func_id, func_call = (

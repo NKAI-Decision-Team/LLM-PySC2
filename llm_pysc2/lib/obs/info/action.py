@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
+from llm_pysc2.lib.action import space as action_space
 from llm_pysc2.lib.utils import *
 from llm_pysc2.lib.action.condition import *
 
@@ -147,10 +147,10 @@ def get_valid_actions_build(agent) -> (list, str):
       if unit.unit_type == units.Protoss.WarpGate:
         building_types.append('Gateway')
 
-  valid_actions = []
-  valid_actions_info = ''
+  # valid_actions = []
   basic_actions_info = ''
-
+  valid_actions_info = ''
+  partial_valid_actions_info = ''
 
   for action in ba:
     func_id, valid = action['func'][-1][0], True
@@ -162,25 +162,31 @@ def get_valid_actions_build(agent) -> (list, str):
       conditions = bc[func_id]
       # condition = {'m': 175, 'g': 175, 'b': units.Protoss.CyberneticsCore, 'u': u.ProtossAirArmorsLevel1, 't': 215},
       cs = conditions
+      valid = False if ('b' in cs.keys() and not all_building_condition_reached(cs['b'], building_types)) else valid
+      valid = False if ('u' in cs.keys() and cs['u'] not in u) else valid
+      partial_valid = True if valid else False
       valid = False if ('m' in cs.keys() and m < cs['m']) else valid
       valid = False if ('g' in cs.keys() and g < cs['g']) else valid
       valid = False if ('s' in cs.keys() and s < cs['s']) else valid
-      valid = False if ('b' in cs.keys() and not all_building_condition_reached(cs['b'], building_types)) else valid
-      valid = False if ('u' in cs.keys() and cs['u'] not in u) else valid
-      if valid:
-        valid_actions.append(action['name'])
+      if partial_valid and not valid:  # resource not enough
         cost = {'mineral': cs['m'], 'gas': cs['g']}  # 'time': cs['t']
-
-        note = ", note: 'We do not have this building yet, it may unlock new buildings/technologies/units for us'" if building_name not in building_types_text else ''
+        note = ", note: 'New Building! We do not have this building yet, it may unlock new buildings/technologies/units for us'" if building_name not in building_types_text else ''
+        partial_valid_actions_info += f"\n\t\t<{action['name']}({arg_to_show})> \n\t\t\t cost: {cost}{note}"
+      if valid:
+        # valid_actions.append(action['name'])
+        cost = {'mineral': cs['m'], 'gas': cs['g']}  # 'time': cs['t']
+        note = ", note: 'New Building! We do not have this building yet, it may unlock new buildings/technologies/units for us'" if building_name not in building_types_text else ''
         valid_actions_info += f"\n\t\t<{action['name']}({arg_to_show})> \n\t\t\t cost: {cost}{note}"
         # valid_actions_info += f"{building_name} {building_types_text}"
     else:
-      valid_actions.append(action['name'])
+      # valid_actions.append(action['name'])
       basic_actions_info += f"\n\t\t<{action['name']}({arg_to_show})> "
 
   # if valid_actions_info != '':
   #   valid_actions_info = "Valid Research Actions: " + valid_actions_info + "\n\n"
-  return valid_actions, basic_actions_info + valid_actions_info
+
+  # return valid_actions, basic_actions_info + valid_actions_info
+  return basic_actions_info + valid_actions_info, partial_valid_actions_info
 
 
 def get_valid_actions_research(agent) -> (list, str):
@@ -192,8 +198,9 @@ def get_valid_actions_research(agent) -> (list, str):
     if unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100 and unit.unit_type in BUILDING_TYPE:
       building_types.append(unit.unit_type)
 
-  valid_actions = []
+  # valid_actions = []
   valid_actions_info = ''
+  partial_valid_actions_info = ''
   for action in ra:
     func_id = map_research_quick_to_level(action['func'][-1][0], u)
     if func_id == -1:
@@ -201,19 +208,25 @@ def get_valid_actions_research(agent) -> (list, str):
     conditions, valid = rc[func_id], True
     # condition = {'m': 175, 'g': 175, 'b': units.Protoss.CyberneticsCore, 'u': u.ProtossAirArmorsLevel1, 't': 215},
     cs = conditions
+    valid = False if ('b' in cs.keys() and not all_building_condition_reached(cs['b'], building_types)) else valid
+    valid = False if ('u' in cs.keys() and cs['u'] not in u) else valid
+    partial_valid = True if valid else False
     valid = False if ('m' in cs.keys() and m < cs['m']) else valid
     valid = False if ('g' in cs.keys() and g < cs['g']) else valid
     valid = False if ('s' in cs.keys() and s < cs['s']) else valid
-    valid = False if ('b' in cs.keys() and not all_building_condition_reached(cs['b'], building_types)) else valid
-    valid = False if ('u' in cs.keys() and cs['u'] not in u) else valid
+    if partial_valid and not valid:  # resource not enough
+      cost = {'mineral': cs['m'], 'gas': cs['g']}  # 'time': cs['t']
+      partial_valid_actions_info += f"\n\t\t<{action['name']}()> \n\t\t\t cost: {cost}"
     if valid:
-      valid_actions.append(action['name'])
+      # valid_actions.append(action['name'])
       cost = {'mineral': cs['m'], 'gas': cs['g']}  # 'time': cs['t']
       valid_actions_info += f"\n\t\t<{action['name']}()> \n\t\t\t cost: {cost}"
 
   # if valid_actions_info != '':
   #   valid_actions_info = "Valid Research Actions: " + valid_actions_info + "\n\n"
-  return valid_actions, valid_actions_info
+
+  # return valid_actions, valid_actions_info
+  return valid_actions_info, partial_valid_actions_info
 
 
 def get_valid_actions_train(agent) -> (list, str):
@@ -225,26 +238,33 @@ def get_valid_actions_train(agent) -> (list, str):
     if unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100 and unit.unit_type in BUILDING_TYPE:
       building_types.append(unit.unit_type)
 
-  valid_actions = []
+  # valid_actions = []
   valid_actions_info = ''
+  partial_valid_actions_info = ''
   for action in ta:
     func_id = action['func'][-1][0]
     conditions, valid = tc[func_id], True
     # condition = {'m': 125, 'g': 50, 'b': units.Protoss.Gateway, 't': 42, 's': 2},
     cs = conditions
+    valid = False if ('b' in cs.keys() and not all_building_condition_reached(cs['b'], building_types)) else valid
+    valid = False if ('u' in cs.keys() and cs['u'] not in u) else valid
+    partial_valid = True if valid else False
     valid = False if ('m' in cs.keys() and m < cs['m']) else valid
     valid = False if ('g' in cs.keys() and g < cs['g']) else valid
     valid = False if ('s' in cs.keys() and s < cs['s']) else valid
-    valid = False if ('b' in cs.keys() and not all_building_condition_reached(cs['b'], building_types)) else valid
-    valid = False if ('u' in cs.keys() and cs['u'] not in u) else valid
+    if partial_valid and not valid:  # resource not enough
+      cost = {'mineral': cs['m'], 'gas': cs['g'], 'supply': cs['s']}  # 'time': cs['t']
+      partial_valid_actions_info += f"\n\t\t<{action['name']}()> \n\t\t\t cost: {cost}"
     if valid:
-      valid_actions.append(action['name'])
+      # valid_actions.append(action['name'])
       cost = {'mineral': cs['m'], 'gas': cs['g'], 'supply': cs['s']}  # 'time': cs['t']
       valid_actions_info += f"\n\t\t<{action['name']}()> \n\t\t\t # cost: {cost}"
 
   # if valid_actions_info != '':
   #   valid_actions_info = "Valid Unit Training Actions: " + valid_actions_info + "\n\n"
-  return valid_actions, valid_actions_info
+
+  # return valid_actions, valid_actions_info
+  return valid_actions_info, partial_valid_actions_info
 
 
 def get_valid_actions_developer(agent):
@@ -264,23 +284,28 @@ def get_valid_actions_developer(agent):
       teams_valid_actions_info += f"\n\tTeam {team['name']}:"
 
     valid_actions_info = ''
+    partial_valid_actions_info = ''
     if 'Buildings' in team['name']:
-      _, valid_actions_info_  = get_valid_actions_research(agent)
+      valid_actions_info_, partial_valid_actions_info_ = get_valid_actions_research(agent)
       valid_actions_info += valid_actions_info_
-      _, valid_actions_info_  = get_valid_actions_train(agent)
-      valid_actions_info += valid_actions_info_
+      partial_valid_actions_info += partial_valid_actions_info_
+      valid_actions_info_, partial_valid_actions_info_  = get_valid_actions_train(agent)
+      partial_valid_actions_info += partial_valid_actions_info_
       if valid_actions_info == '':
         teams_valid_actions_info += '\n\t\t currently none, build buildings to unlock training/warping and researching actions.'
       else:
         teams_valid_actions_info += valid_actions_info
+      teams_valid_actions_info += '\n\t\t(Actions only lack of resources below, currently invalid)' + partial_valid_actions_info
 
     if 'Workers' in team['name'] and agent.config.ENABLE_EASY_BUILD:
-      _, valid_actions_info_  = get_valid_actions_build(agent)
+      valid_actions_info_, partial_valid_actions_info_  = get_valid_actions_build(agent)
       valid_actions_info += valid_actions_info_
+      partial_valid_actions_info += partial_valid_actions_info_
       if valid_actions_info == '':
         teams_valid_actions_info += '\n\t\t currently none, waiting for more resource to build buildings.'
       else:
         teams_valid_actions_info += valid_actions_info
+      teams_valid_actions_info += '\n\t\t(Actions only lack of resources below, currently invalid)' + partial_valid_actions_info
 
   teams_valid_actions_info = 'Valid actions:' + teams_valid_actions_info + '\n\n'
   return teams_valid_actions_info
@@ -292,6 +317,8 @@ def get_valid_actions_builder(agent):
   for team in agent.teams:
 
     if agent.name == 'Builder':
+      if agent.flag_enable_empty_unit_group and len(team['unit_type']) == 0:
+        teams_valid_actions_info += f"\n\tTeam {team['name']}-1:"
       if team['select_type'] == 'select':
         for i in range(len(team['obs'])):
           teams_valid_actions_info += f"\n\tTeam {team['name']}-{i + 1}:"
@@ -300,14 +327,12 @@ def get_valid_actions_builder(agent):
     else:
       teams_valid_actions_info += f"\n\tAgent Builder's probe's valid actions:"
 
-    valid_actions_info = ''
-    _, valid_actions_info_ = get_valid_actions_build(agent)
-    valid_actions_info += valid_actions_info_
-
+    valid_actions_info, partial_valid_actions_info = get_valid_actions_build(agent)
     if valid_actions_info == '':
       teams_valid_actions_info += '\n\t\t currently none, waiting for more resource to unlock build actions.'
     else:
       teams_valid_actions_info += valid_actions_info
+    teams_valid_actions_info += '\n\t\t(Actions only lack of resources below, currently invalid)' + partial_valid_actions_info
 
   if agent.name == 'Builder':
     teams_valid_actions_info = 'Valid actions:' + teams_valid_actions_info + '\n\n'
@@ -315,6 +340,59 @@ def get_valid_actions_builder(agent):
     teams_valid_actions_info = "Agent Builder's Valid actions:" + teams_valid_actions_info + '\n\n'
   return teams_valid_actions_info
 
+
+def get_valid_actions_commander(agent):
+  teams_valid_actions_info = ''
+
+  if agent.name != 'Commander':
+    logger.error(f"[ID {agent.log_id}] LLMAgent {agent.name}: use get_valid_actions_commander but agent name is not Commander")
+
+  if agent.race == 'protoss':
+    commander_actions = action_space.PROTOSS_ACTION_EASY_CONTROL
+  elif agent.race == 'terran':
+    commander_actions = []  # TODO: ADD
+  elif agent.race == 'zerg':
+    commander_actions = []  # TODO: ADD
+  else:
+    commander_actions = []
+
+  for team in agent.teams:
+    if agent.flag_enable_empty_unit_group and len(team['unit_type']) == 0:
+      teams_valid_actions_info += f"\n\tTeam {team['name']}-1:"
+    elif team['select_type'] == 'select':
+      for i in range(len(team['obs'])):
+        teams_valid_actions_info += f"\n\tTeam {team['name']}-{i + 1}:"
+    else:
+      teams_valid_actions_info += f"\n\tTeam {team['name']}:"
+
+    obs = team['obs'][0]
+    valid_actions_info, unit_types, unit_type_names = '', [], []
+    for unit in obs.observation.raw_units:
+      if unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100 and \
+          unit.unit_type not in BUILDING_TYPE + WORKER_TYPE + unit_types:
+        unit_types.append(unit.unit_type)
+        unit_type_names.append(str(units.get_unit_type(unit.unit_type)).split('.')[-1])
+
+    team_action_space = []
+    for key in team['actions'].keys():
+      team_action_space += team['actions'][key]
+
+    for action in team_action_space:
+      if 'All_Units_' in action['name']:
+        valid_actions_info += f"\n\t\t <{action['name']}()>"
+      if '_Scan' in action['name']:
+        unit_name = action['name'].split('_')[0]
+        arg = '' if len(action['arg']) == 0 else tuple(action['arg'])
+        if action['name'] == 'Worker_Scan' or unit_name in unit_type_names:
+          valid_actions_info += f"\n\t\t <{action['name']}({arg})>"
+
+    if valid_actions_info != '':
+      teams_valid_actions_info += valid_actions_info
+    else:
+      teams_valid_actions_info += 'none, currently'
+
+  teams_valid_actions_info = 'Valid Actions' + teams_valid_actions_info + '\n\n'
+  return teams_valid_actions_info
 
 def get_action_error_info(agent):
   action_errors = agent.action_errors

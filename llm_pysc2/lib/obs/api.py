@@ -120,10 +120,11 @@ class CommanderTranslatorO(BaseTranslatorO):
       return f"obs_list error, no obs found"
     self.states[-1]['unit_count_info'] = get_unit_count_info(agent, return_type=1)
     self.states[-1]['other_agents_info'] = get_other_agents_info(agent)
+    self.states[-1]['valid_actions'] = get_valid_actions_commander(agent)
 
     # observation
-    self.text_obs = self.state['game_info'] + self.states[-1]['other_agents_info'] + self.states[-1]['unit_count_info']
-    self.text_task = self.state['communication_input'] + self.state['communication_target'] + self.state['task_info']
+    self.text_obs = self.state['game_info'] + self.states[-1]['unit_count_info'] + self.states[-1]['valid_actions']
+    self.text_task =  self.states[-1]['other_agents_info'] + self.state['communication_input'] + self.state['communication_target'] + self.state['task_info']
     self.text_prompt = self.text_obs + self.text_task + self.final_prompt
     text_o = self.text_prompt
 
@@ -157,12 +158,14 @@ class DeveloperTranslatorO(BaseTranslatorO):
       self.states[-1]['valid_actions'] = get_valid_actions_developer(agent)
     else:
       self.states[-1]['valid_actions'] = get_valid_actions_developer(agent) + get_valid_actions_builder(agent)
+
     self.states[-1]['warp_info'] = get_warp_info(agent)
     warp_info = '' if agent.config.ENABLE_EASY_WARP else self.states[-1]['warp_info']
+    action_args_explanation = self.state['valid_args_explanation'] if agent.config.ENABLE_EASY_WARP else self.states[-1]['warp_info']
 
     # observation
     self.text_obs = self.state['game_info'] + self.states[-1]['unit_count_info'] + \
-               self.states[-1]['valid_actions'] + self.state['valid_args_explanation'] + self.state['last_action_info'] + \
+               self.states[-1]['valid_actions'] + action_args_explanation + self.state['last_action_info'] + \
                warp_info
     self.text_task = self.state['communication_input'] + self.state['communication_target'] + self.state['task_info']
     self.text_prompt = self.text_obs + self.text_task + self.final_prompt

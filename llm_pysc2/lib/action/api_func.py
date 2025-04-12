@@ -57,13 +57,13 @@ def get_func(agent, obs):  # 该函数需要将当前text-pysc2动作对应的�
       text = f"{agent.name};   loop{agent.main_loop_step};   step{agent.num_step};   [Invalid Action]  {agent.curr_action_name}"
       utils.write_to_file(text, agent.history_func_path)
       func_id, func_call = (0, F.no_op())
-      return func_id, func_call, enable_no_op, text_action
+      return func_id, func_call, enable_no_op, None
 
     if agent.curr_action_name != 'No_Operation':
       text = f"{agent.name};   loop{agent.main_loop_step};   step{agent.num_step};   [   Success  ]  Action Detected: {text_action}"
       utils.write_to_file(text, agent.history_func_path)
 
-    if 'Attack' in agent.curr_action_name and 'Ability' not in agent.curr_action_name:
+    if 'Attack' in agent.curr_action_name and 'Ability' not in agent.curr_action_name and 'All_Unit_' not in agent.curr_action_name:
       queued, source_unit_tag = '', None
       for func_triple in agent.func_list:
         func_id, func, llm_pysc2_args = func_triple

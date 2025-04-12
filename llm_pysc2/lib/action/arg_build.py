@@ -112,12 +112,12 @@ def get_arg_screen_build(obs, screen: list, size_screen, action_name, easy_build
       # r = 11 - retry // n - 2 * random.random() if easy_build else retry // n
       # rad = ((retry % n) / n) * math.pi * 2
       if easy_build:
-        # length, r, rad = SCREEN_WORLD_GRID, 0, 0
-        # i0, j0 = (0, 0) if retry == 0 else (length * (random.random()-0.5), length * (random.random()-0.5))
-        n = max_retry // 10
-        r = 3 * random.random() + retry // n
-        rad = 2 * math.pi * random.random()
-        i0, j0 = (0, 0) if retry == 0 else (r * math.cos(rad), r * math.sin(rad))
+        length, r, rad = SCREEN_WORLD_GRID, 0, 0
+        i0, j0 = (0, 0) if retry == 0 else (length * (random.random()-0.5), length * (random.random()-0.5))
+        # n = max_retry // 10
+        # r = 3 * random.random() + retry // n
+        # rad = 2 * math.pi * random.random()
+        # i0, j0 = (0, 0) if retry == 0 else (r * math.cos(rad), r * math.sin(rad))
         if building_name in ['Pylon']:
           r = 12 - retry // 12 - 3 * random.random()
           rad = 2 * math.pi * random.random()  #  * random.random()  * ((retry % 20) / 20)

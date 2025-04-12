@@ -137,7 +137,7 @@ ZERG_BUILDING_TYPE = [
   units.Zerg.InfestationPit, units.Zerg.NydusNetwork, units.Zerg.NydusCanal,
   units.Zerg.UltraliskCavern, units.Zerg.RoachWarren, units.Zerg.LurkerDen,
   units.Zerg.SpineCrawler, units.Zerg.SpineCrawlerUprooted,
-  units.Zerg.SporeCrawler, units.Zerg.SporeCrawlerUprooted
+  units.Zerg.SporeCrawler, units.Zerg.SporeCrawlerUprooted,
 ]
 TERRAN_BUILDING_TYPE = [
   units.Terran.CommandCenter, units.Terran.OrbitalCommand, units.Terran.PlanetaryFortress,

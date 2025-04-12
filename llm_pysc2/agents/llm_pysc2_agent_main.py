@@ -546,7 +546,7 @@ class MainAgent(base_agent.BaseAgent):
           # empty team excuting actions (only for spesified empty team)
           if (agent.flag_enable_empty_unit_group and len(agent.team_unit_tag_list) == 0):
             logger.debug(f"[ID {self.log_id}] Agent {agent_name}, status: 7.3.5")
-            func_id, func_call, enable_no_op, _ = agent.get_func(obs)
+            func_id, func_call, enable_no_op, self.last_action = agent.get_func(obs)
             self.func_id_history.append(func_id)
 
           # standard team excuting actions
@@ -697,7 +697,7 @@ class MainAgent(base_agent.BaseAgent):
 
   def send_chat_message(self):
     if self.steps == 0:
-      return f""
+      return f" Good Luck Have Fun -- by LLM-PySC2 team"
     if self.last_action is not None:
       time_m = self.steps / 22.4 // 60
       time_s = self.steps / 22.4 % 60

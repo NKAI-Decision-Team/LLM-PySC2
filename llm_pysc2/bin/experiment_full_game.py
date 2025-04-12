@@ -19,7 +19,7 @@ import os
 
 map_name = f"Simple64"
 # map_name = f"debug_map"
-difficult_level = 1  # 1 to 10
+difficult_level = 4  # 1 to 10
 
 difficulties = ['very_easy', 'easy', 'medium',
                 'medium_hard', 'hard', 'harder', 'very_hard',

@@ -1,3 +1,17 @@
+# Copyright 2025, LLM-PySC2 Contributors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS-IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 
 from llm_pysc2.lib.utils import *
 
@@ -40,10 +54,12 @@ def tag_for_easy_build_protoss(obs):  # 查找周围空间较大的pylon的scree
   counts, index = get_nearby_unit_num_of_unit(all_building_pos_list, base_pos_list, r=12, flag='min')
   tag = None if counts == 0 else base_list[index].tag
 
-  if counts <= 8 and tag is not None:
-    return tag
-  if 8 < counts <= 16 and tag is not None:
+  if counts <= 16 and tag is not None:
     return base_list[random.randint(0, len(base_list) - 1)].tag
+  # if 8 < counts <= 16 and tag is not None:
+  #   return tag
+  # if 10 < counts <= 16 and tag is not None:
+  #   return base_list[random.randint(0, len(base_list) - 1)].tag
   if counts > 16 and tag is not None:
     unit_pos_list = all_resource_pos_list + all_resource_pos_list + all_building_pos_list
     counts, index = get_nearby_unit_num_of_unit(unit_pos_list, pylon_pos_list, r=7, flag='min')
@@ -112,6 +128,25 @@ def tag_for_easy_warp(obs, first_ctrl_base_tag='', first_oppo_base_tag=''):  # �
   #   tag_for_pylon = None if d_min == 0 else pylon_list[index_min].tag
 
   return tag_for_pylon
+
+
+def tag_for_closest_unit(obs, tag, unit_type):
+  target_unit = None
+  unit_list, unit_pos_list = [], []
+  for unit in obs.observation.raw_units:
+    if unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100:
+      if unit.unit_type == unit_type:
+        unit_list.append(unit)
+        unit_pos_list.append([unit.x, unit.y])
+    if unit.tag == tag:
+      target_unit = unit
+  if target_unit is None or len(unit_list) == 0:
+    return None, None
+  pos = [target_unit.x, target_unit.y]
+  d_min, index_min = get_dis_pos_poses1(pos, unit_pos_list, flag='min')
+  tag_for_unit = None if d_min == 0 else unit_list[index_min].tag
+  source_unit = None if d_min == 0 else unit_list[index_min]
+  return tag_for_unit, source_unit
 
 
 def tag_for_closest_worker(obs, tag, mining_only=True):

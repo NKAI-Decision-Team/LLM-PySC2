@@ -1,3 +1,16 @@
+# Copyright 2025, LLM-PySC2 Contributors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS-IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 
 from llm_pysc2.lib.action.utils import find_unit_type_the_func_belongs_to
@@ -182,28 +195,52 @@ def add_func_for_easy_control(self, obs, action):  # goto enemy base
   action_name = action['name']
   action_arg = action['arg']
   action_func = action['func']
-  if not ('All_Units_Attack' in action_name or 'Worker_Scan' in action_name or
-          'All_Units_Retreat' in action_name or 'All_Units_Concentrate' in action_name or 'All_Units_Defend' in action_name):
+  if not ('All_Units_' in action_name or '_Scan' in action_name):
     return action
 
   n_worker = 0
-  for unit in obs.observation.raw_units:
-    if unit.unit_type in WORKER_TYPE and unit.alliance == features.PlayerRelative.SELF:
-      n_worker += 1
-
   first_ctrl_base_pos, first_oppo_base_pos = None, None
   target_tag = self.first_oppo_base_tag
   target_tag2 = None  # front line pylon
+
+  enemy_combat_unit_list, enemy_combat_unit_pos_list = [], []
+  enemy_building_list, enemy_building_pos_list = [], []
+  enemy_worker_list, enemy_worker_pos_list = [], []
+
+  combat_unit_list, combat_unit_pos_list = [], []
+  worker_list, worker_pos_list = [], []
+
   all_pylon_list, all_pylon_pos_list = [], []
   all_base_list, all_base_pos_list = [], []
   all_ves_list, all_ves_pos_list = [], []
+
   for unit in obs.observation.raw_units:
+    if unit.unit_type in BUILDING_TYPE and unit.alliance == features.PlayerRelative.ENEMY:
+      enemy_building_list.append(unit)
+      enemy_building_pos_list.append([unit.x, unit.y])
+    if unit.unit_type in WORKER_TYPE and unit.alliance == features.PlayerRelative.ENEMY:
+      enemy_worker_list.append(unit)
+      enemy_worker_pos_list.append([unit.x, unit.y])
+    if (unit.unit_type not in BUILDING_TYPE + WORKER_TYPE or unit.unit_type in BUILDING_TYPE_DEFENSE) and \
+        unit.alliance == features.PlayerRelative.ENEMY:
+      enemy_combat_unit_list.append(unit)
+      enemy_combat_unit_pos_list.append([unit.x, unit.y])
+
+    if unit.unit_type in WORKER_TYPE and unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100:
+      n_worker += 1
+      worker_list.append(unit)
+      worker_pos_list.append([unit.x, unit.y])
+    if unit.unit_type not in BUILDING_TYPE + WORKER_TYPE and unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100:
+      combat_unit_list.append(unit)
+      combat_unit_pos_list.append([unit.x, unit.y])
+
     if unit.unit_type in BASE_BUILDING_TYPE and unit.alliance == features.PlayerRelative.SELF:
       all_base_list.append(unit)
       all_base_pos_list.append([unit.x, unit.y])
     if unit.unit_type == units.Protoss.Pylon and unit.alliance == features.PlayerRelative.SELF:
       all_pylon_list.append(unit)
       all_pylon_pos_list.append([unit.x, unit.y])
+
     if unit.unit_type in GAS_TYPE:
       all_ves_list.append(unit)
       all_ves_pos_list.append([unit.x, unit.y])
@@ -212,54 +249,121 @@ def add_func_for_easy_control(self, obs, action):  # goto enemy base
     if unit.tag == self.first_oppo_base_tag:
       first_oppo_base_pos = [unit.x, unit.y]
 
+  # Worker Scan
   if target_tag is None:
     logger.warning(f"[ID {self.log_id}] Agent {self.name}, add_func_for_easy_control(): Can not find enemy base, randomly choice a vespene as target for scan or attack")
     target_tag = all_ves_list[random.randint(0, len(all_ves_list) - 1)].tag
-
   worker_tag = tag_for_closest_worker(obs, target_tag, mining_only=False)
 
-  # if first_ctrl_base_pos is not None:
-  #   d_max, index_max = get_dis_pos_poses1(first_ctrl_base_pos, all_pylon_pos_list, flag='max')
-  #   target_tag2 = all_pylon_list[index_max].tag if d_max != 0 else self.first_ctrl_base_tag
+  # Defend concentrate
   if first_oppo_base_pos is not None:
     d_min, index_min = get_dis_pos_poses1(first_oppo_base_pos, all_pylon_pos_list, flag='min')  # front line pylon
     target_tag2 = all_pylon_list[index_min].tag if d_min != 0 else self.first_oppo_base_tag
   else:
-    d_max, indexes_max = get_dis_posse1_poses2(all_base_pos_list, all_pylon_pos_list)
+    d_max, indexes_max = get_dis_posse1_poses2(all_base_pos_list, all_pylon_pos_list, flag='max')
     target_tag2 = all_pylon_list[indexes_max[1]].tag if d_max != 0 else self.first_ctrl_base_tag
 
+  # Attack Combat / Defend Combat
+  a_ = combat_unit_center_pos = list(np.average(np.array(combat_unit_pos_list), axis=0)) if len(combat_unit_pos_list) > 0 else None
+  b_ = enemy_combat_unit_center_pos = list(np.average(np.array(enemy_combat_unit_pos_list), axis=0)) if len(enemy_combat_unit_pos_list) > 0 else None
+  combat_unit_center_distance = None
+  if a_ is not None and b_ is not None:
+    combat_unit_center_distance = math.sqrt((a_[0] - b_[0]) ** 2 + (a_[1] - b_[1]) ** 2)
+
+  combat_unit_tag_to_attack = None
+  if 'All_Units_Attack' in action_name:
+    if combat_unit_center_pos is not None:
+      d_min, index_min = get_dis_pos_poses1(combat_unit_center_pos, enemy_combat_unit_pos_list, flag='min')
+      if combat_unit_center_distance is not None and (combat_unit_center_distance < 24 or 0 < d_min < 20):  # 已侦查到的主力距离在24单位内或者"主力"15单位距离内有敌人战斗单位
+        combat_unit_tag_to_attack = enemy_combat_unit_list[index_min].tag
+  if 'All_Units_Defend' in action_name:
+    d_min, indexes_min = get_dis_posse1_poses2(all_base_pos_list, enemy_combat_unit_pos_list, flag='min')
+    if 0 < d_min < 15:  # "基地"15单位距离内有敌人战斗单位
+      unit_ = enemy_combat_unit_list[indexes_min[1]]
+      combat_unit_tag_to_attack = unit_.tag
+      c_ = combat_unit_pos_to_attack = [int(unit_.x), int(unit_.y)]
+      if math.sqrt((c_[0] - b_[0]) ** 2 + (c_[1] - b_[1]) ** 2) > 24:
+        combat_unit_tag_to_attack = None  # 攻击对象和已经侦查到的敌方主力相距超过24单位时，大概率是小股侦查，不予理会
+    if combat_unit_center_pos is not None:
+      d_min, index_min = get_dis_pos_poses1(combat_unit_center_pos, enemy_combat_unit_pos_list, flag='min')
+      d_min2, index_min2 = get_dis_pos_poses1(combat_unit_center_pos, all_base_pos_list, flag='min')
+      if combat_unit_tag_to_attack is None and combat_unit_center_distance is not None and \
+          combat_unit_center_distance < 20 and 0 < d_min2 < 24:  # 主力附近遭遇敌方主力, 且主力距离基地的距离不超过24格
+        combat_unit_tag_to_attack = enemy_combat_unit_list[index_min].tag
+
   full_shape_action = {'name': 'No_Operation', 'arg': [], 'func': [(0, actions.FUNCTIONS.no_op, {})]}
+
+  def funcs_move_camera_to(tag):
+    return [(573, F.llm_pysc2_move_camera, [int(tag)]), (573, F.llm_pysc2_move_camera, [int(tag)])]
+  def funcs_select_army_and_move_camera_to(tag):
+    return [(7, F.select_army, ['select'])] + funcs_move_camera_to(tag)
+  def funcs_move_camera_to_and_select_unit(tag):
+    return funcs_move_camera_to(tag) + [(2, F.select_point, ['select', int(tag)])]
+
   if ('All_Units_Attack' in action_name):
     supply = obs.observation.player.food_cap - obs.observation.player.food_used
-    print(target_tag, target_tag2, worker_tag)
     if target_tag is not None:  # and obs.observation.player.food_used - n_worker > 100 or supply < 10
-      full_shape_action = {'name': action_name, 'arg': [], 'func': [
-        (7, F.select_army, ['select']),
-        (573, F.llm_pysc2_move_camera, [int(target_tag)]),
-        (573, F.llm_pysc2_move_camera, [int(target_tag)]),
-        (13, F.Attack_minimap, ('now', 'here')),
-        # (12, F.Attack_screen, ('now', int(target_tag)))
-      ]}
+      if combat_unit_tag_to_attack is not None:
+        target_tag = combat_unit_tag_to_attack
+        full_shape_action = {'name': action_name, 'arg': [], 'func':
+          funcs_select_army_and_move_camera_to(target_tag) + [(12, F.Attack_screen, ['now', int(target_tag)])]}
+      else:
+        full_shape_action = {'name': action_name, 'arg': [],  'func':
+          funcs_select_army_and_move_camera_to(target_tag) + [(13, F.Attack_minimap, ['now', 'here'])]}
+
+  elif ('All_Units_Defend' in action_name):
+    if target_tag2 is not None:
+      if combat_unit_tag_to_attack is not None:
+        target_tag2 = combat_unit_tag_to_attack
+        full_shape_action = {'name': action_name, 'arg': [], 'func':
+          funcs_select_army_and_move_camera_to(target_tag2) + [(12, F.Attack_screen, ['now', int(target_tag2)])]}
+      else:
+        full_shape_action = {'name': action_name, 'arg': [], 'func':
+          funcs_select_army_and_move_camera_to(target_tag2) + [(331, F.Move_screen, ['now', int(target_tag2)])]}
+
+  elif ('All_Units_Retreat' in action_name):
+    if target_tag2 is not None:
+      full_shape_action = {'name': action_name, 'arg': [], 'func':
+        funcs_select_army_and_move_camera_to(target_tag2) + [(331, F.Move_screen, ['now', int(target_tag2)])]}
+
   elif ('Worker_Scan' in action_name):
-    print(target_tag, target_tag2, worker_tag)
     if target_tag is not None and target_tag2 is not None and worker_tag is not None:
       full_shape_action = {'name': action_name, 'arg': [], 'func':
-        [(573, F.llm_pysc2_move_camera, [int(worker_tag)]),
-         (573, F.llm_pysc2_move_camera, [int(worker_tag)]),
-         (2, F.select_point, ['select', int(worker_tag)]),
-         (573, F.llm_pysc2_move_camera, [int(target_tag)]),
-         (573, F.llm_pysc2_move_camera, [int(target_tag)]),
-         (331, F.Move_screen, ('now', int(target_tag))),
-         ]}
-  elif ('All_Units_Retreat' in action_name or 'All_Units_Defend' in action_name):
-    if target_tag2 is not None:
-      full_shape_action = {'name': action_name, 'arg': [], 'func': [
-        (7, F.select_army, ['select']),
-        (573, F.llm_pysc2_move_camera, [int(target_tag2)]),
-        (573, F.llm_pysc2_move_camera, [int(target_tag2)]),
-        (331, F.Move_screen, ('now', int(target_tag2))),
-        ]}
+        funcs_move_camera_to_and_select_unit(worker_tag) + funcs_move_camera_to(target_tag) + [(331, F.Move_screen, ['now', int(target_tag)])]}
+
+  elif ('_Scan' in action_name):
+
+    if action_name == 'Adept_Scan':
+      source_unit_tag, source_unit = tag_for_closest_unit(obs, target_tag, units.Protoss.Adept)
+    elif action_name == 'Zealot_Scan':
+      source_unit_tag, source_unit = tag_for_closest_unit(obs, target_tag, units.Protoss.Zealot)
+    elif action_name == 'Observer_Scan':
+      source_unit_tag, source_unit = tag_for_closest_unit(obs, target_tag, units.Protoss.Observer)
+    else:
+      source_unit_tag, source_unit = None, None
+
+
+    if source_unit is None:
+      print(f"complete.py: source_unit is None")
+      return full_shape_action
+
+    d_min, index_min = get_dis_pos_poses1([source_unit.x, source_unit.y], enemy_worker_pos_list, flag='min')
+    target_tag, attack_worker = (enemy_worker_list[index_min].tag, True) if d_min != 0 else (target_tag, False)
+    print(f"complete.py: {target_tag, target_tag2, worker_tag, combat_unit_tag_to_attack}")
+    print(f"complete.py: XXX_Scan {source_unit_tag, source_unit.unit_type, target_tag, attack_worker, d_min}")
+
+    if target_tag is not None and target_tag2 is not None and source_unit_tag is not None:
+      if attack_worker:
+        full_shape_action = {'name': action_name, 'arg': [], 'func':
+          funcs_move_camera_to_and_select_unit(source_unit_tag) + funcs_move_camera_to(target_tag) +
+          [(12, F.Attack_screen, ['now', int(target_tag)])]}
+      else:
+        full_shape_action = {'name': action_name, 'arg': [], 'func':
+          funcs_move_camera_to_and_select_unit(source_unit_tag) + funcs_move_camera_to(target_tag) +
+          [(13, F.Attack_minimap, ['now', 'here'])]}
+
   else:
     full_shape_action = {'name': 'No_Operation', 'arg': [], 'func': [
       (0, actions.FUNCTIONS.no_op, [])]}
+
   return full_shape_action

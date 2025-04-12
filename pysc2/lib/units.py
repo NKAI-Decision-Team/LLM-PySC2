@@ -303,4 +303,4 @@ def get_unit_type(unit_id):
 if __name__ == "__main__":
     print(Protoss(311))
     print(str(get_unit_type(311)))
-
+    print(str(get_unit_type(311)).split('.')[-1])

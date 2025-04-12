@@ -1,5 +1,19 @@
+# Copyright 2025, LLM-PySC2 Contributors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS-IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 
+from llm_pysc2.lib.action.check import check_develop_action_validity, check_scan_action_validity, check_weapon_state
 from llm_pysc2.lib.action.complete import *
 from llm_pysc2.lib.action.arg_build import *
 from llm_pysc2.lib.action.arg import *
@@ -24,6 +38,8 @@ def get_func(agent, obs):  # 该函数需要将当前text-pysc2动作对应的�
   if len(agent.func_list) == 0:
     action = agent.action_list.pop(0)
     agent.action_valid_check_1 = True
+    agent.curr_action_name = action['name']
+    agent.curr_action_args = action['arg']
     action = add_func_for_select_workers(agent, obs, action)
     action = add_func_for_train_and_research(agent, obs, action)
     action = add_func_for_easy_build(agent, obs, action)
@@ -31,19 +47,21 @@ def get_func(agent, obs):  # 该函数需要将当前text-pysc2动作对应的�
     action = add_func_for_easy_warp(agent, obs, action)
     action = add_func_for_build(agent, obs, action)
     agent.func_list = action['func']
-    # agent.func_list_standard = llm_a.get_text_action(agent.name, action['name'])
-    agent.curr_action_name = action['name']
-    agent.curr_action_args = action['arg']
     agent.curr_action_valid = True
+    text_action = f'<{agent.curr_action_name}({agent.curr_action_args})>'
 
-    # text_action_args = ''
-    # for i in range(len(action['arg'])):
-    #   arg = action['arg'][i]
-    #   text_action_args += str(arg)
-    #   if i != len(action['arg']) - 1:
-    #     text_action_args += ', '
+    valid = check_develop_action_validity(agent, obs, agent.curr_action_name)
+    valid = valid and check_scan_action_validity(agent, obs, agent.curr_action_name)
+    if not valid:
+      agent.func_list = []
+      text = f"{agent.name};   loop{agent.main_loop_step};   step{agent.num_step};   [Invalid Action]  {agent.curr_action_name}"
+      utils.write_to_file(text, agent.history_func_path)
+      func_id, func_call = (0, F.no_op())
+      return func_id, func_call, enable_no_op, text_action
+
     if agent.curr_action_name != 'No_Operation':
-      text_action = f'<{agent.curr_action_name}({agent.curr_action_args})>'
+      text = f"{agent.name};   loop{agent.main_loop_step};   step{agent.num_step};   [   Success  ]  Action Detected: {text_action}"
+      utils.write_to_file(text, agent.history_func_path)
 
     if 'Attack' in agent.curr_action_name and 'Ability' not in agent.curr_action_name:
       queued, source_unit_tag = '', None

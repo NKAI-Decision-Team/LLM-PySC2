@@ -1,7 +1,20 @@
+# Copyright 2025, LLM-PySC2 Contributors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS-IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 
 from llm_pysc2.lib.utils import *
-from llm_pysc2.lib.obs.info.utils import *
+from llm_pysc2.lib.action.condition import *
 
 
 from loguru import logger
@@ -123,10 +136,16 @@ def get_valid_actions_build(agent) -> (list, str):
   obs = agent.team_unit_obs_list[0]
   _, _, ba, _, _, bc, m, g, s, u, b = get_condition_elements(agent)
 
-  building_types = []
+  building_types, building_types_text = [], []
   for unit in obs.observation.raw_units:
     if unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100 and unit.unit_type in BUILDING_TYPE:
       building_types.append(unit.unit_type)
+      if unit.unit_type == units.Protoss.WarpGate:
+        building_types.append(units.Protoss.Gateway)
+    if unit.alliance == features.PlayerRelative.SELF and unit.unit_type in BUILDING_TYPE:
+      building_types_text.append(str(units.get_unit_type(unit.unit_type)).split('.')[-1])
+      if unit.unit_type == units.Protoss.WarpGate:
+        building_types.append('Gateway')
 
   valid_actions = []
   valid_actions_info = ''
@@ -135,7 +154,10 @@ def get_valid_actions_build(agent) -> (list, str):
 
   for action in ba:
     func_id, valid = action['func'][-1][0], True
+
     arg_to_show = '' if agent.config.ENABLE_EASY_BUILD else action['arg'][0]
+    building_name = action['name'].split('_')[1]
+
     if func_id in bc.keys():
       conditions = bc[func_id]
       # condition = {'m': 175, 'g': 175, 'b': units.Protoss.CyberneticsCore, 'u': u.ProtossAirArmorsLevel1, 't': 215},
@@ -146,8 +168,12 @@ def get_valid_actions_build(agent) -> (list, str):
       valid = False if ('b' in cs.keys() and not all_building_condition_reached(cs['b'], building_types)) else valid
       valid = False if ('u' in cs.keys() and cs['u'] not in u) else valid
       if valid:
-        valid_actions.append(action)
-        valid_actions_info += f"\n\t\t<{action['name']}({arg_to_show})> \t\t cost: mineral{cs['m']}, gas{cs['g']}, time{cs['t']}s"
+        valid_actions.append(action['name'])
+        cost = {'mineral': cs['m'], 'gas': cs['g']}  # 'time': cs['t']
+
+        note = ", note: 'We do not have this building yet, it may unlock new buildings/technologies/units for us'" if building_name not in building_types_text else ''
+        valid_actions_info += f"\n\t\t<{action['name']}({arg_to_show})> \n\t\t\t cost: {cost}{note}"
+        # valid_actions_info += f"{building_name} {building_types_text}"
     else:
       valid_actions.append(action['name'])
       basic_actions_info += f"\n\t\t<{action['name']}({arg_to_show})> "
@@ -169,7 +195,7 @@ def get_valid_actions_research(agent) -> (list, str):
   valid_actions = []
   valid_actions_info = ''
   for action in ra:
-    func_id = map_research_quick_to_level(action['func'][0][0], u)
+    func_id = map_research_quick_to_level(action['func'][-1][0], u)
     if func_id == -1:
       continue
     conditions, valid = rc[func_id], True
@@ -182,7 +208,8 @@ def get_valid_actions_research(agent) -> (list, str):
     valid = False if ('u' in cs.keys() and cs['u'] not in u) else valid
     if valid:
       valid_actions.append(action['name'])
-      valid_actions_info += f"\n\t\t<{action['name']}()> \t\t cost: mineral{cs['m']}, gas{cs['g']}, time{cs['t']}s"
+      cost = {'mineral': cs['m'], 'gas': cs['g']}  # 'time': cs['t']
+      valid_actions_info += f"\n\t\t<{action['name']}()> \n\t\t\t cost: {cost}"
 
   # if valid_actions_info != '':
   #   valid_actions_info = "Valid Research Actions: " + valid_actions_info + "\n\n"
@@ -201,7 +228,7 @@ def get_valid_actions_train(agent) -> (list, str):
   valid_actions = []
   valid_actions_info = ''
   for action in ta:
-    func_id = action['func'][0][0]
+    func_id = action['func'][-1][0]
     conditions, valid = tc[func_id], True
     # condition = {'m': 125, 'g': 50, 'b': units.Protoss.Gateway, 't': 42, 's': 2},
     cs = conditions
@@ -212,7 +239,8 @@ def get_valid_actions_train(agent) -> (list, str):
     valid = False if ('u' in cs.keys() and cs['u'] not in u) else valid
     if valid:
       valid_actions.append(action['name'])
-      valid_actions_info += f"\n\t\t<{action['name']}()> \t\t cost: mineral{cs['m']}, gas{cs['g']}, supply{cs['s']}, time{cs['t']}s"
+      cost = {'mineral': cs['m'], 'gas': cs['g'], 'supply': cs['s']}  # 'time': cs['t']
+      valid_actions_info += f"\n\t\t<{action['name']}()> \n\t\t\t # cost: {cost}"
 
   # if valid_actions_info != '':
   #   valid_actions_info = "Valid Unit Training Actions: " + valid_actions_info + "\n\n"
@@ -226,25 +254,33 @@ def get_valid_actions_developer(agent):
     logger.error(f"[ID {agent.log_id}] LLMAgent {agent.name}: use get_valid_actions_developer but agent name is not Developer")
 
   for team in agent.teams:
-    if team['select_type'] == 'select':
+
+    if agent.flag_enable_empty_unit_group and len(team['unit_type']) == 0:
+      teams_valid_actions_info += f"\n\tTeam {team['name']}-1:"
+    elif team['select_type'] == 'select':
       for i in range(len(team['obs'])):
         teams_valid_actions_info += f"\n\tTeam {team['name']}-{i + 1}:"
     else:
       teams_valid_actions_info += f"\n\tTeam {team['name']}:"
 
     valid_actions_info = ''
-    _, valid_actions_info_  = get_valid_actions_research(agent)
-    valid_actions_info += valid_actions_info_
-    _, valid_actions_info_  = get_valid_actions_train(agent)
-    valid_actions_info += valid_actions_info_
-    if agent.config.ENABLE_EASY_BUILD:
+    if 'Buildings' in team['name']:
+      _, valid_actions_info_  = get_valid_actions_research(agent)
+      valid_actions_info += valid_actions_info_
+      _, valid_actions_info_  = get_valid_actions_train(agent)
+      valid_actions_info += valid_actions_info_
+      if valid_actions_info == '':
+        teams_valid_actions_info += '\n\t\t currently none, build buildings to unlock training/warping and researching actions.'
+      else:
+        teams_valid_actions_info += valid_actions_info
+
+    if 'Workers' in team['name'] and agent.config.ENABLE_EASY_BUILD:
       _, valid_actions_info_  = get_valid_actions_build(agent)
       valid_actions_info += valid_actions_info_
-
-    if valid_actions_info == '':
-      teams_valid_actions_info += '\n\t\t currently none, build buildings and to unlock training and researching actions.'
-    else:
-      teams_valid_actions_info += valid_actions_info
+      if valid_actions_info == '':
+        teams_valid_actions_info += '\n\t\t currently none, waiting for more resource to build buildings.'
+      else:
+        teams_valid_actions_info += valid_actions_info
 
   teams_valid_actions_info = 'Valid actions:' + teams_valid_actions_info + '\n\n'
   return teams_valid_actions_info

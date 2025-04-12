@@ -1,5 +1,24 @@
+# Copyright 2025, LLM-PySC2 Contributors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS-IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+from llm_pysc2.lib.action import space as action_space
+from llm_pysc2.lib.utils import *
 
 from pysc2.lib import units, actions, upgrades
+
+from loguru import logger
 
 a = actions.FUNCTIONS
 u = upgrades.Upgrades
@@ -77,6 +96,20 @@ protoss_research_conditions = {
     {'m': 100, 'g': 100, 'b': [units.Protoss.DarkShrine], 't': 140},
 }
 # minerals gas building time supply
+protoss_warp_train_conditions = {
+  actions.FUNCTIONS.TrainWarp_Zealot_screen.id:
+    {'m': 100, 'g': 0, 'b': [units.Protoss.WarpGate], 't': 38, 's': 2},
+  actions.FUNCTIONS.TrainWarp_Stalker_screen.id:
+    {'m': 125, 'g': 50, 'b': [units.Protoss.WarpGate, units.Protoss.CyberneticsCore], 't': 42, 's': 2},
+  actions.FUNCTIONS.TrainWarp_Adept_screen.id:
+    {'m': 100, 'g': 25, 'b': [units.Protoss.WarpGate, units.Protoss.CyberneticsCore], 't': 42, 's': 2},
+  actions.FUNCTIONS.TrainWarp_Sentry_screen.id:
+    {'m': 50, 'g': 100, 'b': [units.Protoss.WarpGate, units.Protoss.CyberneticsCore], 't': 32, 's': 2},
+  actions.FUNCTIONS.TrainWarp_HighTemplar_screen.id:
+    {'m': 50, 'g': 150, 'b': [units.Protoss.WarpGate, units.Protoss.TwilightCouncil], 't': 55, 's': 2},
+  actions.FUNCTIONS.TrainWarp_DarkTemplar_screen.id:
+    {'m': 125, 'g': 125, 'b': [units.Protoss.WarpGate, units.Protoss.TwilightCouncil], 't': 55, 's': 2},
+}
 protoss_train_conditions = {
   # Nexus, BN
   actions.FUNCTIONS.Train_Mothership_quick.id:
@@ -122,15 +155,15 @@ protoss_build_conditions = {
   actions.FUNCTIONS.Build_Nexus_screen.id:
     {'m': 400, 'g': 0, 'b': [], 't': 100},
   actions.FUNCTIONS.Build_Pylon_screen.id:
-    {'m': 100, 'g': 0, 'b': [units.Protoss.Nexus], 't': 25},
-  actions.FUNCTIONS.Build_Assimilator_screen.id:
-    {'m': 75, 'g': 0, 'b': [units.Protoss.Pylon], 't': 30},
+    {'m': 100, 'g': 0, 'b': [], 't': 25},
   actions.FUNCTIONS.Build_Gateway_screen.id:
     {'m': 150, 'g': 0, 'b': [units.Protoss.Pylon], 't': 65},
+  actions.FUNCTIONS.Build_Assimilator_screen.id:
+    {'m': 75, 'g': 0, 'b': [units.Protoss.Gateway], 't': 30},
   actions.FUNCTIONS.Build_CyberneticsCore_screen.id:
     {'m': 150, 'g': 0, 'b': [units.Protoss.Gateway], 't': 50},
   actions.FUNCTIONS.Build_Forge_screen.id:
-    {'m': 150, 'g': 0, 'b': [], 't': 45, 'l': 3},
+    {'m': 150, 'g': 0, 'b': [units.Protoss.Gateway], 't': 45, 'l': 3},
   actions.FUNCTIONS.Build_PhotonCannon_screen.id:
     {'m': 150, 'g': 0, 'b': [units.Protoss.Forge], 't': 40},
   actions.FUNCTIONS.Build_ShieldBattery_screen.id:
@@ -162,3 +195,84 @@ zerg_map_research_quick_to_level = {}
 zerg_research_conditions = {}
 zerg_train_conditions = {}
 zerg_build_conditions = {}
+
+
+
+def get_condition_elements(agent, obs=None) -> tuple:
+  obs = agent.team_unit_obs_list[0] if obs is None else obs
+  rc, tc, bc = {}, {}, {}
+
+  rc.update(protoss_research_conditions)
+  rc.update(terran_research_conditions)
+  rc.update(zerg_research_conditions)
+
+  tc.update(protoss_warp_train_conditions)
+  tc.update(protoss_train_conditions)
+  tc.update(terran_train_conditions)
+  tc.update(zerg_train_conditions)
+
+  bc.update(protoss_build_conditions)
+  bc.update(terran_build_conditions)
+  bc.update(zerg_build_conditions)
+
+  easy_build = agent.config.ENABLE_EASY_BUILD
+  easy_warp = agent.config.ENABLE_EASY_WARP
+
+  if agent.race == 'protoss':
+    research_actions = action_space.PROTOSS_ACTION_RESEARCH
+    warp_train_actions = action_space.PROTOSS_ACTION_WARPTRAIN if not easy_warp else action_space.PROTOSS_ACTION_EASY_WARPTRAIN
+    train_actions = action_space.PROTOSS_ACTION_TRAIN + warp_train_actions
+    build_actions = action_space.PROTOSS_ACTION_BUILD if not easy_build else action_space.PROTOSS_ACTION_EASY_BUILD
+  elif agent.race == 'terran':
+    research_actions = []
+    train_actions = []
+    build_actions = []
+  elif agent.race == 'zerg':
+    research_actions = []
+    train_actions = []
+    build_actions = []
+  else:
+    research_actions = action_space.PROTOSS_ACTION_RESEARCH
+    warp_train_actions = action_space.PROTOSS_ACTION_WARPTRAIN if not easy_warp else action_space.PROTOSS_ACTION_EASY_WARPTRAIN
+    train_actions = action_space.PROTOSS_ACTION_TRAIN + warp_train_actions
+    build_actions = action_space.PROTOSS_ACTION_BUILD if not easy_build else action_space.PROTOSS_ACTION_EASY_BUILD
+    logger.error(f"[ID {agent.log_id}] unknown agent.race: {agent.race}")
+
+  player = obs.observation.player
+  m = player.minerals  # mineral
+  g = player.vespene  # gas
+  s = player.food_cap - player.food_used  # supply
+  u = obs.observation.upgrades  # upgrade
+  b = []  # building
+
+  obs = agent.team_unit_obs_list[0]
+  for unit in obs.observation.raw_units:
+    if unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100 and unit.active == 0 and \
+        unit.unit_type in BUILDING_TYPE and unit.unit_type not in b:
+      b.append(unit.unit_type)
+
+  ra, ta, = research_actions, train_actions
+  ba = build_actions + action_space.PROTOSS_BASIC_ACTION_2 if agent.name == 'Builder' else build_actions
+  return ra, ta, ba, rc, tc, bc, m, g, s, u, b
+
+
+def map_research_quick_to_level(func_id, u) -> int:
+  global_map = {}
+  global_map.update(protoss_map_research_quick_to_level)
+  global_map.update(terran_map_research_quick_to_level)
+  global_map.update(zerg_map_research_quick_to_level)
+  if func_id in global_map.keys():
+    func_id_level_low_to_up = global_map[func_id]
+    for func_id_ in func_id_level_low_to_up:
+      if func_id_ not in u:
+        return func_id_
+    return -1
+  else:
+    return func_id
+
+
+def all_building_condition_reached(conditions_building_types, curr_building_types):
+  for building_type in conditions_building_types:
+    if building_type not in curr_building_types:
+      return False
+  return True

@@ -111,7 +111,7 @@ POWER_BUILDING_NAMES = ['Gateway', 'Stargate', 'RoboticsFacility', 'CyberneticsC
 SIZE5_BUILDING_NAMES = ['Nexus', 'Hatchery', 'Hive', 'Lair', 'CommandCenter', 'OrbitalCommand', 'PlanetaryFortress']
 # + [str(units.Protoss.Nexus), str(units.Zerg.Hatchery), str(units.Zerg.Hive), str(units.Zerg.Lair)] + \
 # [str(units.Terran.CommandCenter), str(units.Terran.OrbitalCommand), str(units.Terran.PlanetaryFortress)]
-SIZE3_BUILDING_NAMES = ['Gateway', 'Stargate', 'RoboticsFacility', 'CyberneticsCore', 'Forge', 'TwilightCouncil',
+SIZE3_BUILDING_NAMES = ['Gateway', 'WarpGate', 'Stargate', 'RoboticsFacility', 'CyberneticsCore', 'Forge', 'TwilightCouncil',
                         'FleetBeacon', 'RoboticsBay', 'TemplarArchive', 'Assimilator', 'AssimilatorRich'] + \
                        [] + \
                        []
@@ -153,8 +153,13 @@ BUILDING_TYPE_MILITARY = [  # TODO: ADD MORE
   units.Protoss.Gateway, units.Protoss.WarpGate, units.Protoss.Stargate, units.Protoss.RoboticsFacility
 ]
 BUILDING_TYPE_RESEARCH = [  # TODO: ADD MORE
-units.Protoss.CyberneticsCore, units.Protoss.Forge, units.Protoss.TwilightCouncil,
-units.Protoss.TemplarArchive, units.Protoss.FleetBeacon, units.Protoss.RoboticsBay, units.Protoss.DarkShrine
+  units.Protoss.CyberneticsCore, units.Protoss.Forge, units.Protoss.TwilightCouncil,
+  units.Protoss.TemplarArchive, units.Protoss.FleetBeacon, units.Protoss.RoboticsBay, units.Protoss.DarkShrine
+]
+BUILDING_TYPE_DEFENSE = [  # TODO: ADD MORE
+  units.Protoss.ShieldBattery, units.Protoss.PhotonCannon,
+  units.Zerg.SpineCrawler, units.Zerg.SporeCrawler,
+  units.Terran.Bunker
 ]
 
 
@@ -191,7 +196,6 @@ TRANSPORTER_TYPE = [
   units.Terran.Medivac,
 ]
 OTHER_ACCESSBLE_UNIT_TYPE = [  # 不计gas_building
-  units.Zerg.Hatchery, units.Zerg.Lair, units.Zerg.Hive,
   units.Terran.Bunker # +人族基地？
 ]
 ACCESSBLE_UNIT_TYPE = TRANSPORTER_TYPE + GAS_BUILDING_TYPE + OTHER_ACCESSBLE_UNIT_TYPE

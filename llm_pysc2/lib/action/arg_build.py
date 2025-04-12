@@ -1,4 +1,16 @@
-
+# Copyright 2025, LLM-PySC2 Contributors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS-IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 
 from llm_pysc2.lib.action.utils import find_building_size
@@ -57,6 +69,17 @@ def get_arg_screen_build(obs, screen: list, size_screen, action_name, easy_build
     unit_list = obs.observation.raw_units if easy_build else obs.observation.feature_units
     ratio_ = 1. if easy_build else ratio
 
+    total_base, total_pylon, total_building = [], [], []
+    for unit in obs.observation.raw_units:
+      if unit.unit_type == units.Protoss.Pylon and unit.alliance in [1] and unit.build_progress != 100:
+        pylon_in_construction.append(unit)
+      if unit.unit_type == units.Protoss.Pylon and unit.alliance in [1]:
+        total_pylon.append(unit)
+      if unit.unit_type in BASE_BUILDING_TYPE and unit.alliance in [1]:
+        total_base.append(unit)
+      if unit.unit_type in BUILDING_TYPE and unit.alliance in [1]:
+        total_building.append(unit)
+
     for unit in unit_list:
       if not unit.is_on_screen:
         continue
@@ -70,8 +93,6 @@ def get_arg_screen_build(obs, screen: list, size_screen, action_name, easy_build
         screen_base_pos.append([unit.x / ratio_, unit.y / ratio_])
       if unit.unit_type == units.Protoss.Pylon and unit.alliance in [1]:
         screen_pylon_pos.append([unit.x / ratio_, unit.y / ratio_])
-        if unit.build_progress != 100:
-          pylon_in_construction.append(unit)
       if unit.unit_type in BUILDING_TYPE:
         unit_name = str(units.get_unit_type(unit.unit_type)).split('.')[-1] if len(str(unit.unit_type).split('.')) > 0 else ''
         pos = [unit.x / ratio_, unit.y / ratio_]
@@ -91,12 +112,12 @@ def get_arg_screen_build(obs, screen: list, size_screen, action_name, easy_build
       # r = 11 - retry // n - 2 * random.random() if easy_build else retry // n
       # rad = ((retry % n) / n) * math.pi * 2
       if easy_build:
-        length, r, rad = SCREEN_WORLD_GRID, 0, 0
-        i0, j0 = (0, 0) if retry == 0 else (length * (random.random()-0.5), length * (random.random()-0.5))
-        # n = max_retry // 10
-        # r = 3 * random.random() + retry // n
-        # rad = 2 * math.pi * random.random()
-        # i0, j0 = (0, 0) if retry == 0 else (r * math.cos(rad), r * math.sin(rad))
+        # length, r, rad = SCREEN_WORLD_GRID, 0, 0
+        # i0, j0 = (0, 0) if retry == 0 else (length * (random.random()-0.5), length * (random.random()-0.5))
+        n = max_retry // 10
+        r = 3 * random.random() + retry // n
+        rad = 2 * math.pi * random.random()
+        i0, j0 = (0, 0) if retry == 0 else (r * math.cos(rad), r * math.sin(rad))
         if building_name in ['Pylon']:
           r = 12 - retry // 12 - 3 * random.random()
           rad = 2 * math.pi * random.random()  #  * random.random()  * ((retry % 20) / 20)
@@ -167,14 +188,16 @@ def get_arg_screen_build(obs, screen: list, size_screen, action_name, easy_build
       #   if len(screen_pylon_pos) != 0 and not 0 < db2_pylon < 6:  # 2.5 < d4 < 5.5     0 < db2_pylon < 6
       #     pysc2_arg, func_valid = f"Build failed! Too far away from a Pylon", False
       if func_valid and building_name == 'Pylon':
-        supply = 1 + 7 * len(pylon_in_construction) + obs.observation.player.food_cap - obs.observation.player.food_used
-        if len(screen_pylon_pos) != 0 and 0 <= d4 < 6 and len(screen_pylon_pos) / len(screen_base_pos) < 6:  #     len(screen_pylon_pos) / len(screen_base_pos) < 6
+        supply = 7 * (1 + len(pylon_in_construction)) + obs.observation.player.food_cap - obs.observation.player.food_used
+        if len(screen_pylon_pos) != 0 and 0 < d4 < 6 and len(screen_pylon_pos) / len(screen_base_pos) < 6:  #     len(screen_pylon_pos) / len(screen_base_pos) < 6
           pysc2_arg, func_valid = f"Build failed! Too close to another Pylon", False
-        if 0 < obs.observation.player.food_cap <= 75 and supply > 20 and obs.observation.player.minerals < 500:
+        if len(total_base) == 1 and len(total_pylon) >= 1 and len(total_building) == len(total_pylon) + len(total_base):
           pysc2_arg, func_valid = f"Build failed! Too Many Pylon", False
-        if 75 < obs.observation.player.food_cap < 125 and supply > 25 and obs.observation.player.minerals < 500:
+        if 0 < obs.observation.player.food_used <= 50 and supply > 25 and obs.observation.player.minerals < 500:
           pysc2_arg, func_valid = f"Build failed! Too Many Pylon", False
-        if 125 <= obs.observation.player.food_cap < 200 and supply > 50 and obs.observation.player.minerals < 1000:
+        if 50 < obs.observation.player.food_used < 100 and supply > 30 and obs.observation.player.minerals < 500:
+          pysc2_arg, func_valid = f"Build failed! Too Many Pylon", False
+        if 100 <= obs.observation.player.food_used < 150 and supply > 50 and obs.observation.player.minerals < 1000:
           pysc2_arg, func_valid = f"Build failed! Too Many Pylon", False
         if obs.observation.player.food_cap == 200 and len(screen_pylon_pos) / len(screen_base_pos) > 6:
           pysc2_arg, func_valid = f"Build failed! Too Many Pylon", False

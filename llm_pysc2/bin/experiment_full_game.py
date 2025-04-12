@@ -1,4 +1,4 @@
-# Copyright 2024, LLM-PySC2 Contributors. All Rights Reserved.
+# Copyright 2025, LLM-PySC2 Contributors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -56,12 +56,11 @@ class MainAgentLLMPysc2(MainAgent):
     config.LLM_SIMULATION_TIME = 0.5
     config.IGNORE_INIT_WARNINGS = True
     # config.ENABLE_MULTI_THREAD_QUERY = False
-    config.MAX_LLM_DECISION_FREQUENCY = 0.1
+    config.MAX_LLM_DECISION_FREQUENCY = 0.2
     config.ENABLE_COMMUNICATION = True
     config.ENABLE_EASY_BUILD = True
     config.ENABLE_EASY_CONTROL = True
     config.ENABLE_EASY_WARP = True
-    config.ENABLE_INIT_STEPS = True
 
     # config.ENABLE_AUTO_WORKER_MANAGE = False
     # config.ENABLE_EASY_BUILD = False
@@ -69,13 +68,6 @@ class MainAgentLLMPysc2(MainAgent):
     super(MainAgentLLMPysc2, self).__init__(config, LLMAgent)
 
   def step(self, obs):
-    from pysc2.lib import units
-    state = []
-    for unit in obs.observation.raw_units:
-      if unit.unit_type == units.Protoss.Probe:
-        # not in [356, 357, 358, 359, 102, 103, 154, 360, 361, 362]
-        state.append(unit.order_id_0)
-    # print(f'{set(state)}')
     return super().step(obs)
 
 

@@ -140,7 +140,7 @@ def get_unit_count_info(agent, return_type):
   unit_count['building_research_working'], unit_count['num_building_research_working'] = {}, {}
   unit_count['text_building_military'], unit_count['text_building_research'] = {}, {}
   unit_count['text_building_process'], unit_count['text_unbuilding_process'] = {}, {}
-  # unit_info = f'unit {hex(unit.tag)}({str(units.get_unit_type(unit.unit_type))})'
+  # unit_info = f'unit {hex(unit.tag)}({str(units.get_unit_type(unit.unit_type)).split('.')[-1]})'
 
   def add_to_dict(my_dict, key, value):
     if key in my_dict.keys():
@@ -151,29 +151,29 @@ def get_unit_count_info(agent, return_type):
   obs = agent.team_unit_obs_list[0]
   for unit in obs.observation.raw_units:
     if unit.alliance == features.PlayerRelative.ENEMY:
-      add_to_dict(unit_oppo, str(units.get_unit_type(unit.unit_type)), unit)
+      add_to_dict(unit_oppo, str(units.get_unit_type(unit.unit_type)).split('.')[-1], unit)
     if unit.alliance == features.PlayerRelative.SELF:
       if unit.build_progress == 100 and unit.unit_type in BUILDING_TYPE:
-        add_to_dict(unit_self_building, str(units.get_unit_type(unit.unit_type)), unit)
+        add_to_dict(unit_self_building, str(units.get_unit_type(unit.unit_type)).split('.')[-1], unit)
       if unit.build_progress == 100 and unit.unit_type not in BUILDING_TYPE:
-        add_to_dict(unit_self_other, str(units.get_unit_type(unit.unit_type)), unit)
+        add_to_dict(unit_self_other, str(units.get_unit_type(unit.unit_type)).split('.')[-1], unit)
       if unit.build_progress != 100 and unit.unit_type in BUILDING_TYPE:
-        add_to_dict(build_process_building, str(units.get_unit_type(unit.unit_type)), unit)
+        add_to_dict(build_process_building, str(units.get_unit_type(unit.unit_type)).split('.')[-1], unit)
       if unit.build_progress != 100 and unit.unit_type not in BUILDING_TYPE:
-        add_to_dict(build_process_other, str(units.get_unit_type(unit.unit_type)), unit)
+        add_to_dict(build_process_other, str(units.get_unit_type(unit.unit_type)).split('.')[-1], unit)
 
       if unit.unit_type in BUILDING_TYPE_MILITARY and unit.build_progress == 100:
-        add_to_dict(unit_count['building_military'], str(units.get_unit_type(unit.unit_type)), unit)
+        add_to_dict(unit_count['building_military'], str(units.get_unit_type(unit.unit_type)).split('.')[-1], unit)
         if unit.active == 0:
-          add_to_dict(unit_count['building_military_idle'], str(units.get_unit_type(unit.unit_type)), unit)
+          add_to_dict(unit_count['building_military_idle'], str(units.get_unit_type(unit.unit_type)).split('.')[-1], unit)
         else:
-          add_to_dict(unit_count['building_military_working'], str(units.get_unit_type(unit.unit_type)), unit)
+          add_to_dict(unit_count['building_military_working'], str(units.get_unit_type(unit.unit_type)).split('.')[-1], unit)
       if unit.unit_type in BUILDING_TYPE_RESEARCH and unit.build_progress == 100:
-        add_to_dict(unit_count['building_research'], str(units.get_unit_type(unit.unit_type)), unit)
+        add_to_dict(unit_count['building_research'], str(units.get_unit_type(unit.unit_type)).split('.')[-1], unit)
         if unit.active == 0:
-          add_to_dict(unit_count['building_research_idle'], str(units.get_unit_type(unit.unit_type)), unit)
+          add_to_dict(unit_count['building_research_idle'], str(units.get_unit_type(unit.unit_type)).split('.')[-1], unit)
         else:
-          add_to_dict(unit_count['building_research_working'], str(units.get_unit_type(unit.unit_type)), unit)
+          add_to_dict(unit_count['building_research_working'], str(units.get_unit_type(unit.unit_type)).split('.')[-1], unit)
 
   num_unit_oppo = {}
   num_unit_self_building = {}

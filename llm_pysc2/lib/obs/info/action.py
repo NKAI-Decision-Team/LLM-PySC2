@@ -258,7 +258,7 @@ def get_valid_actions_train(agent) -> (list, str):
     if valid:
       # valid_actions.append(action['name'])
       cost = {'mineral': cs['m'], 'gas': cs['g'], 'supply': cs['s']}  # 'time': cs['t']
-      valid_actions_info += f"\n\t\t<{action['name']}()> \n\t\t\t # cost: {cost}"
+      valid_actions_info += f"\n\t\t<{action['name']}()> \n\t\t\t cost: {cost}"
 
   # if valid_actions_info != '':
   #   valid_actions_info = "Valid Unit Training Actions: " + valid_actions_info + "\n\n"
@@ -275,13 +275,16 @@ def get_valid_actions_developer(agent):
 
   for team in agent.teams:
 
-    if agent.flag_enable_empty_unit_group and len(team['unit_type']) == 0:
-      teams_valid_actions_info += f"\n\tTeam {team['name']}-1:"
-    elif team['select_type'] == 'select':
-      for i in range(len(team['obs'])):
-        teams_valid_actions_info += f"\n\tTeam {team['name']}-{i + 1}:"
+    if 'Workers' in team['name'] and not agent.config.ENABLE_EASY_BUILD:
+      pass
     else:
-      teams_valid_actions_info += f"\n\tTeam {team['name']}:"
+      if agent.flag_enable_empty_unit_group and len(team['unit_type']) == 0:
+        teams_valid_actions_info += f"\n\tTeam {team['name']}-1:"
+      elif team['select_type'] == 'select':
+        for i in range(len(team['obs'])):
+          teams_valid_actions_info += f"\n\tTeam {team['name']}-{i + 1}:"
+      else:
+        teams_valid_actions_info += f"\n\tTeam {team['name']}:"
 
     valid_actions_info = ''
     partial_valid_actions_info = ''
@@ -290,12 +293,14 @@ def get_valid_actions_developer(agent):
       valid_actions_info += valid_actions_info_
       partial_valid_actions_info += partial_valid_actions_info_
       valid_actions_info_, partial_valid_actions_info_  = get_valid_actions_train(agent)
+      valid_actions_info += valid_actions_info_
       partial_valid_actions_info += partial_valid_actions_info_
       if valid_actions_info == '':
         teams_valid_actions_info += '\n\t\t currently none, build buildings to unlock training/warping and researching actions.'
       else:
         teams_valid_actions_info += valid_actions_info
-      teams_valid_actions_info += '\n\t\t(Actions only lack of resources below, currently invalid)' + partial_valid_actions_info
+      if partial_valid_actions_info != '':
+        teams_valid_actions_info += '\n\t\t(Actions only lack of resources below, currently invalid)' + partial_valid_actions_info
 
     if 'Workers' in team['name'] and agent.config.ENABLE_EASY_BUILD:
       valid_actions_info_, partial_valid_actions_info_  = get_valid_actions_build(agent)
@@ -305,7 +310,8 @@ def get_valid_actions_developer(agent):
         teams_valid_actions_info += '\n\t\t currently none, waiting for more resource to build buildings.'
       else:
         teams_valid_actions_info += valid_actions_info
-      teams_valid_actions_info += '\n\t\t(Actions only lack of resources below, currently invalid)' + partial_valid_actions_info
+      if partial_valid_actions_info != '':
+        teams_valid_actions_info += '\n\t\t(Actions only lack of resources below, currently invalid)' + partial_valid_actions_info
 
   teams_valid_actions_info = 'Valid actions:' + teams_valid_actions_info + '\n\n'
   return teams_valid_actions_info
@@ -314,9 +320,9 @@ def get_valid_actions_developer(agent):
 def get_valid_actions_builder(agent):
   teams_valid_actions_info = ''
 
-  for team in agent.teams:
+  if agent.name == 'Builder':
+    for team in agent.teams:
 
-    if agent.name == 'Builder':
       if agent.flag_enable_empty_unit_group and len(team['unit_type']) == 0:
         teams_valid_actions_info += f"\n\tTeam {team['name']}-1:"
       if team['select_type'] == 'select':
@@ -324,15 +330,24 @@ def get_valid_actions_builder(agent):
           teams_valid_actions_info += f"\n\tTeam {team['name']}-{i + 1}:"
       else:
         teams_valid_actions_info += f"\n\tTeam {team['name']}:"
-    else:
-      teams_valid_actions_info += f"\n\tAgent Builder's probe's valid actions:"
 
+      valid_actions_info, partial_valid_actions_info = get_valid_actions_build(agent)
+      if valid_actions_info == '':
+        teams_valid_actions_info += '\n\t\t currently none, waiting for more resource to unlock build actions.'
+      else:
+        teams_valid_actions_info += valid_actions_info
+      if partial_valid_actions_info != '':
+        teams_valid_actions_info += '\n\t\t(Actions only lack of resources below, currently invalid)' + partial_valid_actions_info
+
+  else:
+    teams_valid_actions_info += f"\n\tAgent Builder's probe's valid actions:"
     valid_actions_info, partial_valid_actions_info = get_valid_actions_build(agent)
     if valid_actions_info == '':
       teams_valid_actions_info += '\n\t\t currently none, waiting for more resource to unlock build actions.'
     else:
       teams_valid_actions_info += valid_actions_info
-    teams_valid_actions_info += '\n\t\t(Actions only lack of resources below, currently invalid)' + partial_valid_actions_info
+    if partial_valid_actions_info != '':
+      teams_valid_actions_info += '\n\t\t(Actions only lack of resources below, currently invalid)' + partial_valid_actions_info
 
   if agent.name == 'Builder':
     teams_valid_actions_info = 'Valid actions:' + teams_valid_actions_info + '\n\n'

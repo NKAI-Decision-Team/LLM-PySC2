@@ -192,7 +192,7 @@ def get_teams_info(agent) -> str:
       idx = np.nonzero(arr)  # 获取特征图上非零值的坐标
       minimap_x = int(idx[:][1].mean())
       minimap_y = int(idx[:][0].mean())
-      teams_info += f"\n\tTeam minimap position: [{minimap_x}, {minimap_y}]"
+      teams_info += f"\n\tTeam minimap position: [{minimap_x}, {minimap_y}] (minimap coordinate valid range for actions: 0 < x < {agent.size_minimap}, 0 < y < {agent.size_minimap})"
       size_screen = obs.observation.feature_screen.height_map.shape[0]
 
       arr = obs.observation.feature_screen.buildable
@@ -213,7 +213,7 @@ def get_teams_info(agent) -> str:
       team['l'] = edge_l = edge_l if edge_l == 0 else edge_l + int(size_screen / 6)
       team['r'] = edge_r = edge_r if edge_r == size_screen - 1 else edge_r - int(size_screen / 6)
       ratio = size_screen / SCREEN_WORLD_GRID
-      teams_info += f"\n\tTeam screen edge (screen coordinate range valid for actions): {int(edge_l/ratio)} < x < {int(edge_r/ratio)}, {int(edge_u/ratio)} < y < {int(edge_b/ratio)}"
+      teams_info += f"\n\tTeam screen edge (screen coordinate valid range for actions: {int(edge_l/ratio)} < x < {int(edge_r/ratio)}, {int(edge_u/ratio)} < y < {int(edge_b/ratio)})"
       if (team['l'] != 0 or team['u'] != 0 or team['r'] != size_screen - 1 or team['b'] != size_screen - 1):
         teams_info += f"\nWarning! controlled team near the map edge! Pay attention to using coordinates within the boundary!({int(edge_l/ratio)} < x < {int(edge_r/ratio)}, {int(edge_u/ratio)} < y < {int(edge_b/ratio)})"
 

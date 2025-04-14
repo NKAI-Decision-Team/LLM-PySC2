@@ -40,16 +40,16 @@ class MainAgentLLMPysc2(MainAgent):
     api_key = 'YOUR-API-KEY'
     config.reset_llm(model_name, api_base, api_key, enable_image_rgb, enable_image_feature)
 
-    for name in config.AGENTS.keys():
-      if name not in ['Commander', 'Developer', 'CombatGroup0', 'CombatGroup1']:  # , 'Developer'
-        config.AGENTS_ALWAYS_DISABLE.append(name)
-      if name not in ['Commander', 'Developer']:
-        config.AGENTS[name]['llm']['model_name'] = 'YOUR-MODEL-NAME'  # another
-        config.AGENTS[name]['llm']['api_base'] = 'YOUR-API-BASE'  # another
-        config.AGENTS[name]['llm']['api_key'] = 'YOUR-API-KEY'  # another
-        config.AGENTS[name]['llm']['img_names'] = []
-        config.AGENTS[name]['llm']['img_rgb'] = False
-        config.AGENTS[name]['llm']['img_fea'] = False
+    # for name in config.AGENTS.keys():
+    #   if name not in ['Builder', 'Commander', 'Developer', 'CombatGroup0', 'CombatGroup1']:  # , 'Developer'
+    #     config.AGENTS_ALWAYS_DISABLE.append(name)
+    #   if name not in ['Builder', 'Commander', 'Developer']:  # For CombatGroups
+    #     config.AGENTS[name]['llm']['model_name'] = 'YOUR-MODEL-NAME'  # another
+    #     config.AGENTS[name]['llm']['api_base'] = 'YOUR-API-BASE'  # another
+    #     config.AGENTS[name]['llm']['api_key'] = 'YOUR-API-KEY'  # another
+    #     config.AGENTS[name]['llm']['img_names'] = []  # disable all images
+    #     config.AGENTS[name]['llm']['img_rgb'] = False
+    #     config.AGENTS[name]['llm']['img_fea'] = False
 
     config.SAFE_MODE = False
     config.LLM_SIMULATION_TIME = 0.5

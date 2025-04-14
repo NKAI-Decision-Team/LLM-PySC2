@@ -119,7 +119,7 @@ class CommanderTranslatorO(BaseTranslatorO):
     if not self.obs_list_safe(agent):
       return f"obs_list error, no obs found"
     self.states[-1]['unit_count_info'] = get_unit_count_info(agent, return_type=1)
-    self.states[-1]['other_agents_info'] = get_other_agents_info(agent)
+    self.states[-1]['other_agents_info'] = '' if self.config.ENABLE_EASY_CONTROL else get_other_agents_info(agent)
     self.states[-1]['valid_actions'] = get_valid_actions_commander(agent)
 
     # observation

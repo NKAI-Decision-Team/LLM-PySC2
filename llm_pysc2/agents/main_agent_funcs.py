@@ -981,14 +981,14 @@ def main_agent_func2(self, obs):
             self.nexus_info_dict[str(target_nexus.tag)]['num_worker_g'] = len(
               self.nexus_info_dict[str(target_nexus.tag)]['worker_g_tag_list'])
             # 将闲置工人派遣到新的工作岗位
-            func_id, func_call = (264, actions.FUNCTIONS.Harvest_Gather_screen('now', (unit.x, unit.y)))  # 选择一个闲置单位、
+            func_id, func_call = (264, actions.FUNCTIONS.Harvest_Gather_screen('now', (unit.x, unit.y)))
+            # if self.func_id_history[-1] == 264:
+            #   func_id, func_call = (331, actions.FUNCTIONS.Move_screen('now',  (unit.x, unit.y)))
             logger.info(f"[ID {self.log_id}] 4.1.5 Func Call: {func_call}")
             self.possible_working_place_nexus = []
             self.possible_working_place_tag_list = []
             func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()
             func_id = func_id if func_id in obs.observation.available_actions else 0
-            # func_call = func_call if 0 in [unit.x, unit.y] else actions.FUNCTIONS.no_op()
-            # func_id = func_id if 0 in [unit.x, unit.y] else 0
             self.func_id_history.append(func_id)
             return func_id, func_call
 
@@ -1353,6 +1353,8 @@ def main_agent_func4(self, obs):
     # 走散的单位聚拢到head单位
     unselected_unit_num = None
     for agent_name in self.AGENT_NAMES:
+      if agent_name == 'Builder':
+        continue
       if self.temp_head_unit_tag is not None:
         break
       else:

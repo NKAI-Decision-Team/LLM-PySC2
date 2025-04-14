@@ -19,7 +19,7 @@ import os
 
 map_name = f"Simple64"
 # map_name = f"debug_map"
-difficult_level = 4  # 1 to 10
+difficult_level = 1  # 1 to 10
 
 difficulties = ['very_easy', 'easy', 'medium',
                 'medium_hard', 'hard', 'harder', 'very_hard',
@@ -51,17 +51,15 @@ class MainAgentLLMPysc2(MainAgent):
         config.AGENTS[name]['llm']['img_rgb'] = False
         config.AGENTS[name]['llm']['img_fea'] = False
 
-
     config.SAFE_MODE = False
     config.LLM_SIMULATION_TIME = 0.5
     # config.IGNORE_INIT_WARNINGS = True
     # config.ENABLE_MULTI_THREAD_QUERY = False
 
     config.MAX_LLM_DECISION_FREQUENCY = 0.1
-    # config.ENABLE_COMMUNICATION = True
-    config.ENABLE_EASY_BUILD = True
+    config.ENABLE_COMMUNICATION = True
     config.ENABLE_EASY_CONTROL = True
-    config.ENABLE_EASY_WARP = True
+    config.ENABLE_EASY_BUILD = True
 
     # config.ENABLE_AUTO_WORKER_MANAGE = False
     # config.ENABLE_EASY_BUILD = False

@@ -55,7 +55,7 @@ class AgentConfig:
     self.ENABLE_COMMUNICATION = False
     self.ENABLE_EASY_BUILD = False
     self.ENABLE_EASY_CONTROL = False
-    self.ENABLE_EASY_WARP = False
+    self.ENABLE_EASY_WARP = True
 
     # Image settings
     self.ENABLE_IMAGE_RGB = False

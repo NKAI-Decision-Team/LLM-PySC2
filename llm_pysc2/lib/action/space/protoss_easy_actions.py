@@ -40,7 +40,7 @@ PROTOSS_ACTION_EASY_WARPTRAIN = [
   {'name': 'Warp_Stalker', 'arg': [],
    'func': [(509, F.TrainWarp_Stalker_screen, ('queued', 'auto'))]},  # tag for WarpprismPhasing/Pylon
   {'name': 'Warp_Zealot', 'arg': [],
-   'func': [(510, F.TrainWarp_Zealot_screen, ('queued', 'auto')), ]},  # tag for WarpprismPhasing/Pylon
+   'func': [(510, F.TrainWarp_Zealot_screen, ('queued', 'auto'))]},  # tag for WarpprismPhasing/Pylon
 ]
 
 # Simplified build actions

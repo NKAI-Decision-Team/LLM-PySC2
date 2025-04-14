@@ -227,8 +227,13 @@ class LLMAgent:
       self.enable = False
     if self.name in self.config.AGENTS_ALWAYS_DISABLE:
       self.enable = False
+    if self.name == 'Builder' and self.config.ENABLE_EASY_BUILD:
+      self.enable = False
+    if 'CombatGroup' in self.name and self.config.ENABLE_EASY_CONTROL:
+      self.enable = False
+
     # game_time_s = obs.observation.game_loop / 22.4
-    # if self.name in ['Builder', 'Developer'] and game_time_s < 10:  #建造小队
+    # if self.name in ['Builder'] and game_time_s < 10:  #建造小队
     #   self.enable = False
     # if self.name in ['CombatGroup4'] and game_time_s < 30:  #侦查小队
     #   self.enable = False

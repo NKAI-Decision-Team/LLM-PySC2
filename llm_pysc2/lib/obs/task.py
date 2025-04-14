@@ -227,7 +227,7 @@ def task_default(agent):
     if agent.name == 'Builder':
       team['task'] = "Build buildings through 'Actions', Complete tasks assigned by the Developer or Commander, or based on your own judgment."
     if 'CombatGroup' in agent.name:
-      team['task'] = "Controls your unit teams to fight with enemies. Complete tasks assigned by the Commander"
+      team['task'] = "Controls your unit teams through 'Actions' to fight with enemies or support allys. Complete tasks assigned by the Commander"
 
   return task_dict
 

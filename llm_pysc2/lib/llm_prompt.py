@@ -87,10 +87,10 @@ class BasePrompt:
     self.sp = ''
     self.eip = ''
     self.eop = ''
-    self.screen_img_rgb_prompt = ''
-    self.screen_img_fea_prompt = ''
-    self.minimap_img_rgb_prompt = ''
-    self.minimap_img_fea_prompt = ''
+    # self.screen_img_rgb_prompt = ''
+    # self.screen_img_fea_prompt = ''
+    # self.minimap_img_rgb_prompt = ''
+    # self.minimap_img_fea_prompt = ''
 
 
 class CombatGroupPrompt(BasePrompt):

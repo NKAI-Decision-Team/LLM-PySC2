@@ -65,8 +65,8 @@ setup(
         'llm_pysc2.bin',
         'llm_pysc2.cfg',
         'llm_pysc2.lib',
-        'llm_pysc2.action',
-        'llm_pysc2.obs',
+        'llm_pysc2.lib.action',
+        'llm_pysc2.lib.obs',
     ],
     install_requires=[
         'absl-py>=0.1.0',

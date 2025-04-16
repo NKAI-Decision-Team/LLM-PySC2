@@ -243,6 +243,7 @@ class MainAgent(base_agent.BaseAgent):
       self.main_loop_lock = False
       logger.success(f"[ID {self.log_id}] " + '========== ' + '==' * 25 + f" Loop {self.main_loop_step} " + '==' * 25 + ' ==========')
     logger.success(f"[ID {self.log_id}] " + '---------- ' + '--' * 25 + f" Step {self.steps} " + '--' * 25 + ' ----------')
+
     last_20_func = list(self.func_id_history)
     possible_endless_loop = False
     if len(set(last_20_func)) == 1 and len(last_20_func) >= 20 and 0 not in last_20_func:
@@ -250,6 +251,13 @@ class MainAgent(base_agent.BaseAgent):
       logger.error(f"[ID {self.log_id}] Detect Possible Endless Loop !")
       logger.error(f"[ID {self.log_id}] last 20 funcs: {actions.FUNCTIONS[self.func_id_history[0]]}")
       time.sleep(1)
+
+    base_exist = False
+    for unit in obs.observation.raw_units:
+      if unit.unit_type in BASE_BUILDING_TYPE and unit.alliance == features.PlayerRelative.SELF:
+        base_exist = True
+        break
+
     func_id, func_call = (0, actions.FUNCTIONS.no_op())
     safe_mode = self.config.SAFE_MODE
 
@@ -267,7 +275,7 @@ class MainAgent(base_agent.BaseAgent):
         logger.success(f"[ID {self.log_id}] main_agent_func1: Func Call {func_id} {func_call}")
         return func_call
 
-    if not (safe_mode and possible_endless_loop):
+    if not (safe_mode and possible_endless_loop) and base_exist:
 
       # auto worker-management (optional)
       func_id, func_call = main_agent_func2(self, obs)

@@ -373,20 +373,21 @@ def main_agent_func0(self, obs):
   if self.first_ctrl_base_tag not in self.ctrl_base_tag_list:
     d_min, index_min = get_dis_pos_poses1(self.first_ctrl_base_pos, self.ctrl_base_pos_list, 'min')
     self.first_ctrl_base_tag = self.ctrl_base_list[index_min].tag if d_min != 0 else None
-    self.first_ctrl_base_pos = [self.ctrl_base_list[index_min].x, self.ctrl_base_list[index_min].y]
+    self.first_ctrl_base_pos = [self.ctrl_base_list[index_min].x, self.ctrl_base_list[index_min].y] if d_min != 0 else [0, 0]
 
-  if len(self.oppo_base_pos_list) >= 0:  # 有base就打最远的base
-    d_max, index_max = get_dis_pos_poses1(self.first_ctrl_base_pos, self.oppo_base_pos_list, 'max')
-    self.first_oppo_base_tag = self.oppo_base_list[index_max].tag if d_max != 0 else None
-  if self.first_oppo_base_tag is None:  # 无base就打最远的building
-    d_max, index_max = get_dis_pos_poses1(self.first_ctrl_base_pos, oppo_building_pos_list, 'max')
-    self.first_oppo_base_tag = oppo_building_list[index_max].tag if d_max != 0 else None
-  if self.first_oppo_base_tag is None:  # 无base和building的侦查信息，就打到最远的瓦斯泉(必然一矿)
-    d_max, index_max = get_dis_pos_poses1(self.first_ctrl_base_pos, all_ves_pos_list, 'max')
-    self.first_oppo_base_tag = all_ves_list[index_max].tag if d_max != 0 else None
-  # if self.closest_oppo_base_tag is None:
-  #   d_max, index_max = get_dis_pos_poses1(self.first_ctrl_base_pos, all_ves_pos_list, 'max')
-  #   self.closest_oppo_base_tag = all_ves_list[index_max].tag
+  if self.first_ctrl_base_tag is not None:
+    if len(self.oppo_base_pos_list) >= 0 or self.first_oppo_base_tag in all_ves_tag_list:  # 有base就打最远的base
+      d_max, index_max = get_dis_pos_poses1(self.first_ctrl_base_pos, self.oppo_base_pos_list, 'max')
+      self.first_oppo_base_tag = self.oppo_base_list[index_max].tag if d_max != 0 else None
+    if self.first_oppo_base_tag is None or self.first_oppo_base_tag in all_ves_tag_list:  # 无base就打最远的building
+      d_max, index_max = get_dis_pos_poses1(self.first_ctrl_base_pos, oppo_building_pos_list, 'max')
+      self.first_oppo_base_tag = oppo_building_list[index_max].tag if d_max != 0 else None
+    if self.first_oppo_base_tag is None:  # 无base和building的侦查信息，就打到最远的瓦斯泉(必然一矿)
+      d_max, index_max = get_dis_pos_poses1(self.first_ctrl_base_pos, all_ves_pos_list, 'max')
+      self.first_oppo_base_tag = all_ves_list[index_max].tag if d_max != 0 else None
+    # if self.closest_oppo_base_tag is None:
+    #   d_max, index_max = get_dis_pos_poses1(self.first_ctrl_base_pos, all_ves_pos_list, 'max')
+    #   self.closest_oppo_base_tag = all_ves_list[index_max].tag
 
   if self.first_oppo_base_tag not in all_ves_tag_list + oppo_building_tag_list + self.oppo_base_tag_list:
     self.first_oppo_base_tag = None
@@ -396,9 +397,9 @@ def main_agent_func0(self, obs):
     # self.first_oppo_base_tag = unit_list[index_max].tag
 
   if self.first_ctrl_base_tag is None:
-    logger.error(f"[ID {self.log_id}] main_agent_func0: Can not find our first base position?")
+    logger.error(f"[ID {self.log_id}] main_agent_func0: Can not find our first base position? Is it the last step?")
   if self.first_oppo_base_tag is None:
-    logger.error(f"[ID {self.log_id}] main_agent_func0: Can not find enemy base position?")
+    logger.error(f"[ID {self.log_id}] main_agent_func0: Can not find enemy base position? Is it the last step?")
   for agent_name in self.AGENT_NAMES:
     agent = self.agents[agent_name]
     agent.first_ctrl_base_tag = self.first_ctrl_base_tag

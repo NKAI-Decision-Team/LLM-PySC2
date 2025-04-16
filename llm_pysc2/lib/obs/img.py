@@ -342,8 +342,8 @@ def get_img_obs_rgb_minimap(self, obs):
   rgb_minimap = np.array(rgb_minimap)[:, :, ::-1]  # BGR to RGB
   img = Image.fromarray(rgb_minimap, 'RGB')
   img = img.resize((4 * self.size_minimap, 4 * self.size_minimap), resample=Image.LANCZOS)
-  enhancer = ImageEnhance.Brightness(img)
-  img = enhancer.enhance(factor=3.0)
+  # enhancer = ImageEnhance.Brightness(img)
+  # img = enhancer.enhance(factor=3.0)
   # enhancer = ImageEnhance.Contrast(img)
   # img = enhancer.enhance(factor=2.0)
   # enhancer = ImageEnhance.Color(img)

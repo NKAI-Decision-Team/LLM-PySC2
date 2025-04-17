@@ -11,13 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-
+import copy
 import time
 
 from pysc2.lib import features, actions
 from llm_pysc2.lib.utils import *
 from loguru import logger
+import random
 
 
 def get_camera_xy(self, raw_x, raw_y):
@@ -518,7 +518,7 @@ def main_agent_func1(self, obs):
 
       # 移动相机
       if not curr_unit.is_selected:
-        func_id, func_call = get_camera_func_smart(self, obs, curr_unit.tag)
+        func_id, func_call = get_camera_func_smart(self, obs, curr_unit.tag, threshold=0.35)
         if func_id == 573:
           logger.info(f"[ID {self.log_id}] 3.3 Func Call: {func_call}")
           self.func_id_history.append(func_id)
@@ -612,7 +612,7 @@ def main_agent_func1(self, obs):
       if chosen_team['select_type'] == 'select_all_type':
         head_unit_tag = chosen_team['unit_tags'][0]
         # 相机移动
-        func_id, func_call = get_camera_func_smart(self, obs, head_unit_tag)
+        func_id, func_call = get_camera_func_smart(self, obs, head_unit_tag, threshold=0.35)
         if func_id == 573:
           logger.info(f"[ID {self.log_id}] 3.5 Func Call: {func_call}")
           self.func_id_history.append(func_id)
@@ -686,6 +686,16 @@ def main_agent_func1(self, obs):
 
 def main_agent_func2(self, obs):
   func_id, func_call = (None, None)
+
+  self.possible_working_place_nexus = []
+  self.possible_working_place_tag_dict = {}
+  self.nexus_info_dict = {}
+
+  # print('--' * 50)
+  # for unit in obs.observation.raw_units:
+  #   if unit.unit_type in BASE_BUILDING_TYPE + GAS_BUILDING_TYPE and unit.alliance == features.PlayerRelative.SELF:
+  #     print(unit._index_names)
+  #     print(unit.assigned_harvesters, unit.ideal_harvesters)
 
   # region 4处理闲置的工人和超采的工人
   # 获取主矿附近的基本经济信息
@@ -806,8 +816,7 @@ def main_agent_func2(self, obs):
             self.nexus_info_dict[str(worker_base_tag)]['gas_building_2'].tag == worker_to:
           self.nexus_info_dict[str(worker_base_tag)]['worker_g2_tag_list'].append(worker.tag)
       else:
-        print(
-          f"worker {worker.tag} closest nexus {worker_base_tag} worker_to {worker_to} {type(worker_to)}, unknown working position")
+        print(f"worker {worker.tag} closest nexus {worker_base_tag} worker_to {worker_to} {type(worker_to)}, unknown working position")
 
   # 去除重复单位
   # print(self.nexus_info_dict.keys())
@@ -822,45 +831,70 @@ def main_agent_func2(self, obs):
 
   # 选出仍有工作岗位的工作场所
   for nexus in obs.observation.raw_units:
+    working_place_unit_tag_list = []
+
     if nexus.alliance == features.PlayerRelative.SELF and nexus.unit_type in BASE_BUILDING_TYPE and nexus.build_progress == 100:
       nexus_info = self.nexus_info_dict[str(nexus.tag)]
       if nexus_info['num_worker_g_max'] == 0:
-        if nexus_info['num_worker_m'] < nexus_info['num_worker_m_max']:
-          self.possible_working_place_nexus.append(nexus_info['nexus'])
-          self.possible_working_place_tag_list.append(nexus_info['nearby_mineral_tag_list'])
+        if nexus_info['nexus'] is not None and nexus_info['nexus'].assigned_harvesters < nexus_info['nexus'].ideal_harvesters:
+          working_place_unit_tag_list += nexus_info['nearby_mineral_tag_list']
+
       elif nexus_info['num_worker_m_max'] == 0:
         if nexus_info['num_worker_g'] < nexus_info['num_worker_g_max']:
-          self.possible_working_place_nexus.append(nexus_info['nexus'])
-          if len(nexus_info['worker_g1_tag_list']) < 3:
-            self.possible_working_place_tag_list.append([nexus_info['gas_building_1'].tag])
+          if nexus_info['gas_building_1'] is not None and nexus_info['gas_building_1'].assigned_harvesters < nexus_info['gas_building_1'].ideal_harvesters:
+            working_place_unit_tag_list.append(nexus_info['gas_building_1'].tag)
+          elif nexus_info['gas_building_2'] is not None and nexus_info['gas_building_2'].assigned_harvesters < nexus_info['gas_building_2'].ideal_harvesters:
+            working_place_unit_tag_list.append(nexus_info['gas_building_2'].tag)
           else:
-            self.possible_working_place_tag_list.append([nexus_info['gas_building_2'].tag])
+            pass
+
       elif nexus_info['num_worker_m_max'] != 0 and nexus_info['num_worker_g_max'] != 0:
-        if nexus_info['num_worker_m'] / nexus_info['num_worker_m_max'] <= nexus_info['num_worker_g'] / \
-            nexus_info['num_worker_g_max']:  # 选择去剩余岗位数更大的
-          if nexus_info['num_worker_m'] < nexus_info['num_worker_m_max']:
-            self.possible_working_place_nexus.append(nexus_info['nexus'])
-            self.possible_working_place_tag_list.append(nexus_info['nearby_mineral_tag_list'])
+        unit_tags_m = []
+        unit_tags_g = []
+        if nexus_info['nexus'] is not None and nexus_info['nexus'].assigned_harvesters < nexus_info['nexus'].ideal_harvesters and nexus_info['num_worker_m'] < nexus_info['num_worker_m_max']:
+          unit_tags_m += nexus_info['nearby_mineral_tag_list']
+        if nexus_info['gas_building_1'] is not None and nexus_info['gas_building_1'].assigned_harvesters < nexus_info['gas_building_1'].ideal_harvesters and len(nexus_info['worker_g1_tag_list']) < 3:
+          unit_tags_g.append(nexus_info['gas_building_1'].tag)
+        if nexus_info['gas_building_2'] is not None and nexus_info['gas_building_2'].assigned_harvesters < nexus_info['gas_building_2'].ideal_harvesters and len(nexus_info['worker_g1_tag_list']) >= 3 and len(nexus_info['worker_g2_tag_list']) < 3 and nexus_info['num_worker_g_max'] == 6:
+          unit_tags_g.append(nexus_info['gas_building_2'].tag)
+        if nexus_info['num_worker_m'] / nexus_info['num_worker_m_max'] <= nexus_info['num_worker_g'] / nexus_info['num_worker_g_max']:  # 选择去剩余岗位数更大的
+          working_place_unit_tag_list = unit_tags_m + unit_tags_g
         else:
-          if len(nexus_info['worker_g1_tag_list']) < 3:
-            self.possible_working_place_nexus.append(nexus_info['nexus'])
-            self.possible_working_place_tag_list.append([nexus_info['gas_building_1'].tag])
-          if len(nexus_info['worker_g1_tag_list']) >= 3 and len(nexus_info['worker_g2_tag_list']) < 3 and \
-              nexus_info['num_worker_g_max'] == 6:
-            self.possible_working_place_nexus.append(nexus_info['nexus'])
-            self.possible_working_place_tag_list.append([nexus_info['gas_building_2'].tag])
+          working_place_unit_tag_list = unit_tags_g + unit_tags_m
       else:
         pass
+
+      if len(working_place_unit_tag_list) > 0:
+        self.possible_working_place_nexus.append(nexus_info['nexus'])
+      self.possible_working_place_tag_dict[str(nexus.tag)] = working_place_unit_tag_list
 
   # 显示分析情况
   self.is_all_nexus_full = True
   for key in self.nexus_info_dict.keys():
     nexus_info = self.nexus_info_dict[key]
-    if nexus_info['num_worker_m'] < nexus_info['num_worker_m_max'] or \
-        nexus_info['num_worker_g'] < nexus_info['num_worker_g_max'] or \
-        (nexus_info['num_worker_g_max'] == 6 and (
-            len(nexus_info['worker_g1_tag_list']) < 3 or len(nexus_info['worker_g2_tag_list']) < 3)):
+    a, b, c = False, False, False
+    a1, b1, c1 = None, None, None
+    a2, b2, c2 = None, None, None
+    if nexus_info['nexus'] is not None:
+      a = nexus_info['nexus'].assigned_harvesters < nexus_info['nexus'].ideal_harvesters
+      a1, a2 = nexus_info['nexus'].assigned_harvesters, nexus_info['nexus'].ideal_harvesters
+    if nexus_info['gas_building_1'] is not None:
+      b = nexus_info['gas_building_1'].assigned_harvesters < nexus_info['gas_building_1'].ideal_harvesters
+      b1, b2 = nexus_info['gas_building_1'].assigned_harvesters, nexus_info['gas_building_1'].ideal_harvesters
+    if nexus_info['gas_building_2'] is not None:
+      c = nexus_info['gas_building_2'].assigned_harvesters < nexus_info['gas_building_2'].ideal_harvesters
+      c1, c2 = nexus_info['gas_building_2'].assigned_harvesters, nexus_info['gas_building_2'].ideal_harvesters
+    if a or b or c:
       self.is_all_nexus_full = False
+      # print(f"self.is_all_nexus_full={self.is_all_nexus_full}, {a}, {b}, {c}")
+      # print(f"a1 a2 b1 b2 c1 c2={a1, a2, b1, b2, c1, c2}")
+
+    # if nexus_info['num_worker_m'] < nexus_info['num_worker_m_max'] or \
+    #     nexus_info['num_worker_g'] < nexus_info['num_worker_g_max'] or \
+    #     (nexus_info['num_worker_g_max'] == 6 and (
+    #         len(nexus_info['worker_g1_tag_list']) < 3 or len(nexus_info['worker_g2_tag_list']) < 3)):
+    #   self.is_all_nexus_full = False
+
     # from pprint import pprint
     # pprint(nexus_info)
     # print(f"mineral: {nexus_info['num_worker_m']}/{nexus_info['num_worker_m_max']}")
@@ -868,7 +902,7 @@ def main_agent_func2(self, obs):
     # print('--' * 25)
 
   # 闲置的工人重新加入到工作
-  if not self.main_loop_lock and self.config.ENABLE_AUTO_WORKER_MANAGE:
+  if not self.main_loop_lock and self.config.ENABLE_AUTO_WORKER_MANAGE and self.is_all_nexus_full is False:
     if actions.FUNCTIONS.select_idle_worker.id in obs.observation.available_actions and \
         len(self.possible_working_place_nexus) > 0:
 
@@ -891,9 +925,9 @@ def main_agent_func2(self, obs):
         for unit in obs.observation.feature_units:
           if unit.is_selected:
             worker = unit
-        for agent_name in self.AGENT_NAMES:
+        for agent_name in self.AGENT_NAMES:  # workers in Builder and CombatGroup
           if 'CombatGroup' in agent_name and worker is not None and worker.tag in self.agents[
-            agent_name].unit_tag_list_history:
+            agent_name].unit_tag_list_history and self.agents[agent_name].enable:
             func_id, func_call = (274, actions.FUNCTIONS.HoldPosition_quick('now'))  # 站住即可，不要去采集资源
             logger.info(f"[ID {self.log_id}] 4.1.2 Func Call: {func_call}")
             func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()
@@ -905,7 +939,7 @@ def main_agent_func2(self, obs):
       min_dist_nexus_i = 0
       source_worker = None
       target_nexus = None
-      target_working_position = None
+      # target_working_position = None
       possible_working_place_nexus_tag_list = get_tag_list(self.possible_working_place_nexus)
       for unit in obs.observation.raw_units:
         if unit.is_selected:
@@ -920,8 +954,15 @@ def main_agent_func2(self, obs):
               min_dist = dist
               target_nexus = unit
 
-        idx = possible_working_place_nexus_tag_list.index(target_nexus.tag)
-        working_place_unit_tag_list = self.possible_working_place_tag_list[idx]
+        # idx = possible_working_place_nexus_tag_list.index(target_nexus.tag)
+        if str(target_nexus.tag) in list(self.possible_working_place_tag_dict.keys()):
+          working_place_unit_tag_list = self.possible_working_place_tag_dict[str(target_nexus.tag)]
+          print(f"self.possible_working_place_nexus={self.possible_working_place_nexus}")
+          print(f"self.possible_working_place_tag_dict={self.possible_working_place_tag_dict}")
+          print(f"self.possible_working_place_tag_dict[target_nexus.tag]={self.possible_working_place_tag_dict[str(target_nexus.tag)]}")
+        else:
+          working_place_unit_tag_list = []
+          logger.error(f"[ID {self.log_id}] 4.1.3.0 target_nexus.tag {target_nexus.tag} not in self.possible_working_place_tag_dict.keys() {self.possible_working_place_tag_dict.keys()}")
 
         # 相机移动到主矿
         if not target_nexus.is_on_screen:
@@ -941,10 +982,10 @@ def main_agent_func2(self, obs):
 
         # 相机移动
         working_place_unit_list = get_raw_unit_list_of_tags(obs, working_place_unit_tag_list)
-        if len(working_place_unit_tag_list) == 0 or len(working_place_unit_list) == 0:
-          print(working_place_unit_tag_list)
-          print(working_place_unit_list)
-        target_working_position = working_place_unit_list[0]
+        if not isinstance(working_place_unit_tag_list, list) or not isinstance(working_place_unit_list, list) and len(working_place_unit_tag_list) == 0 or len(working_place_unit_list) == 0:
+          print(f"working_place_unit_tag_list={working_place_unit_tag_list}")
+          print(f"working_place_unit_list={working_place_unit_list}")
+        # target_working_position = working_place_unit_list[0]
         # func_id, func_call = get_camera_func_smart(self, obs, target_working_position.tag)
         # if func_id == 573:
         #   logger.info(f"[ID {self.log_id}] 4.1.3 Func Call: {func_call}")
@@ -953,8 +994,13 @@ def main_agent_func2(self, obs):
 
         # 选择工位
         working_place_unit_list = get_feature_unit_list_of_tags(obs, working_place_unit_tag_list)
-        for unit in working_place_unit_list:
+        working_place_unit_list_ = copy.copy((working_place_unit_list))
+        random.shuffle(working_place_unit_list_)
+        for unit in working_place_unit_list_:
           if unit.is_on_screen and (0 < unit.x < self.size_screen and 0 < unit.y < self.size_screen):
+            print(f"here {str(units.get_unit_type(unit.unit_type))} {unit.assigned_harvesters} {unit.ideal_harvesters}")
+            if unit.unit_type in GAS_BUILDING_TYPE and unit.alliance == features.PlayerRelative.SELF and (unit.build_progress != 100 or not unit.assigned_harvesters < unit.ideal_harvesters):
+              continue
             # 从原单位去除
             for key in self.nexus_info_dict.keys():
               worker = source_worker
@@ -967,15 +1013,15 @@ def main_agent_func2(self, obs):
               if worker.tag in self.nexus_info_dict[key]['worker_g2_tag_list']:
                 self.nexus_info_dict[key]['worker_g2_tag_list'].remove(worker.tag)
             # 前往时就设定为新工位的成员，避免到位前的延迟导致的逻辑bug
-            if target_working_position.unit_type in MINERAL_TYPE:
+            if unit.unit_type in MINERAL_TYPE:
               self.nexus_info_dict[str(target_nexus.tag)]['worker_m_tag_list'].append(source_worker.tag)
-            if target_working_position.unit_type in GAS_BUILDING_TYPE:
+            if unit.unit_type in GAS_BUILDING_TYPE:
               self.nexus_info_dict[str(target_nexus.tag)]['worker_g_tag_list'].append(source_worker.tag)
               gas_building_1 = self.nexus_info_dict[str(target_nexus.tag)]['gas_building_1']
               gas_building_2 = self.nexus_info_dict[str(target_nexus.tag)]['gas_building_2']
-              if gas_building_1 is not None and gas_building_1.tag == target_working_position.tag:
+              if gas_building_1 is not None and gas_building_1.tag == unit.tag:
                 self.nexus_info_dict[str(target_nexus.tag)]['worker_g1_tag_list'].append(source_worker.tag)
-              if gas_building_2 is not None and gas_building_2.tag == target_working_position.tag:
+              if gas_building_2 is not None and gas_building_2.tag == unit.tag:
                 self.nexus_info_dict[str(target_nexus.tag)]['worker_g2_tag_list'].append(source_worker.tag)
             self.nexus_info_dict[str(target_nexus.tag)]['num_worker_m'] = len(
               self.nexus_info_dict[str(target_nexus.tag)]['worker_m_tag_list'])
@@ -983,11 +1029,15 @@ def main_agent_func2(self, obs):
               self.nexus_info_dict[str(target_nexus.tag)]['worker_g_tag_list'])
             # 将闲置工人派遣到新的工作岗位
             func_id, func_call = (264, actions.FUNCTIONS.Harvest_Gather_screen('now', (unit.x, unit.y)))
+            if self.func_id_history[-1] != 264:
+              func_id, func_call = (264, actions.FUNCTIONS.Harvest_Gather_screen('now', (unit.x, unit.y)))
+            else:
+              func_id, func_call = (0, actions.FUNCTIONS.no_op())
             # if self.func_id_history[-1] == 264:
             #   func_id, func_call = (331, actions.FUNCTIONS.Move_screen('now',  (unit.x, unit.y)))
             logger.info(f"[ID {self.log_id}] 4.1.5 Func Call: {func_call}")
             self.possible_working_place_nexus = []
-            self.possible_working_place_tag_list = []
+            self.possible_working_place_tag_dict = {}
             func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()
             func_id = func_id if func_id in obs.observation.available_actions else 0
             self.func_id_history.append(func_id)
@@ -1009,13 +1059,13 @@ def main_agent_func2(self, obs):
       nexus_info = self.nexus_info_dict[key]
 
       if self.stop_worker_nexus_tag is None:
-        if len(nexus_info['worker_g2_tag_list']) > 3:
+        if nexus_info['gas_building_2'] is not None and nexus_info['gas_building_2'].assigned_harvesters > nexus_info['gas_building_2'].ideal_harvesters:
           self.stop_worker_nexus_tag = nexus_info['nexus'].tag
           self.stop_worker_at = 'g2'
-        if len(nexus_info['worker_g1_tag_list']) > 3:
+        if nexus_info['gas_building_1'] is not None and nexus_info['gas_building_1'].assigned_harvesters > nexus_info['gas_building_1'].ideal_harvesters:
           self.stop_worker_nexus_tag = nexus_info['nexus'].tag
           self.stop_worker_at = 'g1'
-        if nexus_info['num_worker_m'] > nexus_info['num_worker_m_max']:
+        if nexus_info['nexus'] is not None and nexus_info['nexus'].assigned_harvesters > nexus_info['nexus'].ideal_harvesters:
           self.stop_worker_nexus_tag = nexus_info['nexus'].tag
           self.stop_worker_at = 'm'
 
@@ -1459,7 +1509,7 @@ def main_agent_func4(self, obs):
 
       # 移动相机到小组的head单位
 
-      func_id, func_call = get_camera_func_smart(self, obs, self.temp_head_unit.tag)
+      func_id, func_call = get_camera_func_smart(self, obs, self.temp_head_unit.tag, threshold=0.35)
       if func_id == 573:
         logger.info(f"[ID {self.log_id}] main_agent_func4: camera to head unit, Func Call: {func_call}")
         self.func_id_history.append(func_id)

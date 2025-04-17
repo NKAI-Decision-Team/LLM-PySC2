@@ -244,22 +244,28 @@ class MainAgent(base_agent.BaseAgent):
       logger.success(f"[ID {self.log_id}] " + '========== ' + '==' * 25 + f" Loop {self.main_loop_step} " + '==' * 25 + ' ==========')
     logger.success(f"[ID {self.log_id}] " + '---------- ' + '--' * 25 + f" Step {self.steps} " + '--' * 25 + ' ----------')
 
+    func_id, func_call = (0, actions.FUNCTIONS.no_op())
+    safe_mode = self.config.SAFE_MODE
+
     last_20_func = list(self.func_id_history)
+    last_10_func = list(self.func_id_history) if len(self.func_id_history) <= 10 else list(self.func_id_history)[-10:]
     possible_endless_loop = False
-    if len(set(last_20_func)) == 1 and len(last_20_func) >= 20 and 0 not in last_20_func:
+    if not safe_mode and len(set(last_20_func)) == 1 and len(last_20_func) >= 20 and 0 not in last_20_func:
       possible_endless_loop = True
       logger.error(f"[ID {self.log_id}] Detect Possible Endless Loop !")
-      logger.error(f"[ID {self.log_id}] last 20 funcs: {actions.FUNCTIONS[self.func_id_history[0]]}")
+      logger.error(f"[ID {self.log_id}] last 20 funcs: {actions.FUNCTIONS[last_20_func[0]]}")
       time.sleep(1)
+    if safe_mode and len(set(last_10_func)) == 1 and len(last_10_func) >= 10 and 0 not in last_10_func:
+      possible_endless_loop = True
+      logger.error(f"[ID {self.log_id}] Detect Possible Endless Loop !")
+      logger.error(f"[ID {self.log_id}] last 10 funcs: {actions.FUNCTIONS[last_10_func[0]]}")
+      time.sleep(0.1)
 
     base_exist = False
     for unit in obs.observation.raw_units:
       if unit.unit_type in BASE_BUILDING_TYPE and unit.alliance == features.PlayerRelative.SELF:
         base_exist = True
         break
-
-    func_id, func_call = (0, actions.FUNCTIONS.no_op())
-    safe_mode = self.config.SAFE_MODE
 
     # initial steps and camera calibration (necessary)
     func_id, func_call = main_agent_func0(self, obs)
@@ -268,14 +274,14 @@ class MainAgent(base_agent.BaseAgent):
         logger.success(f"[ID {self.log_id}] main_agent_func0: Func Call {func_id} {func_call}")
         return func_call
 
-    # unit grouping, add to relevant agent.teams (necessary)
-    func_id, func_call = main_agent_func1(self, obs)
-    if func_call is not None:
-      if not safe_mode or not (possible_endless_loop and func_id in last_20_func):
-        logger.success(f"[ID {self.log_id}] main_agent_func1: Func Call {func_id} {func_call}")
-        return func_call
+    if base_exist and (not safe_mode or (safe_mode and not possible_endless_loop)):
 
-    if not (safe_mode and possible_endless_loop) and base_exist:
+      # unit grouping, add to relevant agent.teams (necessary)
+      func_id, func_call = main_agent_func1(self, obs)
+      if func_call is not None:
+        if not safe_mode or not (possible_endless_loop and func_id in last_20_func):
+          logger.success(f"[ID {self.log_id}] main_agent_func1: Func Call {func_id} {func_call}")
+          return func_call
 
       # auto worker-management (optional)
       func_id, func_call = main_agent_func2(self, obs)

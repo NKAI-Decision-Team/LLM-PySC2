@@ -244,7 +244,7 @@ def add_func_for_easy_control(self, obs, action):  # goto enemy base
   game_time_s = obs.observation.game_loop / 22.4
   idle_worker_count = obs.observation.player.idle_worker_count
   supply_used = obs.observation.player.food_used
-  if 'All_Units_Defend' == action_name and (game_time_s > 720 and supply_used > 150):
+  if 'All_Units_Defend' == action_name and ((game_time_s > 720 and supply_used > 120) or game_time_s > 900):
     action_name = 'All_Units_Attack'
 
   n_worker = 0
@@ -349,7 +349,7 @@ def add_func_for_easy_control(self, obs, action):  # goto enemy base
       d_min, index_min = get_dis_pos_poses1(combat_unit_center_pos, enemy_combat_unit_pos_list, flag='min')
       d_min2, index_min2 = get_dis_pos_poses1(combat_unit_center_pos, all_base_pos_list, flag='min')
       if combat_unit_tag_to_attack is None and combat_unit_center_distance is not None and \
-          combat_unit_center_distance < 12 and 0 < d_min2 < 12:  # 主力附近遭遇敌方主力, 且主力距离基地的距离不超过24格
+          combat_unit_center_distance < 13 and 0 < d_min2 < 13:  # 主力附近遭遇敌方主力, 且主力距离基地的距离不超过24格
         combat_unit_tag_to_attack = enemy_combat_unit_list[index_min].tag
 
   full_shape_action = {'name': 'No_Operation', 'arg': [], 'func': [(0, actions.FUNCTIONS.no_op, {})]}
@@ -388,11 +388,12 @@ def add_func_for_easy_control(self, obs, action):  # goto enemy base
         funcs_select_army_and_move_camera_to(target_tag2) + [(331, F.Move_screen, ['now', int(target_tag2)])]}
 
   elif ('Worker_Scan' in action_name) and (game_time_s < 60 or int(game_time_s) % 90 < 20 or idle_worker_count > 2):
-    if target_tag is not None and target_tag2 is not None and worker_tag is not None:
-      full_shape_action = {'name': action_name, 'arg': [], 'func':
-        funcs_move_camera_to_and_select_unit(worker_tag) + funcs_move_camera_to(target_tag) + [(331, F.Move_screen, ['now', int(target_tag)])]}
+      if target_tag is not None and target_tag2 is not None and worker_tag is not None:
+        full_shape_action = {'name': action_name, 'arg': [], 'func':
+          funcs_move_camera_to_and_select_unit(worker_tag) + funcs_move_camera_to(target_tag) + [
+            (331, F.Move_screen, ['now', int(target_tag)])]}
 
-  elif ('_Scan' in action_name):
+  elif ('_Scan' in action_name) and int(game_time_s) % 90 < 20:
 
     if action_name == 'Adept_Scan':
       source_unit_tag, source_unit = tag_for_closest_unit(obs, target_tag, units.Protoss.Adept)
@@ -402,7 +403,6 @@ def add_func_for_easy_control(self, obs, action):  # goto enemy base
       source_unit_tag, source_unit = tag_for_closest_unit(obs, target_tag, units.Protoss.Observer)
     else:
       source_unit_tag, source_unit = None, None
-
 
     if source_unit is None:
       print(f"complete.py: source_unit is None")

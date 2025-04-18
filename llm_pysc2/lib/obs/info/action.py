@@ -137,12 +137,15 @@ def get_valid_actions_build(agent) -> (list, str):
   _, _, ba, _, _, bc, m, g, s, u, b = get_condition_elements(agent)
 
   building_types, building_types_text, pylons_construct = [], [], []
+  building_types += BUILDING_TYPE_DEFENSE
+  for building_type in BUILDING_TYPE:
+    building_types_text.append(str(units.get_unit_type(building_type)).split('.')[-1])
   for unit in obs.observation.raw_units:
     if unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100 and unit.unit_type in BUILDING_TYPE:
       building_types.append(unit.unit_type)
       if unit.unit_type == units.Protoss.WarpGate:
         building_types.append(units.Protoss.Gateway)
-    if unit.alliance == features.PlayerRelative.SELF and unit.unit_type in BUILDING_TYPE and unit.unit_type not in BUILDING_TYPE_DEFENSE:
+    if unit.alliance == features.PlayerRelative.SELF and unit.unit_type in BUILDING_TYPE:
       building_types_text.append(str(units.get_unit_type(unit.unit_type)).split('.')[-1])
       if unit.unit_type == units.Protoss.WarpGate:
         building_types.append('Gateway')

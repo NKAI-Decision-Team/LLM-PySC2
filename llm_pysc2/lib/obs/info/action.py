@@ -311,7 +311,7 @@ def get_valid_actions_chrono_boost(agent):
   valid_actions_info = ''
   if source_unit_tag is not None and len(active_buildings_base) > 0 and len(active_buildings_military) == 0 and len(active_buildings_research) == 0:
     valid_actions_info += f"\n\t\t<ChronoBoost_Economy()>"
-  if source_unit_tag is not None and len(active_buildings_military) > 0:
+  if source_unit_tag is not None and len(active_buildings_military) > 0 and len(active_buildings_research) == 0:
     valid_actions_info += f"\n\t\t<ChronoBoost_Military()>"
   if source_unit_tag is not None and len(active_buildings_research) > 0:
     valid_actions_info += f"\n\t\t<ChronoBoost_Research()>"

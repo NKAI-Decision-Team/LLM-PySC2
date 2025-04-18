@@ -56,7 +56,7 @@ BASIC_DEVELOP_RULES = \
 # \t6. (Unit Training/Warping) If you have enough idle unit training buildings but few combat units, or have a lot resource, train/warp units as much as possible.
 # \t7. (Tech Upgrading) If you have idle research buildings and enough resource, or have a lot resource, update your technology.
 # \t8. (Early Stage Expand) If you do not have 'the second base building', the 'CyberneticCore', the 'TwilightCouncil' and 'first two Gateway', try to build them as quick as possible.
-# \t9. (Middle Stage Develop) During the middle stage of the game, try to build buildings for training high value units, and train high value units to increase strength.
+# \t9. (Middle Stage Develop) During the middle stage of the game, try to build buildings for training high value units, and train units as much as possible (especially high value units) to increase strength.
 # \t10. (Final Stage Develop) During the final stage of the game, train or warp more units to fight with enemy, do not build building if we have enough buildings.
 """
 

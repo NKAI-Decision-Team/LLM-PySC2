@@ -212,7 +212,7 @@ def add_func_for_chrono_boost(self, obs, action):
 
   if 'ChronoBoost_Economy' in action_name and len(active_buildings_base) > 0 and len(active_buildings_military) == 0 and len(active_buildings_research) == 0:
     target_unit_tag = active_buildings_base[random.randint(0, len(active_buildings_base) - 1)]
-  if 'ChronoBoost_Military' in action_name and len(active_buildings_military) > 0:
+  if 'ChronoBoost_Military' in action_name and len(active_buildings_military) > 0 and len(active_buildings_research) == 0:
     target_unit_tag = active_buildings_military[random.randint(0, len(active_buildings_military) - 1)]
   if 'ChronoBoost_Research' in action_name and len(active_buildings_research) > 0:
     target_unit_tag = active_buildings_research[random.randint(0, len(active_buildings_research) - 1)]
@@ -387,7 +387,7 @@ def add_func_for_easy_control(self, obs, action):  # goto enemy base
       full_shape_action = {'name': action_name, 'arg': [], 'func':
         funcs_select_army_and_move_camera_to(target_tag2) + [(331, F.Move_screen, ['now', int(target_tag2)])]}
 
-  elif ('Worker_Scan' in action_name) and (game_time_s < 60 or int(game_time_s) % 60 < 20 or idle_worker_count > 2):
+  elif ('Worker_Scan' in action_name) and (game_time_s < 60 or int(game_time_s) % 90 < 20 or idle_worker_count > 2):
     if target_tag is not None and target_tag2 is not None and worker_tag is not None:
       full_shape_action = {'name': action_name, 'arg': [], 'func':
         funcs_move_camera_to_and_select_unit(worker_tag) + funcs_move_camera_to(target_tag) + [(331, F.Move_screen, ['now', int(target_tag)])]}

@@ -48,6 +48,7 @@ BASIC_COMMAND_RULES = \
 
 BASIC_DEVELOP_RULES = \
 """
+"""
 # Analyse following aspect in your decision process:
 # \t1. (Supply) If run out of supply (less than 10) and no building for supply is under construction, build Pylon/OverLord/SupplyDepot (depend on your race).
 # \t2. (Economy Building: Base) If you have enough minerals (more than 400), build Nexus/Hatchery/CommandCenter (depend on your race).
@@ -57,7 +58,6 @@ BASIC_DEVELOP_RULES = \
 # \t6. (Unit Training/Warping) If you have enough idle unit training buildings but few combat units, train/warp more units.
 # \t7. (Tech Upgrading) If you have idle research buildings and enough resource, update your technology.
 # \t8. (Early Stage Expand) If you do not have the second base building, the first Gateway and CyberneticCore, try to build them as quick as possible.
-"""
 
 
 BASIC_BUILD_RULES = \

@@ -199,6 +199,8 @@ def get_valid_actions_build(agent) -> (list, str):
         note = ", note: 'New Building! We do not have this building yet, it may unlock new buildings/technologies/units for us'" if building_name not in building_types_text else ''
         valid_actions_info += f"\n\t\t<{action['name']}({arg_to_show})> \n\t\t\t cost: {cost}{note}"
         # valid_actions_info += f"{building_name} {building_types_text}"
+      if func_id in [actions.FUNCTIONS.Build_Nexus_screen.id] and valid:
+        valid_actions_info += ',note: Important Building!'
     else:
       # valid_actions.append(action['name'])
       basic_actions_info += f"\n\t\t<{action['name']}({arg_to_show})> "

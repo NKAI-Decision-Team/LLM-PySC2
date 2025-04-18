@@ -159,7 +159,7 @@ protoss_build_conditions = {
   actions.FUNCTIONS.Build_Gateway_screen.id:
     {'m': 150, 'g': 0, 'b': [units.Protoss.Pylon], 't': 65},
   actions.FUNCTIONS.Build_Assimilator_screen.id:
-    {'m': 75, 'g': 0, 'b': [units.Protoss.Gateway], 't': 30},
+    {'m': 75, 'g': 0, 'b': [units.Protoss.CyberneticsCore], 't': 30},
   actions.FUNCTIONS.Build_CyberneticsCore_screen.id:
     {'m': 150, 'g': 0, 'b': [units.Protoss.Gateway], 't': 50},
   actions.FUNCTIONS.Build_Forge_screen.id:

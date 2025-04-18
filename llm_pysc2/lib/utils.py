@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import random
 
 from pysc2.lib import units, upgrades, buffs, actions, features
 import numpy as np
@@ -292,7 +293,7 @@ UNIT_DONOT_NEED_GATHER = \
 def get_dis_pos_poses1(pos, pos1_list, flag='min'):
   if len(pos1_list) == 0:
     return (0, None)
-  x, y, d_min = pos[0], pos[1], 999
+  x, y, d_min = pos[0] + 0.01 * random.random(), pos[1] + 0.01 * random.random(), 999
   arr_pos1 = np.array(pos1_list).T
   arr_x1, arr_y1 = arr_pos1[0], arr_pos1[1]
   arr_x0, arr_y0 = np.zeros_like(arr_x1) + x, np.zeros_like(arr_x1) + y

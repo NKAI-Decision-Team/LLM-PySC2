@@ -210,7 +210,7 @@ def add_func_for_chrono_boost(self, obs, action):
     if unit.unit_type in BUILDING_TYPE_RESEARCH and unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100 and unit.active != 0 and unit.buff_id_0 == 0:
       active_buildings_research.append(unit.tag)
 
-  if 'ChronoBoost_Economy' in action_name and len(active_buildings_base) > 0:
+  if 'ChronoBoost_Economy' in action_name and len(active_buildings_base) > 0 and len(active_buildings_military) == 0 and len(active_buildings_research) == 0:
     target_unit_tag = active_buildings_base[random.randint(0, len(active_buildings_base) - 1)]
   if 'ChronoBoost_Military' in action_name and len(active_buildings_military) > 0:
     target_unit_tag = active_buildings_military[random.randint(0, len(active_buildings_military) - 1)]
@@ -241,6 +241,9 @@ def add_func_for_easy_control(self, obs, action):  # goto enemy base
   if not ('All_Units_' in action_name or '_Scan' in action_name):
     return action
 
+  game_time_s = obs.observation.game_loop / 22.4
+  idle_worker_count = obs.observation.player.idle_worker_count
+
   n_worker = 0
   first_ctrl_base_pos, first_oppo_base_pos = None, None
   target_tag = self.first_oppo_base_tag
@@ -253,6 +256,7 @@ def add_func_for_easy_control(self, obs, action):  # goto enemy base
   combat_unit_list, combat_unit_pos_list = [], []
   worker_list, worker_pos_list = [], []
 
+  all_defense_building_list, all_defense_building_pos_list = [], []
   all_pylon_list, all_pylon_pos_list = [], []
   all_base_list, all_base_pos_list = [], []
   all_ves_list, all_ves_pos_list = [], []
@@ -283,6 +287,9 @@ def add_func_for_easy_control(self, obs, action):  # goto enemy base
     if unit.unit_type == units.Protoss.Pylon and unit.alliance == features.PlayerRelative.SELF:
       all_pylon_list.append(unit)
       all_pylon_pos_list.append([unit.x, unit.y])
+    if unit.unit_type in BUILDING_TYPE_DEFENSE and unit.alliance == features.PlayerRelative.SELF:
+      all_defense_building_list.append(unit)
+      all_defense_building_pos_list.append([unit.x, unit.y])
 
     if unit.unit_type in GAS_TYPE:
       all_ves_list.append(unit)
@@ -299,12 +306,20 @@ def add_func_for_easy_control(self, obs, action):  # goto enemy base
   worker_tag = tag_for_closest_worker(obs, target_tag, mining_only=False)
 
   # Defend concentrate
-  if first_oppo_base_pos is not None:
-    d_min, index_min = get_dis_pos_poses1(first_oppo_base_pos, all_pylon_pos_list, flag='min')  # front line pylon
-    target_tag2 = all_pylon_list[index_min].tag if d_min != 0 else self.first_oppo_base_tag
+  if len(all_defense_building_pos_list) == 0:
+    if first_oppo_base_pos is not None:
+      d_min, index_min = get_dis_pos_poses1(first_oppo_base_pos, all_pylon_pos_list, flag='min')  # front line pylon
+      target_tag2 = all_pylon_list[index_min].tag if d_min != 0 else self.first_oppo_base_tag
+    else:
+      d_max, indexes_max = get_dis_posse1_poses2(all_base_pos_list, all_pylon_pos_list, flag='max')
+      target_tag2 = all_pylon_list[indexes_max[1]].tag if d_max != 0 else self.first_ctrl_base_tag
   else:
-    d_max, indexes_max = get_dis_posse1_poses2(all_base_pos_list, all_pylon_pos_list, flag='max')
-    target_tag2 = all_pylon_list[indexes_max[1]].tag if d_max != 0 else self.first_ctrl_base_tag
+    if first_oppo_base_pos is not None:
+      d_min, index_min = get_dis_pos_poses1(first_oppo_base_pos, all_defense_building_pos_list, flag='min')  # front line pylon
+      target_tag2 = all_defense_building_list[index_min].tag if d_min != 0 else self.first_oppo_base_tag
+    else:
+      d_max, indexes_max = get_dis_posse1_poses2(all_base_pos_list, all_defense_building_pos_list, flag='max')
+      target_tag2 = all_defense_building_list[indexes_max[1]].tag if d_max != 0 else self.first_ctrl_base_tag
 
   # Attack Combat / Defend Combat
   a_ = combat_unit_center_pos = list(np.average(np.array(combat_unit_pos_list), axis=0)) if len(combat_unit_pos_list) > 0 else None
@@ -331,7 +346,7 @@ def add_func_for_easy_control(self, obs, action):  # goto enemy base
       d_min, index_min = get_dis_pos_poses1(combat_unit_center_pos, enemy_combat_unit_pos_list, flag='min')
       d_min2, index_min2 = get_dis_pos_poses1(combat_unit_center_pos, all_base_pos_list, flag='min')
       if combat_unit_tag_to_attack is None and combat_unit_center_distance is not None and \
-          combat_unit_center_distance < 20 and 0 < d_min2 < 24:  # 主力附近遭遇敌方主力, 且主力距离基地的距离不超过24格
+          combat_unit_center_distance < 12 and 0 < d_min2 < 12:  # 主力附近遭遇敌方主力, 且主力距离基地的距离不超过24格
         combat_unit_tag_to_attack = enemy_combat_unit_list[index_min].tag
 
   full_shape_action = {'name': 'No_Operation', 'arg': [], 'func': [(0, actions.FUNCTIONS.no_op, {})]}
@@ -345,7 +360,7 @@ def add_func_for_easy_control(self, obs, action):  # goto enemy base
 
   if ('All_Units_Attack' in action_name):
     supply = obs.observation.player.food_cap - obs.observation.player.food_used
-    if target_tag is not None:  # and obs.observation.player.food_used - n_worker > 100 or supply < 10
+    if target_tag is not None and obs.observation.player.food_used - n_worker > 50:  #
       if combat_unit_tag_to_attack is not None:
         target_tag = combat_unit_tag_to_attack
         full_shape_action = {'name': action_name, 'arg': [], 'func':
@@ -369,7 +384,7 @@ def add_func_for_easy_control(self, obs, action):  # goto enemy base
       full_shape_action = {'name': action_name, 'arg': [], 'func':
         funcs_select_army_and_move_camera_to(target_tag2) + [(331, F.Move_screen, ['now', int(target_tag2)])]}
 
-  elif ('Worker_Scan' in action_name):
+  elif ('Worker_Scan' in action_name) and (int(game_time_s) % 90 < 20 or idle_worker_count > 5):
     if target_tag is not None and target_tag2 is not None and worker_tag is not None:
       full_shape_action = {'name': action_name, 'arg': [], 'func':
         funcs_move_camera_to_and_select_unit(worker_tag) + funcs_move_camera_to(target_tag) + [(331, F.Move_screen, ['now', int(target_tag)])]}

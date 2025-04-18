@@ -165,8 +165,8 @@ class DeveloperTranslatorO(BaseTranslatorO):
 
     # observation
     self.text_obs = self.state['game_info'] + self.states[-1]['unit_count_info'] + \
-               self.states[-1]['valid_actions'] + action_args_explanation + self.state['last_action_info'] + \
-               warp_info
+               self.states[-1]['valid_actions'] + action_args_explanation + warp_info  #  + self.state['last_action_info']
+
     self.text_task = self.state['communication_input'] + self.state['communication_target'] + self.state['task_info']
     self.text_prompt = self.text_obs + self.text_task + self.final_prompt
 

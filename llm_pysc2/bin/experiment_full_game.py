@@ -56,7 +56,7 @@ class MainAgentLLMPysc2(MainAgent):
     # config.IGNORE_INIT_WARNINGS = True
     # config.ENABLE_MULTI_THREAD_QUERY = False
 
-    config.MAX_LLM_DECISION_FREQUENCY = 0.2
+    # config.MAX_LLM_DECISION_FREQUENCY = 0.2
     config.ENABLE_COMMUNICATION = True
     config.ENABLE_EASY_CONTROL = True
     config.ENABLE_EASY_BUILD = True
@@ -67,6 +67,13 @@ class MainAgentLLMPysc2(MainAgent):
     super(MainAgentLLMPysc2, self).__init__(config, LLMAgent)
 
   def step(self, obs):
+    game_time_s = obs.observation.game_loop / 22.4
+    if game_time_s < 120:
+      self.config.MAX_LLM_DECISION_FREQUENCY = 0.2
+    if 120 < game_time_s < 360:
+      self.config.MAX_LLM_DECISION_FREQUENCY = 0.3
+    if 120 < game_time_s < 720:
+      self.config.MAX_LLM_DECISION_FREQUENCY = 0.4
     return super().step(obs)
 
 

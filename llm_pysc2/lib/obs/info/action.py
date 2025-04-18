@@ -173,12 +173,12 @@ def get_valid_actions_build(agent) -> (list, str):
 
       if func_id in [actions.FUNCTIONS.Build_Pylon_screen.id]:
         s_cap, s_used = obs.observation.player.food_cap, obs.observation.player.food_used
-        supply = 7 * len(pylons_construct) + s_cap - s_used
-        if 0 < s_used and supply > 25 and obs.observation.player.minerals < 500:
+        supply = 7 * (len(pylons_construct) + 1) + s_cap - s_used
+        if 0 < s_used and supply > 25 and obs.observation.player.minerals < 300:
           partial_valid, valid = False, False
         if 50 < s_used < 100 and supply > 30 and obs.observation.player.minerals < 500:
           partial_valid, valid = False, False
-        if 100 <= s_used < 150 and supply > 50 and obs.observation.player.minerals < 1000:
+        if 100 <= s_used < 150 and supply > 50 and obs.observation.player.minerals < 750:
           partial_valid, valid = False, False
         if obs.observation.player.food_cap == 200 and len(pylons_construct) > 0:
           partial_valid, valid = False, False
@@ -201,6 +201,8 @@ def get_valid_actions_build(agent) -> (list, str):
         # valid_actions_info += f"{building_name} {building_types_text}"
       if func_id in [actions.FUNCTIONS.Build_Nexus_screen.id] and valid:
         valid_actions_info += ',note: Important Building!'
+      if func_id in [actions.FUNCTIONS.Build_Nexus_screen.id] and partial_valid:
+        partial_valid_actions_info += ',note: Important Building!'
     else:
       # valid_actions.append(action['name'])
       basic_actions_info += f"\n\t\t<{action['name']}({arg_to_show})> "
@@ -307,7 +309,7 @@ def get_valid_actions_chrono_boost(agent):
       active_buildings_research.append(unit.tag)
 
   valid_actions_info = ''
-  if source_unit_tag is not None and len(active_buildings_base) > 0:
+  if source_unit_tag is not None and len(active_buildings_base) > 0 and len(active_buildings_military) == 0 and len(active_buildings_research) == 0:
     valid_actions_info += f"\n\t\t<ChronoBoost_Economy()>"
   if source_unit_tag is not None and len(active_buildings_military) > 0:
     valid_actions_info += f"\n\t\t<ChronoBoost_Military()>"

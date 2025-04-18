@@ -136,16 +136,18 @@ def get_valid_actions_build(agent) -> (list, str):
   obs = agent.team_unit_obs_list[0]
   _, _, ba, _, _, bc, m, g, s, u, b = get_condition_elements(agent)
 
-  building_types, building_types_text = [], []
+  building_types, building_types_text, pylons_construct = [], [], []
   for unit in obs.observation.raw_units:
     if unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100 and unit.unit_type in BUILDING_TYPE:
       building_types.append(unit.unit_type)
       if unit.unit_type == units.Protoss.WarpGate:
         building_types.append(units.Protoss.Gateway)
-    if unit.alliance == features.PlayerRelative.SELF and unit.unit_type in BUILDING_TYPE:
+    if unit.alliance == features.PlayerRelative.SELF and unit.unit_type in BUILDING_TYPE and unit.unit_type not in BUILDING_TYPE_DEFENSE:
       building_types_text.append(str(units.get_unit_type(unit.unit_type)).split('.')[-1])
       if unit.unit_type == units.Protoss.WarpGate:
         building_types.append('Gateway')
+    if unit.alliance == features.PlayerRelative.SELF and unit.unit_type == units.Protoss.Pylon and unit.build_progress != 100:
+      pylons_construct.append(unit)
 
   # valid_actions = []
   basic_actions_info = ''
@@ -168,10 +170,29 @@ def get_valid_actions_build(agent) -> (list, str):
       valid = False if ('m' in cs.keys() and m < cs['m']) else valid
       valid = False if ('g' in cs.keys() and g < cs['g']) else valid
       valid = False if ('s' in cs.keys() and s < cs['s']) else valid
+
+      if func_id in [actions.FUNCTIONS.Build_Pylon_screen.id]:
+        s_cap, s_used = obs.observation.player.food_cap, obs.observation.player.food_used
+        supply = 7 * len(pylons_construct) + s_cap - s_used
+        if 0 < s_used and supply > 25 and obs.observation.player.minerals < 500:
+          partial_valid, valid = False, False
+        if 50 < s_used < 100 and supply > 30 and obs.observation.player.minerals < 500:
+          partial_valid, valid = False, False
+        if 100 <= s_used < 150 and supply > 50 and obs.observation.player.minerals < 1000:
+          partial_valid, valid = False, False
+        if obs.observation.player.food_cap == 200 and len(pylons_construct) > 0:
+          partial_valid, valid = False, False
+
+      _, _, ves_new_base_tags, ves_near_tags = get_ves_for_base_and_gas_building(obs)
+      if func_id in [actions.FUNCTIONS.Build_Nexus_screen.id]:
+        partial_valid, valid = (False, False) if len(ves_new_base_tags) == 0 else (partial_valid, valid)
+      if func_id in [actions.FUNCTIONS.Build_Assimilator_screen.id]:
+        partial_valid, valid = (False, False) if len(ves_near_tags) == 0 else (partial_valid, valid)
+
       if partial_valid and not valid:  # resource not enough
         cost = {'mineral': cs['m'], 'gas': cs['g']}  # 'time': cs['t']
         note = ", note: 'New Building! We do not have this building yet, it may unlock new buildings/technologies/units for us'" if building_name not in building_types_text else ''
-        partial_valid_actions_info += f"\n\t\t<{action['name']}({arg_to_show})> \n\t\t\t cost: {cost}{note}"
+        partial_valid_actions_info += f"\n\t\t<{action['name']}({arg_to_show})> \n\t\t\t cost: {cost}{note}, lack of resources, currently invalid"
       if valid:
         # valid_actions.append(action['name'])
         cost = {'mineral': cs['m'], 'gas': cs['g']}  # 'time': cs['t']
@@ -216,7 +237,7 @@ def get_valid_actions_research(agent) -> (list, str):
     valid = False if ('s' in cs.keys() and s < cs['s']) else valid
     if partial_valid and not valid:  # resource not enough
       cost = {'mineral': cs['m'], 'gas': cs['g']}  # 'time': cs['t']
-      partial_valid_actions_info += f"\n\t\t<{action['name']}()> \n\t\t\t cost: {cost}"
+      partial_valid_actions_info += f"\n\t\t<{action['name']}()> \n\t\t\t cost: {cost}, note:lack of resources, currently invalid)"
     if valid:
       # valid_actions.append(action['name'])
       cost = {'mineral': cs['m'], 'gas': cs['g']}  # 'time': cs['t']
@@ -252,19 +273,45 @@ def get_valid_actions_train(agent) -> (list, str):
     valid = False if ('m' in cs.keys() and m < cs['m']) else valid
     valid = False if ('g' in cs.keys() and g < cs['g']) else valid
     valid = False if ('s' in cs.keys() and s < cs['s']) else valid
+    max_number = min(round(m / cs['m'] if cs['m'] != 0 else 99), round(m / cs['g'] if cs['g'] != 0 else 99))
     if partial_valid and not valid:  # resource not enough
       cost = {'mineral': cs['m'], 'gas': cs['g'], 'supply': cs['s']}  # 'time': cs['t']
-      partial_valid_actions_info += f"\n\t\t<{action['name']}()> \n\t\t\t cost: {cost}"
+      partial_valid_actions_info += f"\n\t\t<{action['name']}()> \n\t\t\t cost: {cost}, note: lack of resources, currently invalid"
     if valid:
       # valid_actions.append(action['name'])
       cost = {'mineral': cs['m'], 'gas': cs['g'], 'supply': cs['s']}  # 'time': cs['t']
-      valid_actions_info += f"\n\t\t<{action['name']}()> \n\t\t\t cost: {cost}"
+      valid_actions_info += f"\n\t\t<{action['name']}()> \n\t\t\t cost: {cost}, note: we can afford {max_number} at most"
 
   # if valid_actions_info != '':
   #   valid_actions_info = "Valid Unit Training Actions: " + valid_actions_info + "\n\n"
 
   # return valid_actions, valid_actions_info
   return valid_actions_info, partial_valid_actions_info
+
+
+def get_valid_actions_chrono_boost(agent):
+  obs = agent.team_unit_obs_list[0]
+
+  source_unit_tag, target_unit_tag = None, None
+  active_buildings_base, active_buildings_military, active_buildings_research = [], [], []
+  for unit in obs.observation.raw_units:
+    if unit.unit_type == units.Protoss.Nexus and unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100 and unit.energy > 50:
+      source_unit_tag = unit.tag
+    if unit.unit_type == units.Protoss.Nexus and unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100 and unit.active != 0 and unit.buff_id_0 == 0:
+      active_buildings_base.append(unit.tag)
+    if unit.unit_type in BUILDING_TYPE_MILITARY and unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100 and unit.active != 0 and unit.buff_id_0 == 0:
+      active_buildings_military.append(unit.tag)
+    if unit.unit_type in BUILDING_TYPE_RESEARCH and unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100 and unit.active != 0 and unit.buff_id_0 == 0:
+      active_buildings_research.append(unit.tag)
+
+  valid_actions_info = ''
+  if source_unit_tag is not None and len(active_buildings_base) > 0:
+    valid_actions_info += f"\n\t\t<ChronoBoost_Economy()>"
+  if source_unit_tag is not None and len(active_buildings_military) > 0:
+    valid_actions_info += f"\n\t\t<ChronoBoost_Military()>"
+  if source_unit_tag is not None and len(active_buildings_research) > 0:
+    valid_actions_info += f"\n\t\t<ChronoBoost_Research()>"
+  return valid_actions_info
 
 
 def get_valid_actions_developer(agent):
@@ -295,6 +342,7 @@ def get_valid_actions_developer(agent):
       valid_actions_info_, partial_valid_actions_info_  = get_valid_actions_train(agent)
       valid_actions_info += valid_actions_info_
       partial_valid_actions_info += partial_valid_actions_info_
+      valid_actions_info += get_valid_actions_chrono_boost(agent)
       if valid_actions_info == '':
         teams_valid_actions_info += '\n\t\t currently none, build buildings to unlock training/warping and researching actions.'
       else:

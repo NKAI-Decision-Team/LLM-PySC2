@@ -45,8 +45,8 @@ def thread_act(agent, obs):
       agent.query(obs)
     except Exception as e:
       # agent = copy.deepcopy(agent_copy)
-      agent._after_query(f'error {e} occur in agent {agent.name} query')
-      logger.error(f"error {e} occur in agent {agent.name} query")
+      agent._after_query('Can not get LLM response due to technique problems', obs)
+      logger.error(f"error {e} occur in agent {agent.name} thread_act")
   else:
     agent.query(obs)
 

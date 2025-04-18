@@ -161,7 +161,7 @@ class DeveloperTranslatorO(BaseTranslatorO):
 
     self.states[-1]['warp_info'] = get_warp_info(agent)
     warp_info = '' if agent.config.ENABLE_EASY_WARP else self.states[-1]['warp_info']
-    action_args_explanation = self.state['valid_args_explanation'] if agent.config.ENABLE_EASY_WARP else self.states[-1]['warp_info']
+    action_args_explanation = '' if agent.config.ENABLE_EASY_WARP else self.state['valid_args_explanation']
 
     # observation
     self.text_obs = self.state['game_info'] + self.states[-1]['unit_count_info'] + \

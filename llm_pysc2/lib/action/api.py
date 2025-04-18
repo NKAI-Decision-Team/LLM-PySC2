@@ -304,6 +304,8 @@ class DefaultTranslatorA(BaseTranslatorA):
 
     if self.name == 'Builder':
       team_actions.append({'name': 'HoldPosition-Auto', 'arg': [], 'func': [(274, F.HoldPosition_quick, ('queued',))]})
+    if self.name == 'Commander' and len(team_actions) == 0:
+      team_actions.append({'name': 'All_Units_Defend-Auto', 'arg': [], 'func': [(0, F.no_op, ())]})
     if self.name == 'Developer' and obs is not None:
       gateway_list, morph_action_list = [], []
       for unit in obs.observation.raw_units:

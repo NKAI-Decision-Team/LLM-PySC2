@@ -27,6 +27,12 @@ PROTOSS_ACTION_EASY_CONTROL = [
   {'name': 'Adept_Scan', 'arg': [], 'func': [(0, F.no_op, ())]},
 ]
 
+PROTOSS_ACTION_EASY_CHRONO_BOOST = [
+  {'name': 'ChronoBoost_Economy', 'arg': [], 'func': [(0, F.no_op, ())]},
+  {'name': 'ChronoBoost_Military', 'arg': [], 'func': [(0, F.no_op, ())]},
+  {'name': 'ChronoBoost_Research', 'arg': [], 'func': [(0, F.no_op, ())]},
+]
+
 # Simplified warp train actions
 PROTOSS_ACTION_EASY_WARPTRAIN = [
   {'name': 'Warp_Adept', 'arg': [],

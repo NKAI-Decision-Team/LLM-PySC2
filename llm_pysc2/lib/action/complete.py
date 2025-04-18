@@ -191,6 +191,49 @@ def add_func_for_train_and_research(self, obs, action):
   return full_shape_action
 
 
+def add_func_for_chrono_boost(self, obs, action):
+  action_name = action['name']
+  action_arg = action['arg']
+  action_func = action['func']
+  if not ('ChronoBoost_' in action_name) or self.race != 'protoss':
+    return action
+
+  source_unit_tag, target_unit_tag = None, None
+  active_buildings_base, active_buildings_military, active_buildings_research = [], [], []
+  for unit in obs.observation.raw_units:
+    if unit.unit_type == units.Protoss.Nexus and unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100 and unit.energy > 50:
+      source_unit_tag = unit.tag
+    if unit.unit_type == units.Protoss.Nexus and unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100 and unit.active != 0 and unit.buff_id_0 == 0:
+      active_buildings_base.append(unit.tag)
+    if unit.unit_type in BUILDING_TYPE_MILITARY and unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100 and unit.active != 0 and unit.buff_id_0 == 0:
+      active_buildings_military.append(unit.tag)
+    if unit.unit_type in BUILDING_TYPE_RESEARCH and unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100 and unit.active != 0 and unit.buff_id_0 == 0:
+      active_buildings_research.append(unit.tag)
+
+  if 'ChronoBoost_Economy' in action_name and len(active_buildings_base) > 0:
+    target_unit_tag = active_buildings_base[random.randint(0, len(active_buildings_base) - 1)]
+  if 'ChronoBoost_Military' in action_name and len(active_buildings_military) > 0:
+    target_unit_tag = active_buildings_military[random.randint(0, len(active_buildings_military) - 1)]
+  if 'ChronoBoost_Research' in action_name and len(active_buildings_research) > 0:
+    target_unit_tag = active_buildings_research[random.randint(0, len(active_buildings_research) - 1)]
+
+  if source_unit_tag is not None and target_unit_tag is not None:
+    full_shape_action = {'name': action_name, 'arg': [], 'func':
+      [(573, actions.FUNCTIONS.llm_pysc2_move_camera, [int(source_unit_tag)]),
+       (573, actions.FUNCTIONS.llm_pysc2_move_camera, [int(source_unit_tag)]),
+       (2, actions.FUNCTIONS.select_point, ['select', int(source_unit_tag)]),
+       (573, actions.FUNCTIONS.llm_pysc2_move_camera, [int(target_unit_tag)]),
+       (573, actions.FUNCTIONS.llm_pysc2_move_camera, [int(target_unit_tag)]),
+       # (187, actions.FUNCTIONS.Effect_ChronoBoost_screen, ['now', int(target_unit_tag)]),
+       (527, actions.FUNCTIONS.Effect_ChronoBoostEnergyCost_screen, ['now', int(target_unit_tag)]),
+       ]}
+  else:
+    full_shape_action = {'name': 'No_Operation', 'arg': [], 'func':
+      [(0, actions.FUNCTIONS.no_op, {})]}
+
+  return full_shape_action
+
+
 def add_func_for_easy_control(self, obs, action):  # goto enemy base
   action_name = action['name']
   action_arg = action['arg']

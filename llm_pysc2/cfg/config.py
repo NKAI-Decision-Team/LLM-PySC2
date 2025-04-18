@@ -228,7 +228,7 @@ class ProtossAgentConfig(AgentConfig):
         'team': {
           'Protoss-Buildings': {
             'name': 'Protoss-Buildings', 'unit_type': [], 'game_group': -1, 'select_type': 'select',
-            'actions': {'ALWAYS': PROTOSS_ACTION_RESEARCH + PROTOSS_ACTION_TRAIN + PROTOSS_ACTION_WARPTRAIN + PROTOSS_ACTION_EASY_WARPTRAIN}  #  + PROTOSS_ACTION_BUILD + PROTOSS_ACTION_EASY_BUILD
+            'actions': {'ALWAYS': PROTOSS_ACTION_RESEARCH + PROTOSS_ACTION_TRAIN + PROTOSS_ACTION_WARPTRAIN + PROTOSS_ACTION_EASY_WARPTRAIN + PROTOSS_ACTION_EASY_CHRONO_BOOST}  #  + PROTOSS_ACTION_BUILD + PROTOSS_ACTION_EASY_BUILD
           },
           'Protoss-Workers': {
             'name': 'Protoss-Workers', 'unit_type': [], 'game_group': -1, 'select_type': 'select',

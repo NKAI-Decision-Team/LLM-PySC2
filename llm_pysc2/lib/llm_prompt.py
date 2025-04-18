@@ -41,15 +41,29 @@ BASIC_COMBAT_RULES = \
 BASIC_COMMAND_RULES = \
 """
 """
+# Analyse following aspect in your decision process:
+# \t1. (Combat Deployment) Analyse the situation, and make deployment to attack/defend/retreat. As default choice, require your units to defend.
+# \t2. (Scan Deployment) If you are prepared for combat or want to know the, make scan deployment to find out enemy's strengths.
+# \t3. (Strategy)
 
 BASIC_DEVELOP_RULES = \
 """
+# Analyse following aspect in your decision process:
+# \t1. (Supply) If run out of supply (less than 10) and no building for supply is under construction, build Pylon/OverLord/SupplyDepot (depend on your race).
+# \t2. (Economy Building: Base) If you have enough minerals (more than 400), build Nexus/Hatchery/CommandCenter (depend on your race).
+# \t3. (Economy Building: Gas) If you run out of gas (much less than minerals), build Assimilator/Extractor/Refinery (depend on your race).
+# \t4. (Building: Unit Training) If you have too less unit training buildings, or there are abundant resources but all the unit training buildings are working, build unit training buildings.
+# \t5. (Building: Research) If you have too less research buildings, or there are abundant resources but all the research buildings are working, build research buildings.
+# \t6. (Unit Training/Warping) If you have enough idle unit training buildings but few combat units, train/warp more units.
+# \t7. (Tech Upgrading) If you have idle research buildings and enough resource, update your technology.
+# \t8. (Early Stage Expand) If you do not have the second base building, the first Gateway and CyberneticCore, try to build them as quick as possible.
 """
+
 
 BASIC_BUILD_RULES = \
 """
 Analyse following aspect in your decision process:
-\t1. (Supply) If run out of supply (less than 10), build Pylon/OverLord/SupplyDepot (depend on your race).
+\t1. (Supply) If run out of supply (less than 10) and no building for supply is under construction, build Pylon/OverLord/SupplyDepot (depend on your race).
 \t2. (Economy Building: Base) If you have enough minerals (more than 400), build Nexus/Hatchery/CommandCenter (depend on your race).
 \t3. (Economy Building: Gas) If you run out of gas (much less than minerals), build Assimilator/Extractor/Refinery (depend on your race).
 \t4. (Unit Training Building) If you have too less unit training buildings, or there are abundant resources but all the unit training buildings are working, build unit training buildings.

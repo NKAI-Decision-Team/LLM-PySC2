@@ -61,10 +61,13 @@ def get_single_unit_info(unit, size_screen, team_unit_screen_coord=None) -> str:
     #   unit_info += f"    Weapon Waiting For Cooldown: {unit.weapon_cooldown / 22:.2f}s"
     else:
       pass
-  if unit.build_progress == 100 and unit.buff_id_0 != 0:
-    unit_info += f"    Buff: {str(buffs.Buffs(unit.buff_id_0))}"
-  if unit.build_progress == 100 and unit.buff_id_1 != 0:
-    unit_info += f" {str(buffs.Buffs(unit.buff_id_1))}"
+  try:
+    if unit.build_progress == 100 and unit.buff_id_0 != 0:
+      unit_info += f"    Buff: {str(buffs.Buffs(unit.buff_id_0))}"
+    if unit.build_progress == 100 and unit.buff_id_1 != 0:
+      unit_info += f" {str(buffs.Buffs(unit.buff_id_1))}"
+  except:
+    pass
   return unit_info
 
 

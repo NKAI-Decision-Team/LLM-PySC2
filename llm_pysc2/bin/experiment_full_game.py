@@ -51,12 +51,12 @@ class MainAgentLLMPysc2(MainAgent):
     #     config.AGENTS[name]['llm']['img_rgb'] = False
     #     config.AGENTS[name]['llm']['img_fea'] = False
 
-    config.SAFE_MODE = False
-    config.LLM_SIMULATION_TIME = 0.5
+    # config.SAFE_MODE = False
+    # config.LLM_SIMULATION_TIME = 0.5
     # config.IGNORE_INIT_WARNINGS = True
     # config.ENABLE_MULTI_THREAD_QUERY = False
 
-    config.MAX_LLM_DECISION_FREQUENCY = 0.1
+    config.MAX_LLM_DECISION_FREQUENCY = 0.2
     config.ENABLE_COMMUNICATION = True
     config.ENABLE_EASY_CONTROL = True
     config.ENABLE_EASY_BUILD = True

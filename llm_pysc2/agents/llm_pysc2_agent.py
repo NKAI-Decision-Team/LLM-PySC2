@@ -353,7 +353,15 @@ class LLMAgent:
     text_o, base64_images = self._before_query(obs)
     logger.debug(f"[ID {self.log_id}] LLMAgent {self.name}: finished collect obs, text_o: \n{text_o}")
 
-    self.raw_text_a = self.get_text_a(text_o, base64_images)  # query the llm and get response
+    if self.config.SAFE_MODE:
+      try:
+        self.raw_text_a = self.get_text_a(text_o, base64_images)  # query the llm and get response
+      except Exception as e:
+        self.raw_text_a = 'Can not get LLM response due to technique problems'
+        logger.error(f"[ID {self.log_id}] error {e} occur in agent {self.name} query")
+    else:
+      self.raw_text_a = self.get_text_a(text_o, base64_images)  # query the llm and get response
+
     if self.name not in self.config.AGENTS_ALWAYS_DISABLE and self.enable:
       utils.write_to_file(json.dumps({self.main_loop_step: text_o}), self.log_dir_path + f"/{self.name}/o.txt")
 
@@ -362,28 +370,47 @@ class LLMAgent:
 
   # query step1: all teams' pysc2 obs to a llm obs text (or multimodal llm text)
   def get_text_o(self, obs) -> str:
-    text_o = self.translator_o.translate(self)
+    if self.config.SAFE_MODE:
+      try:
+        text_o = self.translator_o.translate(self)
+      except Exception as e:
+        text_o = 'Can not generate text observation due to technique problems'
+        logger.error(f"[ID {self.log_id}] error {e} occur in agent {self.name} get_img_o")
+    else:
+      text_o = self.translator_o.translate(self)
     self.last_text_o = text_o
     return text_o
 
   def get_img_o(self, obs):
-    base64_images = {}
-    if self.config.AGENTS[self.name]['llm']['img_rgb']:
-      if 'img_names' in self.config.AGENTS[self.name]['llm'].keys():
-        feature_map_names = self.config.AGENTS[self.name]['llm']['img_names']
-      else:
-        feature_map_names = []
-      for feature_map_name in feature_map_names:
-        if feature_map_name == 'rgb_screen':
-          base64_images['screen'] = llm_observation.get_img_obs_rgb(self, obs)
-        elif feature_map_name == 'rgb_minimap':
-          base64_images['minimap'] = llm_observation.get_img_obs_rgb_minimap(self, obs)
+
+    def get_img_o_core(obs):
+      base64_images_ = {}
+      if self.config.AGENTS[self.name]['llm']['img_rgb']:
+        if 'img_names' in self.config.AGENTS[self.name]['llm'].keys():
+          feature_map_names = self.config.AGENTS[self.name]['llm']['img_names']
         else:
-          base64_images[feature_map_name] = llm_observation.get_img_obs_fea_map(self, obs, feature_map_name)
-    elif self.config.AGENTS[self.name]['llm']['img_fea']:
-      base64_images['screen'] = llm_observation.get_img_obs_fea(self, obs)
+          feature_map_names = []
+        for feature_map_name in feature_map_names:
+          if feature_map_name == 'rgb_screen':
+            base64_images_['screen'] = llm_observation.get_img_obs_rgb(self, obs)
+          elif feature_map_name == 'rgb_minimap':
+            base64_images_['minimap'] = llm_observation.get_img_obs_rgb_minimap(self, obs)
+          else:
+            base64_images_[feature_map_name] = llm_observation.get_img_obs_fea_map(self, obs, feature_map_name)
+      elif self.config.AGENTS[self.name]['llm']['img_fea']:
+        base64_images_['screen'] = llm_observation.get_img_obs_fea(self, obs)
+      else:
+        base64_images_ = None
+      return base64_images_
+
+    base64_images = {}
+    if self.config.SAFE_MODE:
+      try:
+        base64_images = get_img_o_core(obs)
+      except Exception as e:
+        logger.error(f"[ID {self.log_id}] error {e} occur in agent {self.name} get_img_o")
     else:
-      base64_images = None
+      base64_images = get_img_o_core(obs)
     return base64_images
 
   # query step2: communicate with llm and get text actions

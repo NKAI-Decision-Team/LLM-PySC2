@@ -114,7 +114,7 @@ def get_new_unit_agent(self, obs, unit) -> str:  # 编队逻辑函数
     return f'unit build_progress {unit.build_progress} != 100'
   # 空降部队编队
   for agent_name in self.AGENT_NAMES:
-    if not agent_name in self.config.AGENTS_ALWAYS_DISABLE and \
+    if not agent_name in self.config.AGENTS_ALWAYS_DISABLE and self.agents[agent_name].enable and \
         unit.unit_type in self.agents[agent_name].available_unit_type and \
         (agent_name == 'Airborne'):
       # possible_transport_unit = self.agents[agent_name].unit_raw_list
@@ -518,7 +518,7 @@ def main_agent_func1(self, obs):
 
       # 移动相机
       if not curr_unit.is_selected:
-        func_id, func_call = get_camera_func_smart(self, obs, curr_unit.tag, threshold=0.35)
+        func_id, func_call = get_camera_func_smart(self, obs, curr_unit.tag)
         if func_id == 573:
           logger.info(f"[ID {self.log_id}] 3.3 Func Call: {func_call}")
           self.func_id_history.append(func_id)
@@ -612,7 +612,7 @@ def main_agent_func1(self, obs):
       if chosen_team['select_type'] == 'select_all_type':
         head_unit_tag = chosen_team['unit_tags'][0]
         # 相机移动
-        func_id, func_call = get_camera_func_smart(self, obs, head_unit_tag, threshold=0.35)
+        func_id, func_call = get_camera_func_smart(self, obs, head_unit_tag)
         if func_id == 573:
           logger.info(f"[ID {self.log_id}] 3.5 Func Call: {func_call}")
           self.func_id_history.append(func_id)
@@ -957,9 +957,9 @@ def main_agent_func2(self, obs):
         # idx = possible_working_place_nexus_tag_list.index(target_nexus.tag)
         if str(target_nexus.tag) in list(self.possible_working_place_tag_dict.keys()):
           working_place_unit_tag_list = self.possible_working_place_tag_dict[str(target_nexus.tag)]
-          print(f"self.possible_working_place_nexus={self.possible_working_place_nexus}")
-          print(f"self.possible_working_place_tag_dict={self.possible_working_place_tag_dict}")
-          print(f"self.possible_working_place_tag_dict[target_nexus.tag]={self.possible_working_place_tag_dict[str(target_nexus.tag)]}")
+          # print(f"self.possible_working_place_nexus={self.possible_working_place_nexus}")
+          # print(f"self.possible_working_place_tag_dict={self.possible_working_place_tag_dict}")
+          # print(f"self.possible_working_place_tag_dict[target_nexus.tag]={self.possible_working_place_tag_dict[str(target_nexus.tag)]}")
         else:
           working_place_unit_tag_list = []
           logger.error(f"[ID {self.log_id}] 4.1.3.0 target_nexus.tag {target_nexus.tag} not in self.possible_working_place_tag_dict.keys() {self.possible_working_place_tag_dict.keys()}")
@@ -1029,10 +1029,10 @@ def main_agent_func2(self, obs):
               self.nexus_info_dict[str(target_nexus.tag)]['worker_g_tag_list'])
             # 将闲置工人派遣到新的工作岗位
             func_id, func_call = (264, actions.FUNCTIONS.Harvest_Gather_screen('now', (unit.x, unit.y)))
-            if self.func_id_history[-1] != 264:
-              func_id, func_call = (264, actions.FUNCTIONS.Harvest_Gather_screen('now', (unit.x, unit.y)))
-            else:
-              func_id, func_call = (0, actions.FUNCTIONS.no_op())
+            # if self.func_id_history[-1] != 264:
+            #   func_id, func_call = (264, actions.FUNCTIONS.Harvest_Gather_screen('now', (unit.x, unit.y)))
+            # else:
+            #   func_id, func_call = (0, actions.FUNCTIONS.no_op())
             # if self.func_id_history[-1] == 264:
             #   func_id, func_call = (331, actions.FUNCTIONS.Move_screen('now',  (unit.x, unit.y)))
             logger.info(f"[ID {self.log_id}] 4.1.5 Func Call: {func_call}")
@@ -1453,7 +1453,7 @@ def main_agent_func4(self, obs):
       if not self.temp_curr_unit.is_selected:
 
         # 移动相机到走散的单位
-        func_id, func_call = get_camera_func_smart(self, obs, self.temp_curr_unit.tag, threshold=0.35)
+        func_id, func_call = get_camera_func_smart(self, obs, self.temp_curr_unit.tag)
         if func_id == 573:
           logger.info(f"[ID {self.log_id}] main_agent_func4: camera to curr unit, Func Call: {func_call}")
           self.func_id_history.append(func_id)
@@ -1509,7 +1509,7 @@ def main_agent_func4(self, obs):
 
       # 移动相机到小组的head单位
 
-      func_id, func_call = get_camera_func_smart(self, obs, self.temp_head_unit.tag, threshold=0.35)
+      func_id, func_call = get_camera_func_smart(self, obs, self.temp_head_unit.tag)
       if func_id == 573:
         logger.info(f"[ID {self.log_id}] main_agent_func4: camera to head unit, Func Call: {func_call}")
         self.func_id_history.append(func_id)

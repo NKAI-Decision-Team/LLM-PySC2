@@ -42,6 +42,7 @@ def get_func(agent, obs):  # 该函数需要将当前text-pysc2动作对应的�
     agent.curr_action_args = action['arg']
     action = add_func_for_select_workers(agent, obs, action)
     action = add_func_for_train_and_research(agent, obs, action)
+    action = add_func_for_chrono_boost(agent, obs, action)
     action = add_func_for_easy_build(agent, obs, action)
     action = add_func_for_easy_control(agent, obs, action)
     action = add_func_for_easy_warp(agent, obs, action)

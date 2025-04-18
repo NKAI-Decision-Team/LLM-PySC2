@@ -243,6 +243,9 @@ def add_func_for_easy_control(self, obs, action):  # goto enemy base
 
   game_time_s = obs.observation.game_loop / 22.4
   idle_worker_count = obs.observation.player.idle_worker_count
+  supply_used = obs.observation.player.food_used
+  if 'All_Units_Defend' == action_name and (game_time_s > 720 and supply_used > 150):
+    action_name = 'All_Units_Attack'
 
   n_worker = 0
   first_ctrl_base_pos, first_oppo_base_pos = None, None
@@ -315,8 +318,8 @@ def add_func_for_easy_control(self, obs, action):  # goto enemy base
       target_tag2 = all_pylon_list[indexes_max[1]].tag if d_max != 0 else self.first_ctrl_base_tag
   else:
     if first_oppo_base_pos is not None:
-      d_min, index_min = get_dis_pos_poses1(first_oppo_base_pos, all_defense_building_pos_list, flag='min')  # front line pylon
-      target_tag2 = all_defense_building_list[index_min].tag if d_min != 0 else self.first_oppo_base_tag
+      d_max, index_max = get_dis_pos_poses1(first_ctrl_base_pos, all_defense_building_pos_list, flag='max')  # front line pylon
+      target_tag2 = all_defense_building_list[index_max].tag if d_max != 0 else self.first_oppo_base_tag
     else:
       d_max, indexes_max = get_dis_posse1_poses2(all_base_pos_list, all_defense_building_pos_list, flag='max')
       target_tag2 = all_defense_building_list[indexes_max[1]].tag if d_max != 0 else self.first_ctrl_base_tag
@@ -384,7 +387,7 @@ def add_func_for_easy_control(self, obs, action):  # goto enemy base
       full_shape_action = {'name': action_name, 'arg': [], 'func':
         funcs_select_army_and_move_camera_to(target_tag2) + [(331, F.Move_screen, ['now', int(target_tag2)])]}
 
-  elif ('Worker_Scan' in action_name) and (int(game_time_s) % 90 < 20 or idle_worker_count > 5):
+  elif ('Worker_Scan' in action_name) and (game_time_s < 60 or int(game_time_s) % 60 < 20 or idle_worker_count > 2):
     if target_tag is not None and target_tag2 is not None and worker_tag is not None:
       full_shape_action = {'name': action_name, 'arg': [], 'func':
         funcs_move_camera_to_and_select_unit(worker_tag) + funcs_move_camera_to(target_tag) + [(331, F.Move_screen, ['now', int(target_tag)])]}

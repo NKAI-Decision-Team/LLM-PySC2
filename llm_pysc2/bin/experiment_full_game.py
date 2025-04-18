@@ -68,12 +68,14 @@ class MainAgentLLMPysc2(MainAgent):
 
   def step(self, obs):
     game_time_s = obs.observation.game_loop / 22.4
-    if game_time_s < 120:
+    if game_time_s <= 90:
+      self.config.MAX_LLM_DECISION_FREQUENCY = 0.1
+    if 90 < game_time_s <= 360:
       self.config.MAX_LLM_DECISION_FREQUENCY = 0.2
-    if 120 < game_time_s < 360:
+    if 360 < game_time_s <= 720:
       self.config.MAX_LLM_DECISION_FREQUENCY = 0.3
-    if 120 < game_time_s < 720:
-      self.config.MAX_LLM_DECISION_FREQUENCY = 0.4
+    if 720 < game_time_s:
+      self.config.MAX_LLM_DECISION_FREQUENCY = 0.5
     return super().step(obs)
 
 

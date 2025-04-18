@@ -112,7 +112,7 @@ def get_arg_screen_build(obs, screen: list, size_screen, action_name, easy_build
       # r = 11 - retry // n - 2 * random.random() if easy_build else retry // n
       # rad = ((retry % n) / n) * math.pi * 2
       if easy_build:
-        length, r, rad = SCREEN_WORLD_GRID, 0, 0
+        length, r, rad = SCREEN_WORLD_GRID - 2, 0, 0
         i0, j0 = (0, 0) if retry == 0 else (length * (random.random()-0.5), length * (random.random()-0.5))
         # n = max_retry // 10
         # r = 3 * random.random() + retry // n
@@ -175,9 +175,9 @@ def get_arg_screen_build(obs, screen: list, size_screen, action_name, easy_build
           pysc2_arg, func_valid = f"Build failed! Too close to another Pylon", False
         if func_valid and len(total_base) == 1 and len(total_pylon) >= 2:  # and len(total_building) == len(total_pylon) + len(total_base)
           pysc2_arg, func_valid = f"Build failed! Too Many Pylon, you build Nexus first", False
-        if func_valid and 0 < obs.observation.player.food_used <= 50 and supply > 25 and obs.observation.player.minerals < 300:
+        if func_valid and 0 < obs.observation.player.food_used <= 50 and supply > 20 and obs.observation.player.minerals < 300:
           pysc2_arg, func_valid = f"Build failed! Too Many Pylon", False
-        if func_valid and 50 < obs.observation.player.food_used < 100 and supply > 30 and obs.observation.player.minerals < 500:
+        if func_valid and 50 < obs.observation.player.food_used < 100 and supply > 25 and obs.observation.player.minerals < 500:
           pysc2_arg, func_valid = f"Build failed! Too Many Pylon", False
         if func_valid and 100 <= obs.observation.player.food_used < 150 and supply > 50 and obs.observation.player.minerals < 750:
           pysc2_arg, func_valid = f"Build failed! Too Many Pylon", False
@@ -197,7 +197,7 @@ def get_arg_screen_build(obs, screen: list, size_screen, action_name, easy_build
       if func_valid and (0 < d1 + d3 < 9):
         pysc2_arg, func_valid = f"Build failed! This location obstructs mining gas", False
       if func_valid and building_name in POWER_BUILDING_NAMES:
-        if len(screen_pylon_pos) != 0 and not 2.5 < d4 < 5.5:  # 2.5 < d4 < 5.5
+        if len(screen_pylon_pos) != 0 and not 2.0 < d4 < 5.4:  # 2.5 < d4 < 5.5
           pysc2_arg, func_valid = f"Build failed! Too far away from a Pylon", False
       # if func_valid and building_name in POWER_BUILDING_NAMES:
       #   if len(screen_pylon_pos) != 0 and not 0 < db2_pylon < 6:  # 2.5 < d4 < 5.5     0 < db2_pylon < 6

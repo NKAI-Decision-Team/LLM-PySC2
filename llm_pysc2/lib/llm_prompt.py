@@ -41,7 +41,7 @@ BASIC_COMBAT_RULES = \
 BASIC_COMMAND_RULES = \
 """
 # Analyse following aspect in your decision process:
-# \t1. (Combat Deployment) Analyse the situation, always make deployment for attack/defend/retreat at each step. As default choice, ask your units to defend your area.
+# \t1. (Combat Deployment) Analyse the situation, always make deployment for attack/defend/retreat at each step. As default choice, ask your units to defend your area. If you have enough units, rise attack to defeat your enemy.
 # \t2. (Scan Deployment) If you are prepared for combat, make scan deployment to find out enemy's strengths. Note that unit for scan will be killed by enemy units.
 """
 
@@ -55,7 +55,9 @@ BASIC_DEVELOP_RULES = \
 # \t5. (Building: Research) If you have too less research buildings, or there are abundant resources but all the research buildings are working, build research buildings.
 # \t6. (Unit Training/Warping) If you have enough idle unit training buildings but few combat units, or have a lot resource, train/warp units as much as possible.
 # \t7. (Tech Upgrading) If you have idle research buildings and enough resource, or have a lot resource, update your technology.
-# \t8. (Early Stage Expand) If you do not have 'the second base building', the 'CyberneticCore' and 'first two Gateway', try to build them as quick as possible.
+# \t8. (Early Stage Expand) If you do not have 'the second base building', the 'CyberneticCore', the 'TwilightCouncil' and 'first two Gateway', try to build them as quick as possible.
+# \t9. (Middle Stage Develop) During the middle stage of the game, try to build buildings for training high value units, and train high value units to increase strength.
+# \t10. (Final Stage Develop) During the final stage of the game, train or warp more units to fight with enemy, do not build building if we have enough buildings.
 """
 
 

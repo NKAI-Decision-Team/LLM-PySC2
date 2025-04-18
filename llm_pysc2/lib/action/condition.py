@@ -35,9 +35,9 @@ protoss_map_research_quick_to_level = {
 protoss_research_conditions = {
   # CyberneticsCore BY
   actions.FUNCTIONS.Research_ProtossAirArmorLevel1_quick.id:
-    {'m': 100, 'g': 100, 'b': [units.Protoss.CyberneticsCore], 't': 180},  # map from Research_ProtossAirArmor_quick
+    {'m': 100, 'g': 100, 'b': [units.Protoss.CyberneticsCore, units.Protoss.Stargate], 't': 180},  # map from Research_ProtossAirArmor_quick
   actions.FUNCTIONS.Research_ProtossAirWeaponsLevel1_quick.id:
-    {'m': 100, 'g': 100, 'b': [units.Protoss.CyberneticsCore], 't': 180},  # map from Research_ProtossAirWeapons_quick
+    {'m': 100, 'g': 100, 'b': [units.Protoss.CyberneticsCore, units.Protoss.Stargate], 't': 180},  # map from Research_ProtossAirWeapons_quick
   actions.FUNCTIONS.Research_ProtossAirArmorLevel2_quick.id:
     {'m': 175, 'g': 175, 'b': [units.Protoss.CyberneticsCore, units.Protoss.FleetBeacon], 'u': u.ProtossAirArmorsLevel1, 't': 215},
   actions.FUNCTIONS.Research_ProtossAirWeaponsLevel2_quick.id:
@@ -165,9 +165,9 @@ protoss_build_conditions = {
   actions.FUNCTIONS.Build_Forge_screen.id:
     {'m': 150, 'g': 0, 'b': [units.Protoss.Gateway], 't': 45, 'l': 3},
   actions.FUNCTIONS.Build_PhotonCannon_screen.id:
-    {'m': 150, 'g': 0, 'b': [units.Protoss.Forge], 't': 40},
+    {'m': 150, 'g': 0, 'b': [units.Protoss.Forge, units.Protoss.CyberneticsCore], 't': 40},
   actions.FUNCTIONS.Build_ShieldBattery_screen.id:
-    {'m': 100, 'g': 0, 'b': [units.Protoss.CyberneticsCore], 't': 40},
+    {'m': 100, 'g': 0, 'b': [units.Protoss.Forge, units.Protoss.CyberneticsCore], 't': 40},
   actions.FUNCTIONS.Build_TwilightCouncil_screen.id:
     {'m': 150, 'g': 100, 'b': [units.Protoss.CyberneticsCore], 't': 50},
   actions.FUNCTIONS.Build_TemplarArchive_screen.id:

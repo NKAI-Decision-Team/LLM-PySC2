@@ -174,9 +174,9 @@ def get_valid_actions_build(agent) -> (list, str):
       if func_id in [actions.FUNCTIONS.Build_Pylon_screen.id]:
         s_cap, s_used = obs.observation.player.food_cap, obs.observation.player.food_used
         supply = 7 * (len(pylons_construct) + 1) + s_cap - s_used
-        if 0 < s_used and supply > 25 and obs.observation.player.minerals < 300:
+        if 0 < s_used and supply > 20 and obs.observation.player.minerals < 300:
           partial_valid, valid = False, False
-        if 50 < s_used < 100 and supply > 30 and obs.observation.player.minerals < 500:
+        if 50 < s_used < 100 and supply > 25 and obs.observation.player.minerals < 500:
           partial_valid, valid = False, False
         if 100 <= s_used < 150 and supply > 50 and obs.observation.player.minerals < 750:
           partial_valid, valid = False, False

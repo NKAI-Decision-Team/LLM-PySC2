@@ -857,7 +857,7 @@ def main_agent_func2(self, obs):
           unit_tags_g.append(nexus_info['gas_building_1'].tag)
         if nexus_info['gas_building_2'] is not None and nexus_info['gas_building_2'].assigned_harvesters < nexus_info['gas_building_2'].ideal_harvesters and len(nexus_info['worker_g1_tag_list']) >= 3 and len(nexus_info['worker_g2_tag_list']) < 3 and nexus_info['num_worker_g_max'] == 6:
           unit_tags_g.append(nexus_info['gas_building_2'].tag)
-        if nexus_info['num_worker_m'] / nexus_info['num_worker_m_max'] <= nexus_info['num_worker_g'] / nexus_info['num_worker_g_max']:  # 选择去剩余岗位数更大的
+        if nexus_info['num_worker_m'] / nexus_info['num_worker_m_max'] <= nexus_info['num_worker_g'] / nexus_info['num_worker_g_max'] or nexus_info['num_worker_m'] / nexus_info['num_worker_m_max'] <= 0.8:  # 选择去剩余岗位数更大的
           working_place_unit_tag_list = unit_tags_m + unit_tags_g
         else:
           working_place_unit_tag_list = unit_tags_g + unit_tags_m

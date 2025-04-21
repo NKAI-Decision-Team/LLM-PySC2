@@ -277,9 +277,9 @@ class ProtossAgentConfig(AgentConfig):
           'Zealot-1': {
             'name': 'Zealot-1', 'unit_type': [units.Protoss.Zealot], 'game_group': 2, 'select_type': 'group',
             'actions': {units.Protoss.Zealot: PROTOSS_BASIC_ACTION_2}},
-          'Zealot-2': {
-            'name': 'Zealot-2', 'unit_type': [units.Protoss.Zealot], 'game_group': 3, 'select_type': 'group',
-            'actions': {units.Protoss.Zealot: PROTOSS_BASIC_ACTION_2}},
+          # 'Zealot-2': {
+          #   'name': 'Zealot-2', 'unit_type': [units.Protoss.Zealot], 'game_group': 3, 'select_type': 'group',
+          #   'actions': {units.Protoss.Zealot: PROTOSS_BASIC_ACTION_2}},
         },
       },
 
@@ -301,12 +301,12 @@ class ProtossAgentConfig(AgentConfig):
           'Stalker-1': {
             'name': 'Stalker-1', 'unit_type': [units.Protoss.Stalker], 'game_group': 4, 'select_type': 'group',
             'actions': {units.Protoss.Stalker: STANDARD_ACTION_STALKER}},
-          'Stalker-2': {
-            'name': 'Stalker-2', 'unit_type': [units.Protoss.Stalker], 'game_group': 5, 'select_type': 'group',
-            'actions': {units.Protoss.Stalker: STANDARD_ACTION_STALKER}},
-          'Stalker-3': {
-            'name': 'Stalker-3', 'unit_type': [units.Protoss.Stalker], 'game_group': 6, 'select_type': 'group',
-            'actions': {units.Protoss.Stalker: STANDARD_ACTION_STALKER}},
+          # 'Stalker-2': {
+          #   'name': 'Stalker-2', 'unit_type': [units.Protoss.Stalker], 'game_group': 5, 'select_type': 'group',
+          #   'actions': {units.Protoss.Stalker: STANDARD_ACTION_STALKER}},
+          # 'Stalker-3': {
+          #   'name': 'Stalker-3', 'unit_type': [units.Protoss.Stalker], 'game_group': 6, 'select_type': 'group',
+          #   'actions': {units.Protoss.Stalker: STANDARD_ACTION_STALKER}},
         },
       },
 
@@ -383,9 +383,9 @@ class ProtossAgentConfig(AgentConfig):
           'api_key': self.api_key,
         },
         'team': {
-          'Probe': {
-            'name': 'Probe', 'unit_type': [units.Protoss.Probe], 'game_group': -1, 'select_type': 'select',
-            'actions': {units.Protoss.Probe: SCANNING_ACTION_PROBE}},
+          # 'Probe': {
+          #   'name': 'Probe', 'unit_type': [units.Protoss.Probe], 'game_group': -1, 'select_type': 'select',
+          #   'actions': {units.Protoss.Probe: SCANNING_ACTION_PROBE}},
           'Observer': {'name': 'Observer', 'unit_type': [units.Protoss.Observer, units.Protoss.ObserverSurveillanceMode], 'game_group': -1, 'select_type': 'select',
             'actions': {
               units.Protoss.Observer: STANDARD_ACTION_OBSERVER1,

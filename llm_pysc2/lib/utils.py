@@ -169,6 +169,11 @@ BASE_BUILDING_TYPE = [
   units.Terran.CommandCenter, units.Terran.OrbitalCommand, units.Terran.PlanetaryFortress,
   units.Zerg.Hatchery, units.Zerg.Lair, units.Zerg.Hive
 ]
+BUILDER_TYPE = [
+  units.Protoss.Probe,
+  units.Terran.SCV,
+  units.Zerg.Drone
+]
 WORKER_TYPE = [
   units.Protoss.Probe,
   units.Terran.SCV, units.Terran.MULE,  # 注意 MULE不能采集瓦斯

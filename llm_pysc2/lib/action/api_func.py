@@ -114,12 +114,19 @@ def get_func(agent, obs):  # 该函数需要将当前text-pysc2动作对应的�
             pysc2_arg = 'WrongType-Arg'  # 错误处理，接受func_valid = False，使用no_op代替该动作
         elif isinstance(llm_pysc2_arg, int):
           func_valid = False
-          print(agent.curr_action_name)
-          print(i, func.args, func)
+          # print(agent.curr_action_name)
+          # print(i, func.args, func)
+          builder_selected = False
+          if 'Build_' in agent.curr_action_name or 'Lock_' in agent.curr_action_name:
+            for unit in obs.observation.raw_units:
+              if unit.unit_type in BUILDER_TYPE and unit.alliance == features.PlayerRelative.SELF and unit.is_selected == 1:
+                builder_selected = True
+          # print(f"xxx conditions = {func_id, agent.curr_action_name, agent.curr_action_name.split('_')[1], builder_selected}")
           if func.args[i].name == 'screen' and 'Build' in func.name:  # 建造  and agent.config.ENABLE_EASY_BUILD
             pysc2_arg, func_valid = get_arg_screen_tag_build(
               obs, llm_pysc2_arg, agent.size_screen, agent.curr_action_name)  # 建筑的屏幕坐标合法性判断
-          elif func_id == 573 and ('Build_Nexus_' in agent.curr_action_name or 'Lock_Nexus_' in agent.curr_action_name):
+          elif func_id == 573 and ('Build_' in agent.curr_action_name or 'Lock_' in agent.curr_action_name) and \
+              agent.curr_action_name.split('_')[1] in BASE_BUILDING_NAMES and builder_selected:
             pysc2_arg, func_valid = get_arg_world_tag_base_building(
               obs, llm_pysc2_arg, agent.world_x_offset, agent.world_y_offset, agent.world_range)
           elif func_id == 573:

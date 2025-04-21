@@ -259,10 +259,10 @@ PROTOSS_ACTION_ABILITY = [
    'func': [(287, F.Load_screen, ('queued', 'screen_tag'))]},
   {'name': 'Unload_Screen', 'arg': ['screen'],
    'func': [(516, F.UnloadAllAt_screen, ('queued', 'screen'))]},
-  {'name': 'Lock_Nexus_Near', 'arg': ['tag'],
-   'func': [(70, F.Build_Pylon_screen, ('queued', 'screen_tag'))]},
-  {'name': 'Lock_Assimilator_Near', 'arg': ['tag'],
-   'func': [(40, F.Build_Assimilator_screen, ('queued', 'screen_tag'))]},
+  # {'name': 'Lock_Nexus_Near', 'arg': ['tag'],
+  #  'func': [(70, F.Build_Pylon_screen, ('queued', 'screen_tag'))]},
+  # {'name': 'Lock_Assimilator_Near', 'arg': ['tag'],
+  #  'func': [(40, F.Build_Assimilator_screen, ('queued', 'screen_tag'))]},
   {'name': 'Select_Unit_Blink_Screen', 'arg': ['tag', 'screen'],
    'func': [(3, F.select_rect, ('select', 'screen1_tag', 'screen2_tag')),
             (180, F.Effect_Blink_screen, ('queued', 'screen'))]},
@@ -276,10 +276,10 @@ STANDARD_ACTION_STALKER = PROTOSS_BASIC_ACTION_2 + [
             (180, F.Effect_Blink_screen, ('now', 'screen'))]},
 ]
 SCANNING_ACTION_PROBE = PROTOSS_BASIC_ACTION_2 + [
-  {'name': 'Lock_Nexus_Near', 'arg': ['tag'],
-   'func': [(70, F.Build_Pylon_screen, ('queued', 'screen_tag'))]},
-  {'name': 'Lock_Assimilator_Near', 'arg': ['tag'],
-   'func': [(40, F.Build_Assimilator_screen, ('queued', 'screen_tag'))]},
+  # {'name': 'Lock_Nexus_Near', 'arg': ['tag'],
+  #  'func': [(70, F.Build_Pylon_screen, ('queued', 'screen_tag'))]},
+  # {'name': 'Lock_Assimilator_Near', 'arg': ['tag'],
+  #  'func': [(40, F.Build_Assimilator_screen, ('queued', 'screen_tag'))]},
 ]
 STANDARD_ACTION_OBSERVER1 = [
   {'name': 'Move_Minimap', 'arg': ['minimap'], 'func': [(332, F.Move_minimap, ('queued', 'minimap'))]},

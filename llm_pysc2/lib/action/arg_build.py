@@ -16,6 +16,8 @@
 from llm_pysc2.lib.action.utils import find_building_size
 from llm_pysc2.lib.utils import *
 
+from loguru import logger
+
 import random
 import math
 
@@ -245,13 +247,19 @@ def get_arg_screen_build(obs, screen: list, size_screen, action_name, easy_build
 def get_arg_world_tag_base_building(obs, tag: int, x_offset, y_offset, world_range) -> (tuple, bool):
 
   def find_nearby_raw_mg(unit_g):
+    # unit_info = f'unit {hex(unit_g.tag)}({str(units.get_unit_type(unit_g.unit_type))})'
+    # logger.debug(f"[ID 1] find_nearby_world_mg, init g = {unit_info}, {unit_g.x}, {unit_g.y}")
     nearby_resource_unit_dict = {}
     for unit in obs.observation.raw_units:
       if unit.unit_type in MINERAL_TYPE:
+        # unit_info = f'unit {hex(unit.tag)}({str(units.get_unit_type(unit.unit_type))})'
+        # logger.debug(f"[ID 1] find_nearby_world_mg, m = {unit_info}, {unit.x}, {unit.y}")
         dist = math.sqrt((unit.x - unit_g.x) ** 2 + (unit.y - unit_g.y) ** 2)
         if dist < 16:
           nearby_resource_unit_dict[dist] = unit
       if unit.unit_type in GAS_TYPE:
+        # unit_info = f'unit {hex(unit.tag)}({str(units.get_unit_type(unit.unit_type))})'
+        # logger.debug(f"[ID 1] find_nearby_world_mg, m = {unit_info}, {unit.x}, {unit.y}")
         dist = math.sqrt((unit.x - unit_g.x) ** 2 + (unit.y - unit_g.y) ** 2)
         if dist < 16:
           nearby_resource_unit_dict[dist] = unit
@@ -294,8 +302,10 @@ def get_arg_world_tag_base_building(obs, tag: int, x_offset, y_offset, world_ran
         y0 += mineral.y
       x0 = x0 / n
       y0 = y0 / n
+      # logger.debug(f"[ID 1] x, y, n = {x0, y0, n}")
       for i in range(16):
         x0, y0, bad_n = artificial_force_field_iteration_world(mineral_list, x0, y0)
+        # logger.debug(f"[ID 1] i, x, y, bad_n = {i, x0, y0, bad_n}")
       if not (isinstance(x0, float) and isinstance(y0, float)):
         tag = hex(tag) if isinstance(tag, int) else tag
         return f'unknown error in fing base_building position near unit {tag}', False
@@ -309,14 +319,19 @@ def get_arg_world_tag_base_building(obs, tag: int, x_offset, y_offset, world_ran
 # Parameter verification, tag to screen coordinate, for base building
 def get_arg_screen_tag_base_building(obs, tag: int, size_screen, action_name) -> (tuple, bool):
   def find_nearby_screen_mg(unit_g):
+    # unit_info = f'unit {hex(unit_g.tag)}({str(units.get_unit_type(unit_g.unit_type))})'
+    # logger.debug(f"[ID 1] find_nearby_screen_mg, init g = {unit_info}, {unit_g.x}, {unit_g.y}")
     ratio = size_screen / SCREEN_WORLD_GRID
     nearby_resource_unit_dict = {}
     for unit in obs.observation.feature_units:
+      # unit_info = f'unit {hex(unit.tag)}({str(units.get_unit_type(unit.unit_type))})'
       if unit.unit_type in MINERAL_TYPE:
+        # logger.debug(f"[ID 1] find_nearby_screen_mg, m = {unit_info}, {unit.x}, {unit.y}")
         dist = math.sqrt((unit.x - unit_g.x) ** 2 + (unit.y - unit_g.y) ** 2)
         if dist < 16 * ratio:
           nearby_resource_unit_dict[dist] = unit
       if unit.unit_type in GAS_TYPE:
+        # logger.debug(f"[ID 1] find_nearby_screen_mg, g = {unit_info}, {unit.x}, {unit.y}")
         dist = math.sqrt((unit.x - unit_g.x) ** 2 + (unit.y - unit_g.y) ** 2)
         if dist < 16 * ratio:
           nearby_resource_unit_dict[dist] = unit
@@ -363,13 +378,15 @@ def get_arg_screen_tag_base_building(obs, tag: int, size_screen, action_name) ->
       x = x0 / n
       y = y0 / n
       bad_n = len(mineral_gas_list)
+      # logger.debug(f"[ID 1] x, y, n = {x, y, n}")
       for i in range(32):
         x, y, bad_n = artificial_force_field_iteration_screen(mineral_gas_list, x, y)
+        # logger.debug(f"[ID 1] i, x, y, bad_n = {i, x, y, bad_n}")
       if not (isinstance(x, float) and isinstance(y, float)):
         tag = hex(tag) if isinstance(tag, int) else tag
-        return f'unknown error in fing base_building position near unit {tag}', False
+        return f'unknown error in find base_building position near unit {tag}', False
       if not ((0 < x < size_screen) and (0 < y < size_screen)):
-        return f'unknown error in fing base_building position near unit {tag}', False
+        return f'unknown error in find base_building position near unit {tag}', False
       x, y = int(min(max(0., x), size_screen - 1)), int(min(max(0., y), size_screen - 1))
       if bad_n > 1:
         return f'({x}, {y}) may be a bad position for base building', False

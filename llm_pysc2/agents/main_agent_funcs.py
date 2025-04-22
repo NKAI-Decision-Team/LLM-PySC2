@@ -745,8 +745,6 @@ def main_agent_func2(self, obs):
 
   # 抱着矿或者气的单位，确定工作场所
   for worker in obs.observation.raw_units:
-    if worker.tag in self.unit_tag_builder:
-      continue
     # 离职处理
     if worker.alliance == features.PlayerRelative.SELF and worker.unit_type in WORKER_TYPE and \
         worker.order_id_0 not in [356, 357, 358, 359, 102, 103, 154, 360, 361, 362]:  # Harvest/HarvestReturn
@@ -926,8 +924,8 @@ def main_agent_func2(self, obs):
           if unit.is_selected:
             worker = unit
         for agent_name in self.AGENT_NAMES:  # workers in Builder and CombatGroup
-          if 'CombatGroup' in agent_name and worker is not None and worker.tag in self.agents[
-            agent_name].unit_tag_list_history and self.agents[agent_name].enable:
+          if ('CombatGroup' in agent_name or 'Builder' in agent_name) and \
+              worker is not None and worker.tag in self.agents[agent_name].unit_tag_list_history and self.agents[agent_name].enable:
             func_id, func_call = (274, actions.FUNCTIONS.HoldPosition_quick('now'))  # 站住即可，不要去采集资源
             logger.info(f"[ID {self.log_id}] 4.1.2 Func Call: {func_call}")
             func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()

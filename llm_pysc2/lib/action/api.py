@@ -307,8 +307,8 @@ class DefaultTranslatorA(BaseTranslatorA):
     self.action['actions'] = processed_text_a
     self.actions.append(self.action)
 
-    if self.name == 'Builder':
-      team_actions.append({'name': 'HoldPosition-Auto', 'arg': [], 'func': [(274, F.HoldPosition_quick, ('queued',))]})
+    # if self.name == 'Builder':
+    #   team_actions.append({'name': 'HoldPosition-Auto', 'arg': [], 'func': [(274, F.HoldPosition_quick, ('queued',))]})
     # if self.name == 'Commander' and len(team_actions) == 0:
     #   team_actions.append({'name': 'All_Units_Defend-Auto', 'arg': [], 'func': [(0, F.no_op, ())]})
     if self.name == 'Developer' and obs is not None:

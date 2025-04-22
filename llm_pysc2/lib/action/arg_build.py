@@ -53,7 +53,7 @@ def get_arg_screen_build(obs, screen: list, size_screen, action_name, easy_build
       if tag is not None and unit.tag == tag:
         pos00 = [unit.x, unit.y]
   else:
-    building_name = action_name.split('Build_')[1].split('_Screen')[0]
+    building_name = action_name.split('_')[1]
     building_size = find_building_size(building_name)
 
   if building_size == 0:

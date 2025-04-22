@@ -28,26 +28,28 @@ import re
 
 
 def add_func_for_build(self, obs, action):
-  action_name = action['name']
-  action_arg = action['arg']
-  action_func = action['func']
-  if self.config.ENABLE_EASY_BUILD:
-    return action
-  if (not 'Build_' in action_name) or ('Near' not in action_name and 'Screen' not in action_name):
-    return action
-  if not (len(action['func'][0][2]) == 2 and len(action['func'][0][2][1]) == 2):
-    return action
-  print(self.size_screen)
-  print(f"add_func_for_build(): screen = action['func'][0][2][1] = {action['func'][0][2][1]}")
-  screen = action['func'][0][2][1]
-  worker_tag = tag_for_closest_screen_worker(obs, screen, self.size_screen)
+  return action
 
-  if worker_tag is not None:
-    full_shape_action = {'name': action_name, 'arg': [], 'func':
-      [(3, F.select_rect, ['select', int(worker_tag), int(worker_tag)]),
-       (action['func'][0][0], action['func'][0][1], action['func'][0][2])]}
-  else:
-    return action
+  # action_name = action['name']
+  # action_arg = action['arg']
+  # action_func = action['func']
+  # if self.config.ENABLE_EASY_BUILD:
+  #   return action
+  # if (not 'Build_' in action_name) or ('Near' not in action_name and 'Screen' not in action_name):
+  #   return action
+  # if not (len(action['func'][0][2]) == 2 and len(action['func'][0][2][1]) == 2):
+  #   return action
+  # print(self.size_screen)
+  # print(f"add_func_for_build(): screen = action['func'][0][2][1] = {action['func'][0][2][1]}")
+  # screen = action['func'][0][2][1]
+  # worker_tag = tag_for_closest_screen_worker(obs, screen, self.size_screen)
+  #
+  # if worker_tag is not None:
+  #   full_shape_action = {'name': action_name, 'arg': [], 'func':
+  #     [(3, F.select_rect, ['select', int(worker_tag), int(worker_tag)]),
+  #      (action['func'][0][0], action['func'][0][1], action['func'][0][2])]}
+  # else:
+  #   return action
 
   return full_shape_action
 

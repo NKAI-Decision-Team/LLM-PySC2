@@ -253,7 +253,7 @@ def get_condition_elements(agent, obs=None) -> tuple:
 
   ra, ta, = research_actions, train_actions
   # ba = build_actions + action_space.PROTOSS_BASIC_ACTION_2 if agent.name == 'Builder' else build_actions
-  ba = build_actions + [action_space.MOVE_MINIMAP] if agent.name == 'Builder' else build_actions
+  ba = build_actions + [action_space.MOVE_MINIMAP, action_space.MOVE_SCREEN] if agent.name == 'Builder' else build_actions
   return ra, ta, ba, rc, tc, bc, m, g, s, u, b
 
 

@@ -114,8 +114,8 @@ class MainAgent(base_agent.BaseAgent):
     self.unit_uid_appear = list()
     self.unit_uid_total = list()
     self.unit_disappear_steps = dict()
-    self.unit_tag_builder = list()
-    self.unit_tag_worker_special = list()
+    # self.unit_tag_builder = list()
+    # self.unit_tag_worker_special = list()
 
     # self.possible_disappear_unit_list = list()
     self.func_id_history = deque(maxlen=20)
@@ -319,6 +319,8 @@ class MainAgent(base_agent.BaseAgent):
         for agent_name2 in self.AGENT_NAMES:
           if agent_name2 not in ['Commander', 'Developer']:
             agent.other_agents[agent_name2] = self.agents[agent_name2]
+      if agent.name in ['Builder']:
+        self.unit_tag_builder = agent.unit_tag_list_history
 
     # critical data log
     main_agent_func_critical_data_log(self, obs)

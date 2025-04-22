@@ -138,6 +138,14 @@ def get_img_obs_fea_map(self, obs, feature_map_name):
   else:
     return None
 
+  if feature_map_name in ['buildable']:
+    feature_map_index1 = obs.observation.feature_screen._index_names[0]['pathable']
+    feature_map_index2 = obs.observation.feature_screen._index_names[0]['buildable']
+    fea_screen1 = observation.feature_screen[feature_map_index1]
+    fea_screen2 = observation.feature_screen[feature_map_index2]
+    fea_screen = (fea_screen1 + fea_screen2) - 1.0
+    fea_screen = (fea_screen + abs(fea_screen)) / 2.0
+
   # Convert data type to uint8
   # Convert NumPy array to PIL Image object
   # rgb_screen = np.array(rgb_screen)[:, :, ::-1]  # BGR to RGB

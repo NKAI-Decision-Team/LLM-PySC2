@@ -205,7 +205,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': 'builder',
           'translator_a': self.translator_a,
-          'img_names': ['rgb_screen', 'rgb_minimap', 'power', 'pathable', 'buildable'],
+          'img_names': ['rgb_minimap', 'buildable', 'pathable', 'power'],  # 'rgb_screen',
           # ['power', 'pathable', 'buildable', 'height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
@@ -216,7 +216,7 @@ class ProtossAgentConfig(AgentConfig):
         'team': {
           'Builder-Probe': {
             'name': 'Builder-Probe', 'unit_type': [units.Protoss.Probe], 'game_group': 1, 'select_type': 'group',
-            'actions': {units.Protoss.Probe: [MOVE_MINIMAP] + PROTOSS_ACTION_BUILD}
+            'actions': {units.Protoss.Probe: [MOVE_MINIMAP, MOVE_SCREEN] + PROTOSS_ACTION_BUILD}
             # 具体输出的valid actions 在 llm_observation.get_valid_actions_build 函数中
           },
         },

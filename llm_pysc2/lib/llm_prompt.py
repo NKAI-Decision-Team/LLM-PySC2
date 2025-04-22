@@ -64,8 +64,10 @@ BASIC_DEVELOP_RULES = \
 BASIC_BUILD_RULES = \
 """
 Analyse following aspect in your decision process:
-\t1. (Build) You can build on any position of the screen (unless it is blocked by other buildings) direct use the action <Build_XXX_Screen([x, y])>.
-\t2. (Move) You should move to a plain location near the base building, and build buildings there. Don't be far away from the base building, keep base building in your sight(screen), unless you are building a new one.
+\t1. (Minimap Position) According to image 'rgb_minimap', where is/are our base/bases and where should we go? give minimap position. (Our base units and buildings are green points/squares in the minimap)
+\t2. (Build) You can build on any position of the screen (unless it is blocked by other buildings) direct use the action <Build_XXX_Screen([x, y])>.
+\t3. (Move) You should move to a plain location near the base building, and build buildings there. Don't be far away from the base building, keep base building in your sight(screen), unless you are building a new one.
+\t4. (Actions Sequence) First <Move_Screen(screen)>, then <Build_Screen(screen)>, then <Move_minimap(minimap)>
 """
 
 # \t1. (Supply) If run out of supply (less than 10) and no building for supply is under construction, build Pylon/OverLord/SupplyDepot (depend on your race).

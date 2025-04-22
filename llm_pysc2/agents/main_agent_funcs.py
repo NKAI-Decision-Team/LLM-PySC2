@@ -482,7 +482,7 @@ def main_agent_func1(self, obs):
   # # print(f"self.possible_disappear_unit_list = {self.possible_disappear_unit_list}")
 
   # 新单位的编队编组
-  if not self.main_loop_lock:
+  if not self.locks['main_loop']:
     while len(self.unit_uid_appear) != 0:
       # logger.info(f"[ID {self.log_id}] MainAgent Status 3.0 ")
       logger.info(f"[ID {self.log_id}] self.unit_uid_appear = {self.unit_uid_appear}")
@@ -650,7 +650,7 @@ def main_agent_func1(self, obs):
         pass
 
   # 死亡单位的处理
-  if not self.main_loop_lock:
+  if not self.locks['main_loop']:
     for tag in self.unit_disappear_steps.keys():
       if self.unit_disappear_steps[tag] < 40:
         if tag in self.unit_uid_disappear:
@@ -900,7 +900,7 @@ def main_agent_func2(self, obs):
     # print('--' * 25)
 
   # 闲置的工人重新加入到工作
-  if not self.main_loop_lock and self.config.ENABLE_AUTO_WORKER_MANAGE and self.is_all_nexus_full is False:
+  if not self.locks['main_loop'] and self.config.ENABLE_AUTO_WORKER_MANAGE and self.is_all_nexus_full is False:
     if actions.FUNCTIONS.select_idle_worker.id in obs.observation.available_actions and \
         len(self.possible_working_place_nexus) > 0:
 
@@ -992,8 +992,12 @@ def main_agent_func2(self, obs):
 
         # 选择工位
         working_place_unit_list = get_feature_unit_list_of_tags(obs, working_place_unit_tag_list)
-        working_place_unit_list_ = copy.copy((working_place_unit_list))
-        random.shuffle(working_place_unit_list_)
+        working_place_unit_list_ = copy.copy(working_place_unit_list)
+        # print(f"working_place_unit_list_ = {working_place_unit_list_}")
+        def take_tag(unit):
+          return unit.tag
+        working_place_unit_list_.sort(key=take_tag)
+        # random.shuffle(working_place_unit_list_)
         for unit in working_place_unit_list_:
           if unit.is_on_screen and (0 < unit.x < self.size_screen and 0 < unit.y < self.size_screen):
             print(f"here {str(units.get_unit_type(unit.unit_type))} {unit.assigned_harvesters} {unit.ideal_harvesters}")
@@ -1052,7 +1056,7 @@ def main_agent_func2(self, obs):
       #     print(f"unit {units.get_unit_type(unit.unit_type)} {unit.tag} {unit.x} {unit.y}")
 
   # 超采的工人停止工作，进入闲置状态，然后自动重新分配工作
-  if not self.main_loop_lock and self.config.ENABLE_AUTO_WORKER_TRAINING and self.is_all_nexus_full is False:
+  if not self.locks['main_loop'] and self.config.ENABLE_AUTO_WORKER_TRAINING and self.is_all_nexus_full is False:
     for key in self.nexus_info_dict.keys():
       nexus_info = self.nexus_info_dict[key]
 
@@ -1160,7 +1164,7 @@ def main_agent_func3(self, obs):
   func_id, func_call = (None, None)
 
   # region 5自动工人生产 （5.1神族Probe，5.2人族SCV，5.3虫族工蜂；主智能体不负责神族星灵加速/人族矿骡生产/虫族女王产卵）
-  if not self.main_loop_lock and self.config.ENABLE_AUTO_WORKER_TRAINING:
+  if not self.locks['main_loop'] and self.config.ENABLE_AUTO_WORKER_TRAINING:
     if len(self.possible_working_place_nexus) > 0 and self.race == 'zerg':
       num_larva_to_drone = 0
       for unit in obs.observation.raw_units:
@@ -1397,7 +1401,7 @@ def main_agent_func4(self, obs):
   #     if unit.is_selected:
   #         self.unit_selected_tag_list.append(unit.tag)
 
-  if not self.main_loop_lock:
+  if not self.locks['main_loop']:
 
     # 走散的单位聚拢到head单位
     unselected_unit_num = None

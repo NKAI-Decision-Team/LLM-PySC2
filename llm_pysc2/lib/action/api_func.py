@@ -200,6 +200,10 @@ def get_func(agent, obs):  # 该函数需要将当前text-pysc2动作对应的�
     utils.write_to_file(text, agent.history_func_path)
     logger.warning(
       f"[ID {agent.log_id}] LLMAgent {agent.name} get_func() Error type 3: Func invalid: {func}! Replace with no_op()")
+    for unit in obs.observation.raw_units:
+      if unit.is_selected == 1:
+        unit_info = f'unit {hex(unit.tag)}({str(units.get_unit_type(unit.unit_type))}) {unit.is_on_screen} {unit.is_selected} {unit.x, unit.y}'
+        logger.debug(f"[ID {agent.log_id}] LLMAgent {agent.name}, get_func() selected_unit_info = {unit_info}")
     func_id, func_call = (0, F.no_op())
 
   if not agent.action_valid_check_1 and func_id not in [12, 3, 4]:

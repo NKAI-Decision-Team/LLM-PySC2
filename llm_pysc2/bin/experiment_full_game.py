@@ -89,8 +89,8 @@ if __name__ == "__main__":
   elif enable_image_rgb:
     os.system(f"python -m pysc2.bin.agent --map {map_name} --difficulty {difficulty} --agent_race protoss --parallel 1 "
               f"--agent llm_pysc2.bin.experiment_full_game.MainAgentLLMPysc2 "
-              f"--feature_screen_size 128 --feature_minimap_size 64 "
-              f"--rgb_screen_size 128 --rgb_minimap_size 64 "
+              f"--feature_screen_size 256 --feature_minimap_size 64 "
+              f"--rgb_screen_size 256 --rgb_minimap_size 64 "
               f"--action_space RGB")
   elif enable_image_feature:  # parallel experiments with feature map obs do not available currently, set --parallel 1
     os.system(f"python -m pysc2.bin.agent --map {map_name} --difficulty {difficulty} --agent_race protoss --parallel 1 "

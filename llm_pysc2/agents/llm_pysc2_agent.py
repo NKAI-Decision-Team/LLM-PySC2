@@ -520,9 +520,14 @@ class LLMAgent:
 
   def get_func(self, obs):  # 该函数需要将当前text-pysc2动作对应的下一个pysc2函数取出，确认函数和参数是合法的，然后交给到主智能体
     if self.config.SAFE_MODE:
-      return_data = llm_action.get_func(self, obs)
+      try:
+        return_data = llm_action.get_func(self, obs)
+      except Exception as e:
+        return_data = (0, F.no_op(), False, None)  # func_id, func_call, enable_no_op, text_action
+        self.func_list = []
+        logger.error(f"error {e} occur in agent {self.name} get_func")
     else:
-      return_data = (0, F.no_op(), False, None)  # func_id, func_call, enable_no_op, text_action
+      return_data = llm_action.get_func(self, obs)
     return return_data
 
     # enable_no_op = False

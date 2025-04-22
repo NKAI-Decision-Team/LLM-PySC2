@@ -155,23 +155,23 @@ Note that actions must in the shape <ActionName(...)>, do not generate action li
     <MessageTo(Commander, '''xxxxxxxxxx''')>
     <MessageTo(CombatGroup4, '''xxxxxxxxxx''')>
 """
-      self.eip += \
-"""
-Communication:
-  From Commander: 
-    Your task is to attack the enemy workers of an enemy base near minimap [48,32]. Intelligence shows that two enemy Queens are located on the minimap [44,32]. Try to avoid being detected by enemy Queens before arriving.
-
-Available Communication Tragets:
-  Commander: Protoss military supreme commander. Responsible for making macro decision through communication, and controls nexus for massrecall for tactical objectives.
-Available Communication Functions:
-  <MessageTo(AgentName, message)>
-  <MessageTo(ChannelName, message)>
-  <ListenTo(ChannelName)>
-Args explanation:
-  (1)AgentName: refers to a name mentioned in Available Communication Tragets.
-  (2)ChannelName: shape as Channel-i, i refers to an integer.
-  (2)message: any text wrapped between ''' and '''.
-"""
+#       self.eip += \
+# """
+# Communication:
+#   From Commander:
+#     Your task is to attack the enemy workers of an enemy base near minimap [48,32]. Intelligence shows that two enemy Queens are located on the minimap [44,32]. Try to avoid being detected by enemy Queens before arriving.
+#
+# Available Communication Tragets:
+#   Commander: Protoss military supreme commander. Responsible for making macro decision through communication, and controls nexus for massrecall for tactical objectives.
+# Available Communication Functions:
+#   <MessageTo(AgentName, message)>
+#   <MessageTo(ChannelName, message)>
+#   <ListenTo(ChannelName)>
+# Args explanation:
+#   (1)AgentName: refers to a name mentioned in Available Communication Tragets.
+#   (2)ChannelName: shape as Channel-i, i refers to an integer.
+#   (2)message: any text wrapped between ''' and '''.
+# """
 
       self.eop += \
 """

@@ -1000,7 +1000,7 @@ def main_agent_func2(self, obs):
         # random.shuffle(working_place_unit_list_)
         for unit in working_place_unit_list_:
           if unit.is_on_screen and (0 < unit.x < self.size_screen and 0 < unit.y < self.size_screen):
-            print(f"here {str(units.get_unit_type(unit.unit_type))} {unit.assigned_harvesters} {unit.ideal_harvesters}")
+            # print(f"here {str(units.get_unit_type(unit.unit_type))} {unit.assigned_harvesters} {unit.ideal_harvesters}")
             if unit.unit_type in GAS_BUILDING_TYPE and unit.alliance == features.PlayerRelative.SELF and (unit.build_progress != 100 or not unit.assigned_harvesters < unit.ideal_harvesters):
               continue
             # 从原单位去除
@@ -1037,6 +1037,8 @@ def main_agent_func2(self, obs):
             #   func_id, func_call = (0, actions.FUNCTIONS.no_op())
             # if self.func_id_history[-1] == 264:
             #   func_id, func_call = (331, actions.FUNCTIONS.Move_screen('now',  (unit.x, unit.y)))
+            # if self.func_id_history[-1] == 264:
+            #   func_id, func_call = (264, actions.FUNCTIONS.Harvest_Gather_screen('now', (target_nexus.x, target_nexus.y)))
             logger.info(f"[ID {self.log_id}] 4.1.5 Func Call: {func_call}")
             self.possible_working_place_nexus = []
             self.possible_working_place_tag_dict = {}

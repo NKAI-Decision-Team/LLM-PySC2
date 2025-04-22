@@ -251,17 +251,21 @@ class MainAgent(base_agent.BaseAgent):
     safe_mode = self.config.SAFE_MODE
 
     last_20_func = list(self.func_id_history)
-    last_10_func = list(self.func_id_history) if len(self.func_id_history) <= 10 else list(self.func_id_history)[-10:]
+    last_7_func = list(self.func_id_history) if len(self.func_id_history) <= 7 else list(self.func_id_history)[-7:]
     possible_endless_loop = False
     if not safe_mode and len(set(last_20_func)) == 1 and len(last_20_func) >= 20 and 0 not in last_20_func:
       possible_endless_loop = True
       logger.error(f"[ID {self.log_id}] Detect Possible Endless Loop !")
       logger.error(f"[ID {self.log_id}] last 20 funcs: {actions.FUNCTIONS[last_20_func[0]]}")
       time.sleep(1)
-    if safe_mode and len(set(last_10_func)) == 1 and len(last_10_func) >= 10 and 0 not in last_10_func:
+    if safe_mode and len(set(last_7_func)) == 1 and len(last_7_func) >= 7 and 0 not in last_7_func:
       possible_endless_loop = True
       logger.error(f"[ID {self.log_id}] Detect Possible Endless Loop !")
-      logger.error(f"[ID {self.log_id}] last 10 funcs: {actions.FUNCTIONS[last_10_func[0]]}")
+      logger.error(f"[ID {self.log_id}] last 7 funcs: {actions.FUNCTIONS[last_7_func[0]]}")
+      time.sleep(0.1)
+    if safe_mode and len(self.func_id_history) > 2 and self.func_id_history[-1] == 264 and self.func_id_history[-2] == 264:
+      possible_endless_loop = True
+      logger.error(f"[ID {self.log_id}] Detect Possible 264 Endless Loop !")
       time.sleep(0.1)
 
     base_exist = False
@@ -281,7 +285,7 @@ class MainAgent(base_agent.BaseAgent):
 
       # unit grouping, add to relevant agent.teams (necessary)
       func_id, func_call = main_agent_func1(self, obs)
-      if func_call is not None and not self.locks['unit_grouping']:
+      if func_call is not None:  #  and not self.locks['unit_grouping']
         if not safe_mode or not (possible_endless_loop and func_id in last_20_func):
           logger.success(f"[ID {self.log_id}] main_agent_func1: Func Call {func_id} {func_call}")
           return func_call

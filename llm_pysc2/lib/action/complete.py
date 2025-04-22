@@ -388,16 +388,18 @@ def add_func_for_easy_control(self, obs, action):  # goto enemy base
       full_shape_action = {'name': action_name, 'arg': [], 'func':
         funcs_select_army_and_move_camera_to(target_tag2) + [(331, F.Move_screen, ['now', int(target_tag2)])]}
 
-  elif ('Worker_Scan' in action_name) and idle_worker_count > 0:  # game_time_s < 60 or int(game_time_s) % 90 < 20 or idle_worker_count > 2
+  elif ('Worker_Scan' in action_name):  #  and idle_worker_count > 0  # game_time_s < 60 or int(game_time_s) % 90 < 20 or idle_worker_count > 2
       if target_tag is not None and target_tag2 is not None and worker_tag is not None:
-        if easy_build:
+        if easy_build and (game_time_s < 60 or int(game_time_s) % 90 < 20 or idle_worker_count > 2):
           full_shape_action = {'name': action_name, 'arg': [], 'func':
             funcs_move_camera_to_and_select_unit(worker_tag) + funcs_move_camera_to(target_tag) + [
               (331, F.Move_screen, ['now', int(target_tag)])]}
-        else:
+        elif not easy_build and idle_worker_count > 0:
           full_shape_action = {'name': action_name, 'arg': [], 'func':
             [(6, F.select_idle_worker, ('select'))] + funcs_move_camera_to(target_tag) + [
               (331, F.Move_screen, ['now', int(target_tag)])]}
+        else:
+          pass
 
   elif ('_Scan' in action_name) and int(game_time_s) % 90 < 20:
 

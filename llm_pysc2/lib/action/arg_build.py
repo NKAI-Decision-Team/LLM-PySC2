@@ -390,7 +390,7 @@ def get_arg_screen_tag_base_building(obs, tag: int, size_screen, action_name) ->
       if not ((0 < x < size_screen) and (0 < y < size_screen)):
         return f'unknown error in find base_building position near unit {tag}', False
       x, y = int(min(max(0., x), size_screen - 1)), int(min(max(0., y), size_screen - 1))
-      if bad_n > 1:
+      if bad_n >= 3:
         return f'({x}, {y}) may be a bad position for base building', False
       if not (0 < x < size_screen and 0 < y < size_screen):
         return f'({x}, {y}) too close to screen edge', False

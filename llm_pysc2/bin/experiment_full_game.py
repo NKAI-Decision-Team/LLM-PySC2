@@ -70,6 +70,8 @@ class MainAgentLLMPysc2(MainAgent):
     game_time_s = obs.observation.game_loop / 22.4
     if game_time_s <= 90:
       self.config.MAX_LLM_DECISION_FREQUENCY = 0.1
+    if game_time_s <= 90 and not self.config.ENABLE_EASY_BUILD:
+      self.config.MAX_LLM_DECISION_FREQUENCY = 0.2
     if 90 < game_time_s <= 360:
       self.config.MAX_LLM_DECISION_FREQUENCY = 0.2
     if 360 < game_time_s <= 720:
@@ -85,10 +87,10 @@ if __name__ == "__main__":
     os.system(f"python -m pysc2.bin.agent --map {map_name} --difficulty {difficulty} --agent_race protoss --parallel 1 "
               f"--agent llm_pysc2.bin.experiment_full_game.MainAgentLLMPysc2")
   elif enable_image_rgb:
-    os.system(f"python -m pysc2.bin.agent --map {map_name} --difficulty {difficulty} --agent_race protoss --parallel 1 "  
+    os.system(f"python -m pysc2.bin.agent --map {map_name} --difficulty {difficulty} --agent_race protoss --parallel 1 "
               f"--agent llm_pysc2.bin.experiment_full_game.MainAgentLLMPysc2 "
-              f"--feature_screen_size 256 --feature_minimap_size 64 "
-              f"--rgb_screen_size 256 --rgb_minimap_size 64 "
+              f"--feature_screen_size 128 --feature_minimap_size 64 "
+              f"--rgb_screen_size 128 --rgb_minimap_size 64 "
               f"--action_space RGB")
   elif enable_image_feature:  # parallel experiments with feature map obs do not available currently, set --parallel 1
     os.system(f"python -m pysc2.bin.agent --map {map_name} --difficulty {difficulty} --agent_race protoss --parallel 1 "

@@ -44,7 +44,7 @@ def get_arg_screen_tag_build(obs, tag: int, size_screen, action_name) -> (tuple,
 
 
 # Parameter verification, for build
-def get_arg_screen_build(obs, screen: list, size_screen, action_name, easy_build=False, tag=None, max_retry=600) -> (tuple, bool):  # 标准建造，校验地点和建造条件
+def get_arg_screen_build(obs, screen: list, size_screen, action_name, easy_build=False, tag=None, max_retry=144) -> (tuple, bool):  # 标准建造，校验地点和建造条件
   pos00 = [0, 0]
   if easy_build:
     building_name = action_name.split('Build_')[1]
@@ -62,6 +62,8 @@ def get_arg_screen_build(obs, screen: list, size_screen, action_name, easy_build
   if isinstance(screen, list) and len(screen) == 2 and isinstance(screen[0], (int, float)) and isinstance(screen[1], (int, float)):
     x00 = int(min(max(0.1 * size_screen, screen[0] + 0 * (random.randint(0, 10) - 5)), 0.9 * size_screen))
     y00 = int(min(max(0.1 * size_screen, screen[1] + 0 * (random.randint(0, 10) - 5)), 0.9 * size_screen))
+    if not easy_build:
+      pos00 = [x00, y00]
     ratio = size_screen / SCREEN_WORLD_GRID
     pysc2_arg0, func_valid0 = 'unknown error in arg', False
 
@@ -173,17 +175,17 @@ def get_arg_screen_build(obs, screen: list, size_screen, action_name, easy_build
 
       if func_valid and building_name == 'Pylon':
         supply = 7 * (1 + len(pylon_in_construction)) + obs.observation.player.food_cap - obs.observation.player.food_used
-        if func_valid and len(screen_pylon_pos) != 0 and 0 < d4 < 6 and len(screen_pylon_pos) / len(screen_base_pos) < 6:  #     len(screen_pylon_pos) / len(screen_base_pos) < 6
+        if func_valid and len(screen_pylon_pos) != 0 and 0 < d4 < 6 and (len(screen_base_pos) == 0 or len(screen_pylon_pos) / len(screen_base_pos) < 6):  #     len(screen_pylon_pos) / len(screen_base_pos) < 6
           pysc2_arg, func_valid = f"Build failed! Too close to another Pylon", False
         if func_valid and len(total_base) == 1 and len(total_pylon) >= 2:  # and len(total_building) == len(total_pylon) + len(total_base)
-          pysc2_arg, func_valid = f"Build failed! Too Many Pylon, you build Nexus first", False
+          pysc2_arg, func_valid = f"Build failed! Too Many Pylon, you should build Nexus first", False
         if func_valid and 0 < obs.observation.player.food_used <= 50 and supply > 20 and obs.observation.player.minerals < 300:
           pysc2_arg, func_valid = f"Build failed! Too Many Pylon", False
         if func_valid and 50 < obs.observation.player.food_used < 100 and supply > 25 and obs.observation.player.minerals < 500:
           pysc2_arg, func_valid = f"Build failed! Too Many Pylon", False
         if func_valid and 100 <= obs.observation.player.food_used < 150 and supply > 50 and obs.observation.player.minerals < 750:
           pysc2_arg, func_valid = f"Build failed! Too Many Pylon", False
-        if func_valid and obs.observation.player.food_cap == 200 and len(screen_pylon_pos) / len(screen_base_pos) > 6:
+        if func_valid and obs.observation.player.food_cap == 200 and (len(screen_base_pos) != 0 and len(screen_pylon_pos) / len(screen_base_pos) > 6):
           pysc2_arg, func_valid = f"Build failed! Too Many Pylon", False
 
       if func_valid and 0 < db1 < (building_size + 1) / 2:

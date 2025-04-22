@@ -50,6 +50,12 @@ def communication_info_transmission(self: "llm_pysc2 MainAgent"):
       receiver_agent.last_text_c_tar = "Available Communication Targets:"
       for agent_name in self.AGENT_NAMES:
         agent = self.agents[agent_name]
+        if (receiver_name == 'Commander' and agent_name == 'Builder') or (receiver_name == 'Builder' and agent_name == 'Commander'):
+          continue
+        if (receiver_name == 'Developer' and 'CombatGroup' in agent_name) or ('CombatGroup' in receiver_name and agent_name == 'Developer'):
+          continue
+        if (receiver_name == 'Builder' and 'CombatGroup' in agent_name) or ('CombatGroup' in receiver_name and agent_name == 'Builder'):
+          continue
         if agent_name != receiver_name and agent.enable:
           description = agent.config.AGENTS[agent_name]['describe'] if agent_name in agent.config.AGENTS.keys() else ''
           receiver_agent.last_text_c_tar += f"\n\t{agent_name}: {description}"

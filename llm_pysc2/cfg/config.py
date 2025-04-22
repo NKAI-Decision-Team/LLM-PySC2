@@ -142,50 +142,6 @@ class ProtossAgentConfig(AgentConfig):
 
     self.AGENTS_ALWAYS_DISABLE = []
     self.AGENTS = {
-      # 'Airborne': {
-      #   'describe': "Protoss airborne commander, controls units airborne/warptrain from WarpPrism. "
-      #               "Responsible for quick reinforcing nearby units or executing multiline combat.",
-      #   'llm': {
-      #     'basic_prompt': self.basic_prompt,
-      #     'translator_o': self.translator_o,
-      #     'translator_a': self.translator_a,
-      #     'img_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
-      #     'img_fea': self.ENABLE_IMAGE_FEATURE,
-      #     'img_rgb': self.ENABLE_IMAGE_RGB,
-      #     'model_name': self.model_name,
-      #     'api_base': self.api_base,
-      #     'api_key': self.api_key,
-      #   },
-      #   'team': {
-      #     'Airborne-Zealot-1': {
-      #       'name': 'Airborne-Zealot-1', 'unit_type': [units.Protoss.Zealot], 'game_group': -1, 'select_type': 'select_all_type',
-      #       'actions': {units.Protoss.Zealot: PROTOSS_BASIC_ACTION_2}
-      #     },
-      #   },
-      # },
-
-      'Builder': {
-        'describe': "Protoss builder, controls several Probe. Responsible for build buildings",
-        'llm': {
-          'basic_prompt': self.basic_prompt,
-          'translator_o': 'builder',
-          'translator_a': self.translator_a,
-          'img_names': ['rgb_screen', 'rgb_minimap'],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
-          'img_fea': self.ENABLE_IMAGE_FEATURE,
-          'img_rgb': self.ENABLE_IMAGE_RGB,
-          'model_name': self.model_name,
-          'api_base': self.api_base,
-          'api_key': self.api_key,
-        },
-        'team': {
-          'Builder-Probe': {
-            'name': 'Builder-Probe', 'unit_type': [units.Protoss.Probe], 'game_group': 1, 'select_type': 'group',
-            'actions': {units.Protoss.Probe: PROTOSS_BASIC_ACTION_2 + PROTOSS_ACTION_BUILD}
-            # 具体输出的valid actions 在 llm_observation.get_valid_actions_build 函数中
-          },
-        },
-      },
-
       'Commander': {
         'describe': "Protoss military supreme commander. "
                     "Responsible for making macro decision through communication, and controls nexus for massrecall "
@@ -226,38 +182,45 @@ class ProtossAgentConfig(AgentConfig):
           'api_key': self.api_key,
         },
         'team': {
+          # 'Protoss-Buildings': {
+          #   'name': 'Protoss-Buildings', 'unit_type': [], 'game_group': -1, 'select_type': 'select',
+          #   'actions': {'ALWAYS': PROTOSS_ACTION_RESEARCH + PROTOSS_ACTION_TRAIN + PROTOSS_ACTION_WARPTRAIN + PROTOSS_ACTION_EASY_WARPTRAIN + PROTOSS_ACTION_EASY_CHRONO_BOOST}  #  + PROTOSS_ACTION_BUILD + PROTOSS_ACTION_EASY_BUILD
+          # },
+          # 'Protoss-Workers': {
+          #   'name': 'Protoss-Workers', 'unit_type': [], 'game_group': -1, 'select_type': 'select',
+          #   'actions': {
+          #     'ALWAYS': PROTOSS_ACTION_BUILD + PROTOSS_ACTION_EASY_BUILD}
+          # },
           'Protoss-Buildings': {
             'name': 'Protoss-Buildings', 'unit_type': [], 'game_group': -1, 'select_type': 'select',
-            'actions': {'ALWAYS': PROTOSS_ACTION_RESEARCH + PROTOSS_ACTION_TRAIN + PROTOSS_ACTION_WARPTRAIN + PROTOSS_ACTION_EASY_WARPTRAIN + PROTOSS_ACTION_EASY_CHRONO_BOOST}  #  + PROTOSS_ACTION_BUILD + PROTOSS_ACTION_EASY_BUILD
-          },
-          'Protoss-Workers': {
-            'name': 'Protoss-Workers', 'unit_type': [], 'game_group': -1, 'select_type': 'select',
             'actions': {
-              'ALWAYS': PROTOSS_ACTION_BUILD + PROTOSS_ACTION_EASY_BUILD}
+              'ALWAYS': PROTOSS_ACTION_RESEARCH + PROTOSS_ACTION_TRAIN + PROTOSS_ACTION_WARPTRAIN + PROTOSS_ACTION_EASY_WARPTRAIN + PROTOSS_ACTION_EASY_CHRONO_BOOST + PROTOSS_ACTION_BUILD + PROTOSS_ACTION_EASY_BUILD}
           },
         },
       },
 
-      # 'Defender': {
-      #   'describe': "Protoss garrison troops commander, controls several Stalkers. "
-      #               "Responsible for intercepting enemy infiltrating forces.",
-      #   'llm': {
-      #     'basic_prompt': self.basic_prompt,
-      #     'translator_o': self.translator_o,
-      #     'translator_a': self.translator_a,
-      #     'img_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
-      #     'img_fea': self.ENABLE_IMAGE_FEATURE,
-      #     'img_rgb': self.ENABLE_IMAGE_RGB,
-      #     'model_name': self.model_name,
-      #     'api_base': self.api_base,
-      #     'api_key': self.api_key,
-      #   },
-      #   'team': {
-      #     'Stalker-1': {
-      #       'name': 'Stalker-1', 'unit_type': [units.Protoss.Stalker], 'game_group': 1, 'select_type': 'group',
-      #       'actions': {units.Protoss.Stalker: STANDARD_ACTION_STALKER}},
-      #   },
-      # },
+      'Builder': {
+        'describe': "Protoss builder, controls several Probe. Responsible for build buildings",
+        'llm': {
+          'basic_prompt': self.basic_prompt,
+          'translator_o': 'builder',
+          'translator_a': self.translator_a,
+          'img_names': ['rgb_screen', 'rgb_minimap', 'power', 'pathable', 'buildable'],
+          # ['power', 'pathable', 'buildable', 'height_map', 'player_relative']
+          'img_fea': self.ENABLE_IMAGE_FEATURE,
+          'img_rgb': self.ENABLE_IMAGE_RGB,
+          'model_name': self.model_name,
+          'api_base': self.api_base,
+          'api_key': self.api_key,
+        },
+        'team': {
+          'Builder-Probe': {
+            'name': 'Builder-Probe', 'unit_type': [units.Protoss.Probe], 'game_group': 1, 'select_type': 'group',
+            'actions': {units.Protoss.Probe: [MOVE_MINIMAP] + PROTOSS_ACTION_BUILD}
+            # 具体输出的valid actions 在 llm_observation.get_valid_actions_build 函数中
+          },
+        },
+      },
 
       'CombatGroup0': {
         'describe': "Protoss frontline commander, controls several Zealots. "
@@ -513,6 +476,49 @@ class ProtossAgentConfig(AgentConfig):
                         units.Protoss.WarpPrismPhasing : STANDARD_ACTION_WARPPRISMPHASING}},
         },
       },
+
+      # 'Airborne': {
+      #   'describe': "Protoss airborne commander, controls units airborne/warptrain from WarpPrism. "
+      #               "Responsible for quick reinforcing nearby units or executing multiline combat.",
+      #   'llm': {
+      #     'basic_prompt': self.basic_prompt,
+      #     'translator_o': self.translator_o,
+      #     'translator_a': self.translator_a,
+      #     'img_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
+      #     'img_fea': self.ENABLE_IMAGE_FEATURE,
+      #     'img_rgb': self.ENABLE_IMAGE_RGB,
+      #     'model_name': self.model_name,
+      #     'api_base': self.api_base,
+      #     'api_key': self.api_key,
+      #   },
+      #   'team': {
+      #     'Airborne-Zealot-1': {
+      #       'name': 'Airborne-Zealot-1', 'unit_type': [units.Protoss.Zealot], 'game_group': -1, 'select_type': 'select_all_type',
+      #       'actions': {units.Protoss.Zealot: PROTOSS_BASIC_ACTION_2}
+      #     },
+      #   },
+      # },
+
+      # 'Defender': {
+      #   'describe': "Protoss garrison troops commander, controls several Stalkers. "
+      #               "Responsible for intercepting enemy infiltrating forces.",
+      #   'llm': {
+      #     'basic_prompt': self.basic_prompt,
+      #     'translator_o': self.translator_o,
+      #     'translator_a': self.translator_a,
+      #     'img_names': [],  # ['power', 'pathable', 'buildable','height_map', 'player_relative']
+      #     'img_fea': self.ENABLE_IMAGE_FEATURE,
+      #     'img_rgb': self.ENABLE_IMAGE_RGB,
+      #     'model_name': self.model_name,
+      #     'api_base': self.api_base,
+      #     'api_key': self.api_key,
+      #   },
+      #   'team': {
+      #     'Stalker-1': {
+      #       'name': 'Stalker-1', 'unit_type': [units.Protoss.Stalker], 'game_group': 1, 'select_type': 'group',
+      #       'actions': {units.Protoss.Stalker: STANDARD_ACTION_STALKER}},
+      #   },
+      # },
     }
 
 

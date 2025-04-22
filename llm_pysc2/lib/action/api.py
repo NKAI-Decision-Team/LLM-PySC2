@@ -106,6 +106,11 @@ class DefaultTranslatorA(BaseTranslatorA):
 
           team_name_old = team_name
           team_name = line.split("eam ")[-1].split(":")[0]  # Team/team xxxx:  -->  xxxx
+          if 'eam' in team_name:
+            team_name = team_name.replace('Team-', '')
+            team_name = team_name.replace('team-', '')
+            team_name = team_name.replace('Team', '')
+            team_name = team_name.replace('team', '')
 
           self.curr_team_config = {}
           if team_name in self.config.AGENTS[self.name]['team'].keys():

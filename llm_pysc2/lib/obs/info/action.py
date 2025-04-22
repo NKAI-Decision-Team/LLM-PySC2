@@ -203,9 +203,9 @@ def get_valid_actions_build(agent) -> (list, str):
         valid_actions_info += f"\n\t\t<{action['name']}({arg_to_show})> \n\t\t\t cost: {cost}{note}"
         # valid_actions_info += f"{building_name} {building_types_text}"
       if func_id in [actions.FUNCTIONS.Build_Nexus_screen.id] and valid:
-        valid_actions_info += ',note: Important Building!'
-      if func_id in [actions.FUNCTIONS.Build_Nexus_screen.id] and partial_valid:
-        partial_valid_actions_info += ',note: Important Building!'
+        valid_actions_info += ', note: Important Building!'
+      if func_id in [actions.FUNCTIONS.Build_Nexus_screen.id] and partial_valid and not valid:
+        partial_valid_actions_info += ', note: Important Building!'
     else:
       # valid_actions.append(action['name'])
       basic_actions_info += f"\n\t\t<{action['name']}({arg_to_show})> "
@@ -342,31 +342,48 @@ def get_valid_actions_developer(agent):
 
     valid_actions_info = ''
     partial_valid_actions_info = ''
-    if 'Buildings' in team['name']:
-      valid_actions_info_, partial_valid_actions_info_ = get_valid_actions_research(agent)
-      valid_actions_info += valid_actions_info_
-      partial_valid_actions_info += partial_valid_actions_info_
-      valid_actions_info_, partial_valid_actions_info_  = get_valid_actions_train(agent)
-      valid_actions_info += valid_actions_info_
-      partial_valid_actions_info += partial_valid_actions_info_
-      valid_actions_info += get_valid_actions_chrono_boost(agent)
-      if valid_actions_info == '':
-        teams_valid_actions_info += '\n\t\t currently none, build buildings to unlock training/warping and researching actions.'
-      else:
-        teams_valid_actions_info += valid_actions_info
-      if partial_valid_actions_info != '':
-        teams_valid_actions_info += '\n\t\t(Actions only lack of resources below, currently invalid)' + partial_valid_actions_info
 
-    if 'Workers' in team['name'] and agent.config.ENABLE_EASY_BUILD:
-      valid_actions_info_, partial_valid_actions_info_  = get_valid_actions_build(agent)
-      valid_actions_info += valid_actions_info_
-      partial_valid_actions_info += partial_valid_actions_info_
-      if valid_actions_info == '':
-        teams_valid_actions_info += '\n\t\t currently none, waiting for more resource to build buildings.'
-      else:
-        teams_valid_actions_info += valid_actions_info
-      if partial_valid_actions_info != '':
-        teams_valid_actions_info += '\n\t\t(Actions only lack of resources below, currently invalid)' + partial_valid_actions_info
+    valid_actions_info_, partial_valid_actions_info_ = get_valid_actions_research(agent)
+    valid_actions_info += valid_actions_info_
+    partial_valid_actions_info += partial_valid_actions_info_
+    valid_actions_info_, partial_valid_actions_info_ = get_valid_actions_train(agent)
+    valid_actions_info += valid_actions_info_
+    partial_valid_actions_info += partial_valid_actions_info_
+    valid_actions_info_, partial_valid_actions_info_ = get_valid_actions_build(agent)
+    valid_actions_info += valid_actions_info_
+    partial_valid_actions_info += partial_valid_actions_info_
+    if valid_actions_info == '':
+      teams_valid_actions_info += '\n\t\t currently none, build buildings to unlock training/warping researching actions, and build building actions.'
+    else:
+      teams_valid_actions_info += valid_actions_info
+    if partial_valid_actions_info != '':
+      teams_valid_actions_info += '\n\t\t(Actions only lack of resources below, currently invalid)' + partial_valid_actions_info
+
+    # if 'Buildings' in team['name']:
+    #   valid_actions_info_, partial_valid_actions_info_ = get_valid_actions_research(agent)
+    #   valid_actions_info += valid_actions_info_
+    #   partial_valid_actions_info += partial_valid_actions_info_
+    #   valid_actions_info_, partial_valid_actions_info_  = get_valid_actions_train(agent)
+    #   valid_actions_info += valid_actions_info_
+    #   partial_valid_actions_info += partial_valid_actions_info_
+    #   valid_actions_info += get_valid_actions_chrono_boost(agent)
+    #   if valid_actions_info == '':
+    #     teams_valid_actions_info += '\n\t\t currently none, build buildings to unlock training/warping and researching actions.'
+    #   else:
+    #     teams_valid_actions_info += valid_actions_info
+    #   if partial_valid_actions_info != '':
+    #     teams_valid_actions_info += '\n\t\t(Actions only lack of resources below, currently invalid)' + partial_valid_actions_info
+    #
+    # if 'Workers' in team['name'] and agent.config.ENABLE_EASY_BUILD:
+    #   valid_actions_info_, partial_valid_actions_info_  = get_valid_actions_build(agent)
+    #   valid_actions_info += valid_actions_info_
+    #   partial_valid_actions_info += partial_valid_actions_info_
+    #   if valid_actions_info == '':
+    #     teams_valid_actions_info += '\n\t\t currently none, waiting for more resource to build buildings.'
+    #   else:
+    #     teams_valid_actions_info += valid_actions_info
+    #   if partial_valid_actions_info != '':
+    #     teams_valid_actions_info += '\n\t\t(Actions only lack of resources below, currently invalid)' + partial_valid_actions_info
 
   teams_valid_actions_info = 'Valid actions:' + teams_valid_actions_info + '\n\n'
   return teams_valid_actions_info

@@ -180,12 +180,14 @@ class BuilderTranslatorO(BaseTranslatorO):
   def __init__(self, name, log_id, config):
     super(BuilderTranslatorO, self).__init__(name, log_id, config)
     if config.ENABLE_COMMUNICATION:
-      self.final_prompt = f"As a builder, you need to move the worker to an open location and complete the construction of the building." \
+      self.final_prompt = f"As a builder, you need to move the worker to an open location (not far away from a base building such as protoss' Nexus), and complete the construction of the building." \
                           f"If you have enough supply (such as more than 10), build base building / gas building / unit training buildings or research building" \
+                          f"You can build more than one building at the same time. It is suggest to build before move to next building position" \
                           f"\nNow, start generating your analysis, actions and communication:"
     else:
-      self.final_prompt = f"As a builder, you need to move the worker to an open location and complete the construction of the building." \
+      self.final_prompt = f"As a builder, you need to move the worker to an open location (not far away from a base building such as protoss' Nexus), and complete the construction of the building." \
                           f"If you have enough supply (such as more than 10), build base building / gas building / unit training buildings or research building" \
+                          f"You can build more than one building at the same time. It is suggest to build before move to next building position" \
                           f"\nNow, start generating your analysis, actions:"
     logger.info(f"[ID {log_id}] {name} DeveloperTranslatorO initialized")
 

@@ -102,8 +102,9 @@ class GptClient:
       for key in base64_images:
         if base64_images[key] is None:
           continue
+        img_name = f'feature_map_{key}_screen' if key not in ['rgb_minimap', 'rgb_screen'] else key
         self.messages.append({"role": "user", "content": [
-          {"type": "text", "text": f'This is the {key} image:'},  # obs_prompt
+          {"type": "text", "text": f'This is the {img_name} image:'},  # obs_prompt
           {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{base64_images[key]}"}}]}
         )
       logger.warning(f"[ID {self.log_id}] {self.agent_name} {self.model_name}: You are using image input, be care of the cost")

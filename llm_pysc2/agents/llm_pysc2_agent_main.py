@@ -234,7 +234,7 @@ class MainAgent(base_agent.BaseAgent):
     if len(self.func_id_history) > 0 and self.func_id_history[-1] == 573:
       self.camera_threshold += 0.05
     elif len(self.func_id_history) > 0 and self.func_id_history[-1] == 3:
-      self.select_rect_threshold *= 2
+      self.select_rect_threshold = self.select_rect_threshold * 2 if 0 < self.select_rect_threshold < self.size_screen else self.size_screen
     else:
       self.select_rect_threshold = 1 * int(self.size_screen / 128) if self.size_screen != 0 else 1
       self.camera_threshold = 0.15

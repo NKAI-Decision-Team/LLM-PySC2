@@ -392,13 +392,13 @@ class LLMAgent:
           feature_map_names = []
         for feature_map_name in feature_map_names:
           if feature_map_name == 'rgb_screen':
-            base64_images_['screen'] = llm_observation.get_img_obs_rgb(self, obs)
+            base64_images_['screen'] = llm_observation.get_img_obs_rgb_screen(self, obs)
           elif feature_map_name == 'rgb_minimap':
             base64_images_['minimap'] = llm_observation.get_img_obs_rgb_minimap(self, obs)
           else:
             base64_images_[feature_map_name] = llm_observation.get_img_obs_fea_map(self, obs, feature_map_name)
       elif self.config.AGENTS[self.name]['llm']['img_fea']:
-        base64_images_['screen'] = llm_observation.get_img_obs_fea(self, obs)
+        base64_images_['screen'] = llm_observation.get_img_obs_rgb_fea(self, obs)
       else:
         base64_images_ = None
       return base64_images_

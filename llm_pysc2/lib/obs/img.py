@@ -27,7 +27,7 @@ import os
 
 
 
-def get_img_obs_fea(self, obs):
+def get_img_obs_rgb_fea(self, obs):
 
   def draw_coordinate_axes(surf, screen_size):
     """在屏幕上绘制坐标轴和网格线，坐标范围固定为 0 到 128。"""
@@ -142,7 +142,7 @@ def get_img_obs_fea_map(self, obs, feature_map_name):
   # Convert NumPy array to PIL Image object
   # rgb_screen = np.array(rgb_screen)[:, :, ::-1]  # BGR to RGB
   if np.max(fea_screen) - np.min(fea_screen) != 0:
-    fea_screen = (fea_screen - np.min(fea_screen)) * (255 / (np.max(fea_screen) - np.min(fea_screen)))
+    fea_screen = (fea_screen - np.min(fea_screen)) * (192 / (np.max(fea_screen) - np.min(fea_screen)))
   fea_screen = fea_screen.T
   rgb_screen = np.array([fea_screen, fea_screen, fea_screen]).T
   rgb_screen = rgb_screen.astype('uint8')
@@ -216,7 +216,7 @@ def get_img_obs_fea_map(self, obs, feature_map_name):
   return base64_image
 
 # use in SubAgent
-def get_img_obs_rgb(self, obs):
+def get_img_obs_rgb_screen(self, obs):
   """
   Extracts the RGB image from the observation, adds coordinate axes ranging from 0 to {screen_size},
   and returns the Base64 encoded string of the processed image.

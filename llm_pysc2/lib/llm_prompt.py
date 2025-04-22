@@ -43,6 +43,7 @@ BASIC_COMMAND_RULES = \
 # Analyse following aspect in your decision process:
 # \t1. (Combat Deployment) Analyse the situation, always make deployment for attack/defend/retreat at each step. As default choice, ask your units to defend your area. If you have enough units, rise attack to defeat your enemy.
 # \t2. (Scan Deployment) If you are prepared for combat, make scan deployment to find out enemy's strengths. Note that unit for scan will be killed by enemy units.
+# \t3. (Final Combat) If game time > 12:00 and you have enough units (DO NOT have to be 200 supply), raise attack to defeat the enemy.
 """
 
 BASIC_DEVELOP_RULES = \
@@ -60,18 +61,18 @@ BASIC_DEVELOP_RULES = \
 # \t10. (Final Stage Develop) During the final stage of the game, train or warp more units to fight with enemy, do not build building if we have enough buildings.
 """
 
-
 BASIC_BUILD_RULES = \
 """
 Analyse following aspect in your decision process:
-\t1. (Supply) If run out of supply (less than 10) and no building for supply is under construction, build Pylon/OverLord/SupplyDepot (depend on your race).
-\t2. (Economy Building: Base) If you have enough minerals (more than 400), build Nexus/Hatchery/CommandCenter (depend on your race).
-\t3. (Economy Building: Gas) If you run out of gas (much less than minerals), build Assimilator/Extractor/Refinery (depend on your race).
-\t4. (Building: Unit Training) If you have too less unit training buildings, or there are abundant resources but all the unit training buildings are working, build unit training buildings.
-\t5. (Building: Research) If you have too less research buildings, or there are abundant resources but all the research buildings are working, build research buildings.
-\t6. (Move) You should move to a plain location near the base building, and build buildings there. Do not move if moving is unnecessary.
-\t7. (Move) Don't be far from the base building unless you are building a new one.
+\t1. (Build) You can build on any position of the screen (unless it is blocked by other buildings) direct use the action <Build_XXX_Screen([x, y])>.
+\t2. (Move) You should move to a plain location near the base building, and build buildings there. Don't be far away from the base building, keep base building in your sight(screen), unless you are building a new one.
 """
+
+# \t1. (Supply) If run out of supply (less than 10) and no building for supply is under construction, build Pylon/OverLord/SupplyDepot (depend on your race).
+# \t2. (Economy Building: Base) If you have enough minerals (more than 400), build Nexus/Hatchery/CommandCenter (depend on your race).
+# \t3. (Economy Building: Gas) If you run out of gas (much less than minerals), build Assimilator/Extractor/Refinery (depend on your race).
+# \t4. (Building: Unit Training) If you have too less unit training buildings, or there are abundant resources but all the unit training buildings are working, build unit training buildings.
+# \t5. (Building: Research) If you have too less research buildings, or there are abundant resources but all the research buildings are working, build research buildings.
 
 # BASIC_COMBAT_RULES_REFLECTION = \
 # """

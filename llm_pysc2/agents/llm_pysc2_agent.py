@@ -17,6 +17,8 @@ from llm_pysc2.lib import llm_prompt, llm_communicate, utils, llm_client  # , ll
 from llm_pysc2.lib import obs as llm_observation
 from llm_pysc2.lib import action as llm_action
 
+from pysc2.lib.actions import FUNCTIONS as F
+
 from shutil import copyfile
 from loguru import logger
 import threading
@@ -517,7 +519,11 @@ class LLMAgent:
       return self.action_lists
 
   def get_func(self, obs):  # 该函数需要将当前text-pysc2动作对应的下一个pysc2函数取出，确认函数和参数是合法的，然后交给到主智能体
-    return llm_action.get_func(self, obs)
+    if self.config.SAFE_MODE:
+      return_data = llm_action.get_func(self, obs)
+    else:
+      return_data = (0, F.no_op(), False, None)  # func_id, func_call, enable_no_op, text_action
+    return return_data
 
     # enable_no_op = False
     # text_action = None

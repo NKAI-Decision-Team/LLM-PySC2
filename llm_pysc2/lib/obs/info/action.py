@@ -352,6 +352,7 @@ def get_valid_actions_developer(agent):
     valid_actions_info_, partial_valid_actions_info_ = get_valid_actions_build(agent)
     valid_actions_info += valid_actions_info_
     partial_valid_actions_info += partial_valid_actions_info_
+    valid_actions_info += get_valid_actions_chrono_boost(agent)
     if valid_actions_info == '':
       teams_valid_actions_info += '\n\t\t currently none, build buildings to unlock training/warping researching actions, and build building actions.'
     else:

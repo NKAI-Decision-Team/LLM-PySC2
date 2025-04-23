@@ -836,7 +836,7 @@ def main_agent_func2(self, obs):
       if nexus_info['num_worker_g_max'] == 0:
         if nexus_info['nexus'] is not None and nexus_info['nexus'].assigned_harvesters < nexus_info['nexus'].ideal_harvesters and nexus_info['num_worker_m'] < nexus_info['num_worker_m_max']:
           working_place_unit_tag_list += nexus_info['nearby_mineral_tag_list']
-          print(f"here {nexus_info['nexus'].assigned_harvesters, nexus_info['nexus'].ideal_harvesters}")
+          # print(f"here {nexus_info['nexus'].assigned_harvesters, nexus_info['nexus'].ideal_harvesters}")
 
       elif nexus_info['num_worker_m_max'] == 0:
         if nexus_info['num_worker_g'] < nexus_info['num_worker_g_max']:
@@ -905,17 +905,57 @@ def main_agent_func2(self, obs):
     if actions.FUNCTIONS.select_idle_worker.id in obs.observation.available_actions and \
         len(self.possible_working_place_nexus) > 0:
 
+      idle_worker_exist = False
+      idle_worker_selected = False
+      idle_worker_onscreen = False
+      idle_worker_r, idle_worker_f = None, None
+      for unit in obs.observation.raw_units:
+        if unit.unit_type in WORKER_TYPE and unit.alliance == features.PlayerRelative.SELF and \
+            unit.order_id_0 not in [356, 357, 358, 359, 102, 103, 154, 360, 361, 362]:
+          idle_worker_r = unit
+          idle_worker_exist = True
+          if unit.is_selected:
+            idle_worker_selected = True
+      for unit in obs.observation.feature_units:
+        if unit.unit_type in WORKER_TYPE and unit.alliance == features.PlayerRelative.SELF and \
+            unit.order_id_0 not in [356, 357, 358, 359, 102, 103, 154, 360, 361, 362] and \
+            unit.is_on_screen and (0 < unit.x < self.size_screen and 0 < unit.y < self.size_screen):
+          idle_worker_onscreen = True
+          idle_worker_f = unit
+      print(f"idle_worker_exist, _selected, _onscreen={idle_worker_exist, idle_worker_selected, idle_worker_onscreen}")
+      # print(f"idle_worker_r is None = {idle_worker_r is None}, idle_worker_f is None = {idle_worker_f is None}")
+
       # 选中工人
-      if not (len(obs.observation.single_select) == 1 and
-              obs.observation.single_select[0].unit_type in WORKER_TYPE and
-              obs.observation.single_select[0].player_relative == features.PlayerRelative.SELF) \
-          or (6 not in list(self.func_id_history)):
+      # if not idle_worker_selected and idle_worker_onscreen and idle_worker_f is not None:
+      #   d = self.select_rect_threshold
+      #   x1, x2 = min(max(0, idle_worker_f.x - d), self.size_screen), min(max(0, idle_worker_f.x + d), self.size_screen)
+      #   y1, y2 = min(max(0, idle_worker_f.y - d), self.size_screen), min(max(0, idle_worker_f.y + d), self.size_screen)
+      #   func_id, func_call = (3, actions.FUNCTIONS.select_rect('select', (x1, y1), (x2, y2)))
+      #   func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()
+      #   func_id = func_id if func_id in obs.observation.available_actions else 0
+      #   logger.info(f"[ID {self.log_id}] 4.1.0.0 Func Call: {func_call}")
+      #   self.func_id_history.append(func_id)
+      #   return func_id, func_call
+      # if not idle_worker_selected and not idle_worker_onscreen and idle_worker_r is not None:
+      #   x, y = get_camera_xy(self, idle_worker_r.x, idle_worker_r.y)
+      #   func_id, func_call = (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))
+      #   logger.info(f"[ID {self.log_id}] 4.1.0.1 Func Call: {func_call}")
+      #   self.func_id_history.append(func_id)
+      #   return func_id, func_call
+
+      logger.info(f"[ID {self.log_id}] 4.1")
+      # if not (len(obs.observation.single_select) == 1 and
+      #         obs.observation.single_select[0].unit_type in WORKER_TYPE and
+      #         obs.observation.single_select[0].player_relative == features.PlayerRelative.SELF) \
+      #     or (6 not in list(self.func_id_history)):
+      if idle_worker_exist and not idle_worker_selected:
         func_id, func_call = (6, actions.FUNCTIONS.select_idle_worker('select'))  # 选择一个闲置单位、
         logger.info(f"[ID {self.log_id}] 4.1.1 Func Call: {func_call}")
         func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()
         func_id = func_id if func_id in obs.observation.available_actions else 0
         self.func_id_history.append(func_id)
         return func_id, func_call
+
       if len(obs.observation.single_select) == 1 and \
           obs.observation.single_select[0].unit_type in WORKER_TYPE and \
           obs.observation.single_select[0].player_relative == features.PlayerRelative.SELF and \
@@ -956,23 +996,24 @@ def main_agent_func2(self, obs):
         # idx = possible_working_place_nexus_tag_list.index(target_nexus.tag)
         if str(target_nexus.tag) in list(self.possible_working_place_tag_dict.keys()):
           working_place_unit_tag_list = self.possible_working_place_tag_dict[str(target_nexus.tag)]
+          print(f"str(target_nexus.tag)= {str(target_nexus.tag)}({str(hex(target_nexus.tag))})")
           # print(f"self.possible_working_place_nexus={self.possible_working_place_nexus}")
-          # print(f"self.possible_working_place_tag_dict={self.possible_working_place_tag_dict}")
-          # print(f"self.possible_working_place_tag_dict[target_nexus.tag]={self.possible_working_place_tag_dict[str(target_nexus.tag)]}")
+          print(f"self.possible_working_place_tag_dict={self.possible_working_place_tag_dict}")
+          print(f"self.possible_working_place_tag_dict[target_nexus.tag]={self.possible_working_place_tag_dict[str(target_nexus.tag)]}")
         else:
           working_place_unit_tag_list = []
           logger.error(f"[ID {self.log_id}] 4.1.3.0 target_nexus.tag {target_nexus.tag} not in self.possible_working_place_tag_dict.keys() {self.possible_working_place_tag_dict.keys()}")
 
         # 选择工位
-        working_place_unit_list = get_raw_unit_list_of_tags(obs, working_place_unit_tag_list)
-        working_place_unit_list_ = copy.copy(working_place_unit_list)
-        def take_tag(unit):
-          return unit.tag
-        working_place_unit_list_.sort(key=take_tag)
-        target_resource = working_place_unit_list_[0] if len(working_place_unit_list_) > 0 else None
+        # working_place_unit_list = get_raw_unit_list_of_tags(obs, working_place_unit_tag_list)
+        # working_place_unit_list_ = copy.copy(working_place_unit_list)
+        # def take_tag(unit):
+        #   return unit.tag
+        # working_place_unit_list_.sort(key=take_tag)
+        # target_resource = working_place_unit_list_[0] if len(working_place_unit_list_) > 0 else None
 
         # 相机移动
-        if target_resource is not None:
+        if False:  # target_resource is not None
           if not target_resource.is_on_screen:
               x, y = get_camera_xy(self, target_resource.x, target_resource.y)
               func_id, func_call = (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))
@@ -1017,15 +1058,17 @@ def main_agent_func2(self, obs):
 
         working_place_unit_list = get_feature_unit_list_of_tags(obs, working_place_unit_tag_list)
         working_place_unit_list_ = copy.copy(working_place_unit_list)
+        # print(f"self.possible_working_place_tag_dict = {self.possible_working_place_tag_dict}")
+        # def take_tag(unit):
+        #   return unit.tag
+        # working_place_unit_list_.sort(key=take_tag)
         # print(f"working_place_unit_list_ = {working_place_unit_list_}")
-        def take_tag(unit):
-          return unit.tag
-        working_place_unit_list_.sort(key=take_tag)
-        # random.shuffle(working_place_unit_list_)
+        random.shuffle(working_place_unit_list_)
         for unit in working_place_unit_list_:
           if unit.is_on_screen and (0 < unit.x < self.size_screen and 0 < unit.y < self.size_screen):
             # print(f"here {str(units.get_unit_type(unit.unit_type))} {unit.assigned_harvesters} {unit.ideal_harvesters}")
-            if unit.unit_type in GAS_BUILDING_TYPE and unit.alliance == features.PlayerRelative.SELF and (unit.build_progress != 100 or not unit.assigned_harvesters < unit.ideal_harvesters):
+            if unit.unit_type in GAS_BUILDING_TYPE and unit.alliance == features.PlayerRelative.SELF and \
+                (unit.build_progress != 100 or 0 < unit.ideal_harvesters < unit.assigned_harvesters):  # or not unit.assigned_harvesters < unit.ideal_harvesters
               continue
             # 从原单位去除
             for key in self.nexus_info_dict.keys():
@@ -1054,7 +1097,13 @@ def main_agent_func2(self, obs):
             self.nexus_info_dict[str(target_nexus.tag)]['num_worker_g'] = len(
               self.nexus_info_dict[str(target_nexus.tag)]['worker_g_tag_list'])
             # 将闲置工人派遣到新的工作岗位
+            nexus_info = f'unit {hex(target_nexus.tag)}({str(units.get_unit_type(target_nexus.unit_type))}) {target_nexus.x, target_nexus.y}'
+            unit_info = f'unit {hex(unit.tag)}({str(units.get_unit_type(unit.unit_type))}) {unit.x, unit.y}'
+            print(f"nexus_info = {nexus_info}")
+            print(f"resource_info = {unit_info}")
             func_id, func_call = (264, actions.FUNCTIONS.Harvest_Gather_screen('now', (unit.x, unit.y)))
+            # if self.func_id_history[-1] == 264:
+            #   func_id, func_call = (331, actions.FUNCTIONS.Move_screen('now',  (unit.x, unit.y)))
             # if self.func_id_history[-1] != 264:
             #   func_id, func_call = (264, actions.FUNCTIONS.Harvest_Gather_screen('now', (unit.x, unit.y)))
             # else:

@@ -429,17 +429,20 @@ class LLMAgent:
         with open(self.log_dir_path + f"/{self.name}/a_inp.txt", "r") as f:
           text_a = f.read()  # simulate llm response by reading text in a_inp.txt
     else:
-      if base64_images is not None and 'minimap' in base64_images.keys() and 'screen' in base64_images.keys():
-        text_a = self.client.query(text_o, base64_images=base64_images)  # Communicate with VLM
-        logger.debug(f"[ID {self.log_id}] LLMAgent {self.name}: Screen and Minimap images provided to LLM.")
-      elif base64_images is not None and 'screen' in base64_images.keys():
-        text_a = self.client.query(text_o, base64_images=base64_images)  # Communicate with VLM
-        logger.debug(f"[ID {self.log_id}] LLMAgent {self.name}: Screen Image provided to LLM.")
+      if base64_images is not None:
+        text_a = self.client.query(text_o, base64_images=base64_images)
       else:
         text_a = self.client.query(text_o)  # Communicate with LLM
         logger.debug(f"[ID {self.log_id}] LLMAgent {self.name}: No image provided to LLM.")
-
-
+      # if base64_images is not None and 'minimap' in base64_images.keys() and 'screen' in base64_images.keys():
+      #   text_a = self.client.query(text_o, base64_images=base64_images)  # Communicate with VLM
+      #   logger.debug(f"[ID {self.log_id}] LLMAgent {self.name}: Screen and Minimap images provided to LLM.")
+      # elif base64_images is not None and 'screen' in base64_images.keys():
+      #   text_a = self.client.query(text_o, base64_images=base64_images)  # Communicate with VLM
+      #   logger.debug(f"[ID {self.log_id}] LLMAgent {self.name}: Screen Image provided to LLM.")
+      # else:
+      #   text_a = self.client.query(text_o)  # Communicate with LLM
+      #   logger.debug(f"[ID {self.log_id}] LLMAgent {self.name}: No image provided to LLM.")
     logger.debug(f"[ID {self.log_id}] LLMAgent {self.name} get_text_a(): Query finished.")
     self.last_text_a_raw = text_a
     return text_a

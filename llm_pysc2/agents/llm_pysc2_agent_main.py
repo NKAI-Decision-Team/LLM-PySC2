@@ -73,7 +73,7 @@ class MainAgent(base_agent.BaseAgent):
 
   def _initialize_variables(self):
     # self.main_loop_lock = False
-    self.locks = {'main_loop': False, 'unit_grouping': False, 'worker_manage': False, 'worker_training': False, 'team_gathering': False}
+    self.locks = {'main_loop': False, 'unit_grouping': False, 'worker_manage': False, 'worker_training': False, 'team_gathering': False, 'all_auxiliary_module': False}
     self.main_loop_step_old = 0
     self.main_loop_step = 0
     self.game_time_last1 = 0
@@ -258,15 +258,25 @@ class MainAgent(base_agent.BaseAgent):
       logger.error(f"[ID {self.log_id}] Detect Possible Endless Loop !")
       logger.error(f"[ID {self.log_id}] last 20 funcs: {actions.FUNCTIONS[last_20_func[0]]}")
       time.sleep(1)
-    if safe_mode and len(set(last_7_func)) == 1 and len(last_7_func) >= 7 and 0 not in last_7_func:
-      possible_endless_loop = True
-      logger.error(f"[ID {self.log_id}] Detect Possible Endless Loop !")
-      logger.error(f"[ID {self.log_id}] last 7 funcs: {actions.FUNCTIONS[last_7_func[0]]}")
-      time.sleep(0.1)
+    # if safe_mode and self.main_loop_step > 0 and len(set(last_7_func)) == 1 and len(last_7_func) >= 7 and 0 not in last_7_func:
+    #   possible_endless_loop = True
+    #   logger.error(f"[ID {self.log_id}] Detect Possible Endless Loop !")
+    #   logger.error(f"[ID {self.log_id}] last 7 funcs: {actions.FUNCTIONS[last_7_func[0]]}")
+    #   time.sleep(0.1)
     # if safe_mode and len(self.func_id_history) > 3 and self.func_id_history[-1] == 264 and self.func_id_history[-2] == 264:
     #   possible_endless_loop = True
     #   logger.error(f"[ID {self.log_id}] Detect Possible 264 Endless Loop !")
     #   time.sleep(0.1)
+
+    # LLM decision frequency control
+    game_time_s = obs.observation.game_loop / 22.4
+    self.current_game_time = game_time_s
+    # if not self.main_loop_lock and game_time_s - self.game_time_last1 < 1 / self.config.MAX_LLM_DECISION_FREQUENCY:
+    if not self.locks['main_loop'] and self.locks['all_auxiliary_module'] and game_time_s - self.game_time_last1 < 1 / self.config.MAX_LLM_DECISION_FREQUENCY:
+      logger.warning(f"[ID {self.log_id}] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()")
+      func_id, func_call = (0, actions.FUNCTIONS.no_op())
+      self.func_id_history.append(func_id)
+      return func_call
 
     base_exist = False
     for unit in obs.observation.raw_units:
@@ -281,35 +291,37 @@ class MainAgent(base_agent.BaseAgent):
         logger.success(f"[ID {self.log_id}] main_agent_func0: Func Call {func_id} {func_call}")
         return func_call
 
-    # auto worker-training (optional)
+    # auto worker-training (optional if only concerns about combat, otherwise necessary)
     func_id, func_call = main_agent_func3(self, obs)
     if func_call is not None:
-      logger.success(f"[ID {self.log_id}] main_agent_func3: Func Call {func_id} {func_call}")
+      logger.success(f"[ID {self.log_id}] main_agent_func3 (worker-training): Func Call {func_id} {func_call}")
       return func_call
 
-    if base_exist and (not safe_mode or (safe_mode and not possible_endless_loop)):
+    if base_exist and (not safe_mode or (safe_mode and not possible_endless_loop)) and not self.locks['all_auxiliary_module']:
 
       # unit grouping, add to relevant agent.teams (necessary)
       func_id, func_call = main_agent_func1(self, obs)
       if func_call is not None:  #  and not self.locks['unit_grouping']
         if not safe_mode or not (possible_endless_loop and func_id in last_20_func):
-          logger.success(f"[ID {self.log_id}] main_agent_func1: Func Call {func_id} {func_call}")
+          logger.success(f"[ID {self.log_id}] main_agent_func1 (unit grouping): Func Call {func_id} {func_call}")
           return func_call
       self.locks['unit_grouping'] = True
 
       # auto team gathering (optional)
-      func_id, func_call = main_agent_func4(self, obs)
-      if func_call is not None and not self.locks['team_gathering']:
-        logger.success(f"[ID {self.log_id}] main_agent_func4: Func Call {func_id} {func_call}")
-        return func_call
+      if not self.locks['team_gathering']:
+        func_id, func_call = main_agent_func4(self, obs)
+        if func_call is not None:
+          logger.success(f"[ID {self.log_id}] main_agent_func4 (team gathering): Func Call {func_id} {func_call}")
+          return func_call
       self.locks['team_gathering'] = True
 
       # auto worker-management (optional)
       func_id, func_call = main_agent_func2(self, obs)
       if func_call is not None:
-        logger.success(f"[ID {self.log_id}] main_agent_func2: Func Call {func_id} {func_call}")
+        logger.success(f"[ID {self.log_id}] main_agent_func2 (worker-management): Func Call {func_id} {func_call}")
         return func_call
 
+    self.locks['all_auxiliary_module'] = True
 
     # SubAgent data update
     for agent_name in self.AGENT_NAMES:
@@ -335,15 +347,15 @@ class MainAgent(base_agent.BaseAgent):
     # critical data log
     main_agent_func_critical_data_log(self, obs)
 
-    # LLM decision frequency control
-    game_time_s = obs.observation.game_loop / 22.4
-    self.current_game_time = game_time_s
-    # if not self.main_loop_lock and game_time_s - self.game_time_last1 < 1 / self.config.MAX_LLM_DECISION_FREQUENCY:
-    if not self.locks['main_loop'] and game_time_s - self.game_time_last1 < 1 / self.config.MAX_LLM_DECISION_FREQUENCY:
-      logger.warning(f"[ID {self.log_id}] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()")
-      func_id, func_call = (0, actions.FUNCTIONS.no_op())
-      self.func_id_history.append(func_id)
-      return func_call
+    # # LLM decision frequency control
+    # game_time_s = obs.observation.game_loop / 22.4
+    # self.current_game_time = game_time_s
+    # # if not self.main_loop_lock and game_time_s - self.game_time_last1 < 1 / self.config.MAX_LLM_DECISION_FREQUENCY:
+    # if not self.locks['main_loop'] and game_time_s - self.game_time_last1 < 1 / self.config.MAX_LLM_DECISION_FREQUENCY:
+    #   logger.warning(f"[ID {self.log_id}] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()")
+    #   func_id, func_call = (0, actions.FUNCTIONS.no_op())
+    #   self.func_id_history.append(func_id)
+    #   return func_call
 
     # skip main loop if no agent enabled
     all_agent_disabled = True
@@ -359,12 +371,20 @@ class MainAgent(base_agent.BaseAgent):
     # communication and ready to enter main loop
     # if self.main_loop_lock is False:
     #   self.main_loop_lock = True
-    if self.locks['main_loop'] is False:
-      for key in self.locks.keys():
-        self.locks[key] = True
-      self.game_time_last1 = game_time_s
-      communication_info_transmission(self)
-      logger.success(f"[ID {self.log_id}] 7.0 Main Loop Lock! Ignore outer-loop actions. ")
+    if game_time_s - self.game_time_last1 > 1 / self.config.MAX_LLM_DECISION_FREQUENCY:
+      if self.locks['main_loop'] is False:
+        for key in self.locks.keys():
+          self.locks[key] = True
+        self.game_time_last1 = game_time_s
+        communication_info_transmission(self)
+        logger.success(f"[ID {self.log_id}] 7.0.0 Main Loop Lock! Ignore outer-loop actions. ")
+      else:
+        pass
+    else:
+      logger.warning(f"[ID {self.log_id}] 7.0.1 Reach MAX_LLM_DECISION_FREQUENCY! return no_op(). ")
+      func_id, func_call = (0, actions.FUNCTIONS.no_op())
+      self.func_id_history.append(func_id)
+      return func_call
 
 
     # Main Loop

@@ -37,9 +37,9 @@ def gpt_query_runtime(self, event):
   self.query_token_in = llm_response.usage.prompt_tokens
   self.query_token_out = llm_response.usage.completion_tokens
   self.llm_response = llm_response.choices[0].message.content
-  print(self.query_token_in)
-  print(self.query_token_out)
-  print(self.llm_response)
+  # print(self.query_token_in)
+  # print(self.query_token_out)
+  # print(self.llm_response)
 
 
 class GptClient:

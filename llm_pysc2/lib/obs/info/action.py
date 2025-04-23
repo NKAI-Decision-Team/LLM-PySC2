@@ -203,9 +203,9 @@ def get_valid_actions_build(agent) -> (list, str):
         valid_actions_info += f"\n\t\t<{action['name']}({arg_to_show})> \n\t\t\t cost: {cost}{note}"
         # valid_actions_info += f"{building_name} {building_types_text}"
       if func_id in [actions.FUNCTIONS.Build_Nexus_screen.id] and valid:
-        valid_actions_info += ', note: Important Building!'
+        valid_actions_info += ', note: Important Building! This is base building, you should build it to expand your economy.'
       if func_id in [actions.FUNCTIONS.Build_Nexus_screen.id] and partial_valid and not valid:
-        partial_valid_actions_info += ', note: Important Building!'
+        partial_valid_actions_info += ', note: Important Building! This is base building, you should build it to expand your economy.'
     else:
       # valid_actions.append(action['name'])
       basic_actions_info += f"\n\t\t<{action['name']}({arg_to_show})> "

@@ -834,14 +834,15 @@ def main_agent_func2(self, obs):
     if nexus.alliance == features.PlayerRelative.SELF and nexus.unit_type in BASE_BUILDING_TYPE and nexus.build_progress == 100:
       nexus_info = self.nexus_info_dict[str(nexus.tag)]
       if nexus_info['num_worker_g_max'] == 0:
-        if nexus_info['nexus'] is not None and nexus_info['nexus'].assigned_harvesters < nexus_info['nexus'].ideal_harvesters:
+        if nexus_info['nexus'] is not None and nexus_info['nexus'].assigned_harvesters < nexus_info['nexus'].ideal_harvesters and nexus_info['num_worker_m'] < nexus_info['num_worker_m_max']:
           working_place_unit_tag_list += nexus_info['nearby_mineral_tag_list']
+          print(f"here {nexus_info['nexus'].assigned_harvesters, nexus_info['nexus'].ideal_harvesters}")
 
       elif nexus_info['num_worker_m_max'] == 0:
         if nexus_info['num_worker_g'] < nexus_info['num_worker_g_max']:
-          if nexus_info['gas_building_1'] is not None and nexus_info['gas_building_1'].assigned_harvesters < nexus_info['gas_building_1'].ideal_harvesters:
+          if nexus_info['gas_building_1'] is not None and nexus_info['gas_building_1'].assigned_harvesters < nexus_info['gas_building_1'].ideal_harvesters and len(nexus_info['worker_g1_tag_list']) < 3:
             working_place_unit_tag_list.append(nexus_info['gas_building_1'].tag)
-          elif nexus_info['gas_building_2'] is not None and nexus_info['gas_building_2'].assigned_harvesters < nexus_info['gas_building_2'].ideal_harvesters:
+          elif nexus_info['gas_building_2'] is not None and nexus_info['gas_building_2'].assigned_harvesters < nexus_info['gas_building_2'].ideal_harvesters and len(nexus_info['worker_g2_tag_list']) < 3 and nexus_info['num_worker_g_max'] == 6:
             working_place_unit_tag_list.append(nexus_info['gas_building_2'].tag)
           else:
             pass
@@ -962,27 +963,51 @@ def main_agent_func2(self, obs):
           working_place_unit_tag_list = []
           logger.error(f"[ID {self.log_id}] 4.1.3.0 target_nexus.tag {target_nexus.tag} not in self.possible_working_place_tag_dict.keys() {self.possible_working_place_tag_dict.keys()}")
 
-        # 相机移动到主矿
-        if not target_nexus.is_on_screen:
-            x, y = get_camera_xy(self, target_nexus.x, target_nexus.y)
-            func_id, func_call = (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))
-            logger.info(f"[ID {self.log_id}] 4.1.3 Func Call: {func_call}")
-            self.func_id_history.append(func_id)
-            return func_id, func_call
-        if target_nexus.is_on_screen:
-            unit = get_feature_unit_list_of_tags(obs, target_nexus.tag)[0]
-            if not (0.25 * self.size_screen < unit.x < 0.75 * self.size_screen and 0.25 * self.size_screen < unit.y < 0.75 * self.size_screen):
-                x, y = get_camera_xy(self, target_nexus.x, target_nexus.y)
-                func_id, func_call = (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))
-                logger.info(f"[ID {self.log_id}] 4.1.4 Func Call: {func_call}")
-                self.func_id_history.append(func_id)
-                return func_id, func_call
+        # 选择工位
+        working_place_unit_list = get_raw_unit_list_of_tags(obs, working_place_unit_tag_list)
+        working_place_unit_list_ = copy.copy(working_place_unit_list)
+        def take_tag(unit):
+          return unit.tag
+        working_place_unit_list_.sort(key=take_tag)
+        target_resource = working_place_unit_list_[0] if len(working_place_unit_list_) > 0 else None
 
         # 相机移动
-        working_place_unit_list = get_raw_unit_list_of_tags(obs, working_place_unit_tag_list)
-        if not isinstance(working_place_unit_tag_list, list) or not isinstance(working_place_unit_list, list) and len(working_place_unit_tag_list) == 0 or len(working_place_unit_list) == 0:
-          print(f"working_place_unit_tag_list={working_place_unit_tag_list}")
-          print(f"working_place_unit_list={working_place_unit_list}")
+        if target_resource is not None:
+          if not target_resource.is_on_screen:
+              x, y = get_camera_xy(self, target_resource.x, target_resource.y)
+              func_id, func_call = (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))
+              logger.info(f"[ID {self.log_id}] 4.1.3.1 Func Call: {func_call}")
+              self.func_id_history.append(func_id)
+              return func_id, func_call
+          if target_resource.is_on_screen:
+              unit = get_feature_unit_list_of_tags(obs, target_resource.tag)[0]
+              if not (0.25 * self.size_screen < unit.x < 0.75 * self.size_screen and 0.25 * self.size_screen < unit.y < 0.75 * self.size_screen):
+                  x, y = get_camera_xy(self, target_resource.x, target_resource.y)
+                  func_id, func_call = (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))
+                  logger.info(f"[ID {self.log_id}] 4.1.3.2 Func Call: {func_call}")
+                  self.func_id_history.append(func_id)
+                  return func_id, func_call
+        else:
+          # 相机移动到主矿
+          if not target_nexus.is_on_screen:
+              x, y = get_camera_xy(self, target_nexus.x, target_nexus.y)
+              func_id, func_call = (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))
+              logger.info(f"[ID {self.log_id}] 4.1.4.1 Func Call: {func_call}")
+              self.func_id_history.append(func_id)
+              return func_id, func_call
+          if target_nexus.is_on_screen:
+              unit = get_feature_unit_list_of_tags(obs, target_nexus.tag)[0]
+              if not (0.25 * self.size_screen < unit.x < 0.75 * self.size_screen and 0.25 * self.size_screen < unit.y < 0.75 * self.size_screen):
+                  x, y = get_camera_xy(self, target_nexus.x, target_nexus.y)
+                  func_id, func_call = (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))
+                  logger.info(f"[ID {self.log_id}] 4.1.4.2 Func Call: {func_call}")
+                  self.func_id_history.append(func_id)
+                  return func_id, func_call
+
+        # working_place_unit_list = get_raw_unit_list_of_tags(obs, working_place_unit_tag_list)
+        # if not isinstance(working_place_unit_tag_list, list) or not isinstance(working_place_unit_list, list) and len(working_place_unit_tag_list) == 0 or len(working_place_unit_list) == 0:
+        #   print(f"working_place_unit_tag_list={working_place_unit_tag_list}")
+        #   print(f"working_place_unit_list={working_place_unit_list}")
         # target_working_position = working_place_unit_list[0]
         # func_id, func_call = get_camera_func_smart(self, obs, target_working_position.tag)
         # if func_id == 573:
@@ -990,7 +1015,6 @@ def main_agent_func2(self, obs):
         #   self.func_id_history.append(func_id)
         #   return func_id, func_call
 
-        # 选择工位
         working_place_unit_list = get_feature_unit_list_of_tags(obs, working_place_unit_tag_list)
         working_place_unit_list_ = copy.copy(working_place_unit_list)
         # print(f"working_place_unit_list_ = {working_place_unit_list_}")

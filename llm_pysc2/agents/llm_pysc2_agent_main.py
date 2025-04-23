@@ -263,10 +263,10 @@ class MainAgent(base_agent.BaseAgent):
       logger.error(f"[ID {self.log_id}] Detect Possible Endless Loop !")
       logger.error(f"[ID {self.log_id}] last 7 funcs: {actions.FUNCTIONS[last_7_func[0]]}")
       time.sleep(0.1)
-    if safe_mode and len(self.func_id_history) > 2 and self.func_id_history[-1] == 264 and self.func_id_history[-2] == 264:
-      possible_endless_loop = True
-      logger.error(f"[ID {self.log_id}] Detect Possible 264 Endless Loop !")
-      time.sleep(0.1)
+    # if safe_mode and len(self.func_id_history) > 3 and self.func_id_history[-1] == 264 and self.func_id_history[-2] == 264:
+    #   possible_endless_loop = True
+    #   logger.error(f"[ID {self.log_id}] Detect Possible 264 Endless Loop !")
+    #   time.sleep(0.1)
 
     base_exist = False
     for unit in obs.observation.raw_units:
@@ -281,6 +281,12 @@ class MainAgent(base_agent.BaseAgent):
         logger.success(f"[ID {self.log_id}] main_agent_func0: Func Call {func_id} {func_call}")
         return func_call
 
+    # auto worker-training (optional)
+    func_id, func_call = main_agent_func3(self, obs)
+    if func_call is not None:
+      logger.success(f"[ID {self.log_id}] main_agent_func3: Func Call {func_id} {func_call}")
+      return func_call
+
     if base_exist and (not safe_mode or (safe_mode and not possible_endless_loop)):
 
       # unit grouping, add to relevant agent.teams (necessary)
@@ -291,26 +297,19 @@ class MainAgent(base_agent.BaseAgent):
           return func_call
       self.locks['unit_grouping'] = True
 
-      # auto worker-management (optional)
-      func_id, func_call = main_agent_func2(self, obs)
-      if func_call is not None and not self.locks['worker_manage']:
-        logger.success(f"[ID {self.log_id}] main_agent_func2: Func Call {func_id} {func_call}")
-        return func_call
-      self.locks['worker_manage'] = True
-
-      # auto worker-training (optional)
-      func_id, func_call = main_agent_func3(self, obs)
-      if func_call is not None and not self.locks['worker_training']:
-        logger.success(f"[ID {self.log_id}] main_agent_func3: Func Call {func_id} {func_call}")
-        return func_call
-      self.locks['worker_training'] = True
-
       # auto team gathering (optional)
       func_id, func_call = main_agent_func4(self, obs)
       if func_call is not None and not self.locks['team_gathering']:
         logger.success(f"[ID {self.log_id}] main_agent_func4: Func Call {func_id} {func_call}")
         return func_call
       self.locks['team_gathering'] = True
+
+      # auto worker-management (optional)
+      func_id, func_call = main_agent_func2(self, obs)
+      if func_call is not None:
+        logger.success(f"[ID {self.log_id}] main_agent_func2: Func Call {func_id} {func_call}")
+        return func_call
+
 
     # SubAgent data update
     for agent_name in self.AGENT_NAMES:

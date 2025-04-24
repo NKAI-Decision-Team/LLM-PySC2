@@ -258,11 +258,11 @@ class MainAgent(base_agent.BaseAgent):
       logger.error(f"[ID {self.log_id}] Detect Possible Endless Loop !")
       logger.error(f"[ID {self.log_id}] last 20 funcs: {actions.FUNCTIONS[last_20_func[0]]}")
       time.sleep(1)
-    # if safe_mode and self.main_loop_step > 0 and len(set(last_7_func)) == 1 and len(last_7_func) >= 7 and 0 not in last_7_func:
-    #   possible_endless_loop = True
-    #   logger.error(f"[ID {self.log_id}] Detect Possible Endless Loop !")
-    #   logger.error(f"[ID {self.log_id}] last 7 funcs: {actions.FUNCTIONS[last_7_func[0]]}")
-    #   time.sleep(0.1)
+    if safe_mode and self.main_loop_step > 0 and len(set(last_7_func)) == 1 and len(last_7_func) >= 7 and 0 not in last_7_func:
+      possible_endless_loop = True
+      logger.error(f"[ID {self.log_id}] Detect Possible Endless Loop !")
+      logger.error(f"[ID {self.log_id}] last 7 funcs: {actions.FUNCTIONS[last_7_func[0]]}")
+      time.sleep(0.1)
     # if safe_mode and len(self.func_id_history) > 3 and self.func_id_history[-1] == 264 and self.func_id_history[-2] == 264:
     #   possible_endless_loop = True
     #   logger.error(f"[ID {self.log_id}] Detect Possible 264 Endless Loop !")
@@ -272,7 +272,7 @@ class MainAgent(base_agent.BaseAgent):
     game_time_s = obs.observation.game_loop / 22.4
     self.current_game_time = game_time_s
     # if not self.main_loop_lock and game_time_s - self.game_time_last1 < 1 / self.config.MAX_LLM_DECISION_FREQUENCY:
-    if not self.locks['main_loop'] and self.locks['all_auxiliary_module'] and game_time_s - self.game_time_last1 < 1 / self.config.MAX_LLM_DECISION_FREQUENCY:
+    if self.main_loop_step > 0 and not self.locks['main_loop'] and self.locks['all_auxiliary_module'] and game_time_s - self.game_time_last1 < 1 / self.config.MAX_LLM_DECISION_FREQUENCY:
       logger.warning(f"[ID {self.log_id}] Reach MAX_LLM_DECISION_FREQUENCY! return no_op()")
       func_id, func_call = (0, actions.FUNCTIONS.no_op())
       self.func_id_history.append(func_id)
@@ -375,7 +375,7 @@ class MainAgent(base_agent.BaseAgent):
       if self.locks['main_loop'] is False:
         for key in self.locks.keys():
           self.locks[key] = True
-        self.game_time_last1 = game_time_s
+        # self.game_time_last1 = game_time_s
         communication_info_transmission(self)
         logger.success(f"[ID {self.log_id}] 7.0.0 Main Loop Lock! Ignore outer-loop actions. ")
       else:
@@ -726,6 +726,7 @@ class MainAgent(base_agent.BaseAgent):
         for key in self.locks.keys():
           self.locks[key] = False
         self.game_time_last2 = game_time_s
+        self.game_time_last1 = game_time_s
         func_id, func_call = (0, actions.FUNCTIONS.no_op())
         self.func_id_history.append(func_id)
         return func_call

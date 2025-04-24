@@ -46,7 +46,7 @@ def get_func(agent, obs):  # 该函数需要将当前text-pysc2动作对应的�
     action = add_func_for_easy_build(agent, obs, action)
     action = add_func_for_easy_control(agent, obs, action)
     action = add_func_for_easy_warp(agent, obs, action)
-    # action = add_func_for_build(agent, obs, action)
+    action = add_func_for_build(agent, obs, action)
     agent.func_list = action['func']
     agent.curr_action_valid = True
     text_action = f'<{agent.curr_action_name}({agent.curr_action_args})>'
@@ -110,6 +110,8 @@ def get_func(agent, obs):  # 该函数需要将当前text-pysc2动作对应的�
             pysc2_arg, func_valid = get_arg_screen_build(obs, llm_pysc2_arg, agent.size_screen, agent.curr_action_name)  # 建筑的屏幕坐标合法性判断
           elif func.args[i].name == 'screen' and 'Build' not in func.name:  # 无限制
             pysc2_arg, func_valid = get_arg_screen(obs, llm_pysc2_arg, agent.size_screen, agent.curr_action_name)  # 屏幕坐标合法性判断
+          elif func_id == 573:
+            pysc2_arg, func_valid = get_arg_world(obs, llm_pysc2_arg, agent.world_x_offset, agent.world_y_offset, agent.world_range)  # tag转全局坐标
           else:
             pysc2_arg = 'WrongType-Arg'  # 错误处理，接受func_valid = False，使用no_op代替该动作
         elif isinstance(llm_pysc2_arg, int):
@@ -126,7 +128,7 @@ def get_func(agent, obs):  # 该函数需要将当前text-pysc2动作对应的�
           # print(f"xxx conditions = {func_id, agent.curr_action_name, agent.curr_action_name.split('_')[1], builder_selected}")
           if func.args[i].name == 'screen' and 'Build' in func.name:  # 建造  and agent.config.ENABLE_EASY_BUILD
             pysc2_arg, func_valid = get_arg_screen_tag_build(
-              obs, llm_pysc2_arg, agent.size_screen, agent.curr_action_name)  # 建筑的屏幕坐标合法性判断
+              obs, llm_pysc2_arg, agent.size_screen, agent.curr_action_name, agent.config.ENABLE_EASY_BUILD)  # 建筑的屏幕坐标合法性判断
           elif func_id == 573 and ('Build_' in agent.curr_action_name or 'Lock_' in agent.curr_action_name) and \
               agent.curr_action_name.split('_')[1] in BASE_BUILDING_NAMES and builder_selected and not is_builder_tag:
             pysc2_arg, func_valid = get_arg_world_tag_base_building(

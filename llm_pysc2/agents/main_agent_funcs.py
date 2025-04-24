@@ -138,8 +138,7 @@ def get_new_unit_agent(self, obs, unit) -> str:  # 编队逻辑函数
     if unit.unit_type in WORKER_TYPE:
       if 'CombatGroup' in agent_name and len(self.agents[agent_name].unit_tag_list) < 1:
         return agent_name  # 侦察农民
-      if agent_name == 'Builder' and len(
-          self.agents[agent_name].unit_tag_list) < obs.observation.player.food_workers / 30:
+      if agent_name == 'Builder' and len(self.agents[agent_name].unit_tag_list) < 1:  # len(self.agents[agent_name].unit_tag_list) < obs.observation.player.food_workers / 30:
         return agent_name  # 建造农民
       continue
     if agent_name == 'Defender' and len(self.agents[agent_name].unit_tag_list) < obs.observation.player.food_army / 15:
@@ -911,14 +910,14 @@ def main_agent_func2(self, obs):
       idle_worker_r, idle_worker_f = None, None
       for unit in obs.observation.raw_units:
         if unit.unit_type in WORKER_TYPE and unit.alliance == features.PlayerRelative.SELF and \
-            unit.order_id_0 not in [356, 357, 358, 359, 102, 103, 154, 360, 361, 362]:
+            unit.order_id_0 not in [356, 357, 358, 359, 102, 103, 154, 360, 361, 362, 543]:
           idle_worker_r = unit
           idle_worker_exist = True
           if unit.is_selected:
             idle_worker_selected = True
       for unit in obs.observation.feature_units:
         if unit.unit_type in WORKER_TYPE and unit.alliance == features.PlayerRelative.SELF and \
-            unit.order_id_0 not in [356, 357, 358, 359, 102, 103, 154, 360, 361, 362] and \
+            unit.order_id_0 not in [356, 357, 358, 359, 102, 103, 154, 360, 361, 362, 543] and \
             unit.is_on_screen and (0 < unit.x < self.size_screen and 0 < unit.y < self.size_screen):
           idle_worker_onscreen = True
           idle_worker_f = unit
@@ -956,23 +955,24 @@ def main_agent_func2(self, obs):
         self.func_id_history.append(func_id)
         return func_id, func_call
 
-      if len(obs.observation.single_select) == 1 and \
-          obs.observation.single_select[0].unit_type in WORKER_TYPE and \
-          obs.observation.single_select[0].player_relative == features.PlayerRelative.SELF and \
-          6 in list(self.func_id_history):
-        worker = None
-        for unit in obs.observation.feature_units:
-          if unit.is_selected:
-            worker = unit
-        for agent_name in self.AGENT_NAMES:  # workers in Builder and CombatGroup
-          if ('CombatGroup' in agent_name or 'Builder' in agent_name) and \
-              worker is not None and worker.tag in self.agents[agent_name].unit_tag_list_history and self.agents[agent_name].enable:
-            func_id, func_call = (274, actions.FUNCTIONS.HoldPosition_quick('now'))  # 站住即可，不要去采集资源
-            logger.info(f"[ID {self.log_id}] 4.1.2 Func Call: {func_call}")
-            func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()
-            func_id = func_id if func_id in obs.observation.available_actions else 0
-            self.func_id_history.append(func_id)
-            return func_id, func_call
+      # if len(obs.observation.single_select) == 1 and \
+      #     obs.observation.single_select[0].unit_type in WORKER_TYPE and \
+      #     obs.observation.single_select[0].player_relative == features.PlayerRelative.SELF and \
+      #     6 in list(self.func_id_history):
+      worker = None
+      for unit in obs.observation.feature_units:
+        if unit.is_selected:
+          worker = unit
+      for agent_name in self.AGENT_NAMES:  # workers in Builder and CombatGroup
+        if ('CombatGroup' in agent_name or 'Builder' in agent_name) and \
+            worker is not None and worker.tag in self.agents[agent_name].unit_tag_list_history + self.agents[agent_name].unit_tag_list and self.agents[agent_name].enable:
+          func_id, func_call = (274, actions.FUNCTIONS.HoldPosition_quick('now'))  # 站住即可，不要去采集资源
+          logger.info(f"[ID {self.log_id}] 4.1.2 Func Call: {func_call}")
+          func_call = func_call if func_id in obs.observation.available_actions else actions.FUNCTIONS.no_op()
+          func_id = func_id if func_id in obs.observation.available_actions else 0
+          self.func_id_history.append(func_id)
+          return func_id, func_call
+
       # 选择有工位的、最近的主矿
       min_dist = 999
       min_dist_nexus_i = 0
@@ -1005,15 +1005,16 @@ def main_agent_func2(self, obs):
           logger.error(f"[ID {self.log_id}] 4.1.3.0 target_nexus.tag {target_nexus.tag} not in self.possible_working_place_tag_dict.keys() {self.possible_working_place_tag_dict.keys()}")
 
         # 选择工位
-        # working_place_unit_list = get_raw_unit_list_of_tags(obs, working_place_unit_tag_list)
-        # working_place_unit_list_ = copy.copy(working_place_unit_list)
-        # def take_tag(unit):
-        #   return unit.tag
-        # working_place_unit_list_.sort(key=take_tag)
-        # target_resource = working_place_unit_list_[0] if len(working_place_unit_list_) > 0 else None
+        working_place_unit_list = get_raw_unit_list_of_tags(obs, working_place_unit_tag_list)
+        working_place_unit_list_ = copy.copy(working_place_unit_list)
+        def take_tag(unit):
+          return unit.tag
+        working_place_unit_list_.sort(key=take_tag)
+        random.shuffle(working_place_unit_list_)
+        target_resource = working_place_unit_list_[0] if len(working_place_unit_list_) > 0 else None
 
         # 相机移动
-        if False:  # target_resource is not None
+        if True:  # target_resource is not None
           if not target_resource.is_on_screen:
               x, y = get_camera_xy(self, target_resource.x, target_resource.y)
               func_id, func_call = (573, actions.FUNCTIONS.llm_pysc2_move_camera((x, y)))

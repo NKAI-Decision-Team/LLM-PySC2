@@ -33,6 +33,15 @@ def get_arg_world_tag(obs, tag: int, x_offset, y_offset, world_range) -> (tuple,
   return f'cannot find unit {tag}', False
 
 
+def get_arg_world(obs, world: list, x_offset, y_offset, world_range) -> (tuple, bool):  # 获取指定tag单位的世界坐标
+  if isinstance(world, list) and len(world) == 2 and isinstance(world[0], (int, float)) and isinstance(world[1],(int, float)):
+    x = world[0]
+    y = world[1]
+    # there is no need for Move_Minimap action due to pretreatment
+    return (x, y), True
+  return f'wrong world position={world}', False
+
+
 def get_arg_minimap_here(obs, size_minimap, action_name) -> (tuple, bool):
   arr = obs.observation['feature_minimap']['camera']
   idx = np.nonzero(arr)  # 获取特征图上非零值的坐标

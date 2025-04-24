@@ -16,7 +16,6 @@
 from llm_pysc2.lib.action.utils import find_unit_type_the_func_belongs_to
 from llm_pysc2.lib.action.target import *
 
-
 from pysc2.lib import units, actions, features, buffs, upgrades
 from pysc2.lib.actions import FUNCTIONS as F
 
@@ -27,31 +26,68 @@ import math
 import re
 
 
+def get_camera_xy(self, raw_x, raw_y):
+  x = max(0, raw_x + self.world_x_offset)
+  y = max(0, self.world_range - raw_y + self.world_y_offset)
+  return x, y
+
+
 def add_func_for_build(self, obs, action):
-  return action
+  action_name = action['name']
+  action_arg = action['arg']
+  action_func = action['func']
 
-  # action_name = action['name']
-  # action_arg = action['arg']
-  # action_func = action['func']
-  # if self.config.ENABLE_EASY_BUILD:
-  #   return action
-  # if (not 'Build_' in action_name) or ('Near' not in action_name and 'Screen' not in action_name):
-  #   return action
-  # if not (len(action['func'][0][2]) == 2 and len(action['func'][0][2][1]) == 2):
-  #   return action
-  # print(self.size_screen)
-  # print(f"add_func_for_build(): screen = action['func'][0][2][1] = {action['func'][0][2][1]}")
-  # screen = action['func'][0][2][1]
-  # worker_tag = tag_for_closest_screen_worker(obs, screen, self.size_screen)
-  #
-  # if worker_tag is not None:
-  #   full_shape_action = {'name': action_name, 'arg': [], 'func':
-  #     [(3, F.select_rect, ['select', int(worker_tag), int(worker_tag)]),
-  #      (action['func'][0][0], action['func'][0][1], action['func'][0][2])]}
-  # else:
+  if self.name != 'Builder':
+    return action
+  if self.config.ENABLE_EASY_BUILD:
+    return action
+  print(f"add_func_for_build(): {action_name}")
+  if not (('Build_' in action_name or 'Lock_' in action_name) and ('Near' in action_name or 'Screen' in action_name)):
+    return action
+  # if not (len(action['func'][-1][2]) == 2 and isinstance(action['func'][-1][2][1], (str, list))):
   #   return action
 
-  return full_shape_action
+  logger.debug(f"[ID {self.log_id}] Agent {self.name}, add_func_for_build()1: {action['name']} screen = action['func'][-1][2] = {action['func'][-1][2]}")
+  logger.debug(f"[ID {self.log_id}] Agent {self.name}, add_func_for_build()2: {self.teams[0]['pos']}")
+
+  x, y, current_unit_tag, worker_tag = None, None, None, None
+  for unit in obs.observation.raw_units:
+    if unit.unit_type in BUILDER_TYPE and unit.alliance == features.PlayerRelative.SELF and unit.is_selected:
+      current_unit_tag = unit.tag
+  logger.debug(f"[ID {self.log_id}] Agent {self.name}, add_func_for_build()3: {worker_tag, current_unit_tag, x, y}")
+  if len(self.teams) > 0 and len(self.teams[0]['pos']) > 0 and len(self.teams[0]['pos'][0]) == 2:
+    team = self.teams[0]
+    x, y = team['pos'][0][0], team['pos'][0][1]
+  # worker_tag = tag_for_closest_screen_worker(obs, screen, self.size_screen, except_tags=[current_unit_tag])
+  worker_tag = tag_for_closest_worker(obs, current_unit_tag)
+  logger.debug(f"[ID {self.log_id}] Agent {self.name}, add_func_for_build()4: {worker_tag, current_unit_tag, x, y}")
+
+  if None not in [worker_tag, current_unit_tag, x, y]:
+    # full_shape_action = {'name': action_name, 'arg': [], 'func':
+    #   [(3, F.select_rect, ['select', int(worker_tag), int(worker_tag)]),
+    #    (action['func'][0][0], action['func'][0][1], action['func'][0][2])]}
+    if 'Screen' in action_name:
+      logger.debug(f"[ID {self.log_id}] Agent {self.name}, add_func_for_build()5: try to call for a builder worker to <Build_XXX_Screen(screen)>")
+      full_shape_action = {'name': action_name, 'arg': [], 'func':
+        [(573, F.llm_pysc2_move_camera, [int(worker_tag)]),
+         (573, F.llm_pysc2_move_camera, [int(worker_tag)]),
+         (3, F.select_rect, ['select', int(worker_tag), int(worker_tag)]),  # (2, F.select_point, ['select', int(worker_tag)]),
+         (573, F.llm_pysc2_move_camera, [[x, y]]),
+         (573, F.llm_pysc2_move_camera, [[x, y]])] + action['func']}
+      return full_shape_action
+    elif 'Near' in action_name:
+      logger.debug(f"[ID {self.log_id}] Agent {self.name}, add_func_for_build()6: try to call for a builder worker to <Build_XXX_Near(tag)>")
+      full_shape_action = {'name': action_name, 'arg': [], 'func':
+        [(573, F.llm_pysc2_move_camera, [int(worker_tag)]),
+         (573, F.llm_pysc2_move_camera, [int(worker_tag)]),
+         (3, F.select_rect, ['select', int(worker_tag), int(worker_tag)])] + action['func']}
+      return full_shape_action
+    else:
+      return action
+
+  else:
+    return action
+
 
 def add_func_for_easy_build(self, obs, action):
   action_name = action['name']

@@ -153,7 +153,7 @@ def tag_for_closest_worker(obs, tag, mining_only=True):
   target_unit = None
   worker_list, worker_pos_list = [], []
   for unit in obs.observation.raw_units:
-    if unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100:
+    if unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100 and unit.tag != tag:
       if unit.unit_type in WORKER_TYPE:
         if mining_only and unit.order_id_0 in [356, 357, 358, 359, 102, 103, 154, 360, 361, 362]:
           worker_list.append(unit)
@@ -171,13 +171,14 @@ def tag_for_closest_worker(obs, tag, mining_only=True):
   tag_for_worker = None if d_min == 0 else worker_list[index_min].tag
   return tag_for_worker
 
-def tag_for_closest_screen_worker(obs, screen, size_screen, mining_only=True):
+def tag_for_closest_screen_worker(obs, screen, size_screen, mining_only=True, except_tags=None):
   worker_list, worker_pos_list = [], []
   down_bound, up_bound = 0.1 * size_screen, 0.9 * size_screen
+  except_tags = [] if except_tags is None else except_tags
   for unit in obs.observation.feature_units:
     if not unit.is_on_screen or not (down_bound < unit.x < up_bound and down_bound < unit.y < up_bound):
       continue
-    if unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100:
+    if unit.alliance == features.PlayerRelative.SELF and unit.build_progress == 100 and unit.tag not in except_tags:
       if unit.unit_type in WORKER_TYPE:
         if mining_only and unit.order_id_0 in [356, 357, 358, 359, 102, 103, 154, 360, 361, 362]:
           worker_list.append(unit)

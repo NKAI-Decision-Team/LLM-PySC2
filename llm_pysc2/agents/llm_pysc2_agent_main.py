@@ -115,7 +115,7 @@ class MainAgent(base_agent.BaseAgent):
     self.unit_uid_appear = list()
     self.unit_uid_total = list()
     self.unit_disappear_steps = dict()
-    # self.unit_tag_builder = list()
+    self.unit_tag_builder = list()
     # self.unit_tag_worker_special = list()
 
     # self.possible_disappear_unit_list = list()
@@ -321,7 +321,8 @@ class MainAgent(base_agent.BaseAgent):
         logger.success(f"[ID {self.log_id}] main_agent_func2 (worker-management): Func Call {func_id} {func_call}")
         return func_call
 
-    self.locks['all_auxiliary_module'] = True
+    if not possible_endless_loop:
+      self.locks['all_auxiliary_module'] = True
 
     # SubAgent data update
     for agent_name in self.AGENT_NAMES:

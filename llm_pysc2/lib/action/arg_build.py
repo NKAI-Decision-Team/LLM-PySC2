@@ -23,11 +23,11 @@ import math
 
 
 
-def get_arg_screen_tag_build(obs, tag: int, size_screen, action_name) -> (tuple, bool):
+def get_arg_screen_tag_build(obs, tag: int, size_screen, action_name, easy_build=True) -> (tuple, bool):
 
-  if action_name == 'Build_Nexus' or action_name == 'Build_Hatchery' or action_name == 'Build_CommandCenter':
+  if'Build_Nexus' in action_name or 'Build_Hatchery' in action_name or 'Build_CommandCenter' in action_name:
     pysc2_arg, func_valid = get_arg_screen_tag_base_building(obs, tag, size_screen, action_name)
-  elif action_name == 'Build_Assimilator' or action_name == 'Build_Refinery' or action_name == 'Build_Extractor':
+  elif 'Build_Assimilator' in action_name or 'Build_Refinery' in action_name or 'Build_Extractor' in action_name:
     pysc2_arg, func_valid = get_arg_screen_tag_gas_building(obs, tag, size_screen, action_name)
   else:
     screen, unit_type = None, None
@@ -36,7 +36,7 @@ def get_arg_screen_tag_build(obs, tag: int, size_screen, action_name) -> (tuple,
         screen = [float(unit.x), float(unit.y)]
         unit_type = unit.unit_type
     # this func only called in easy build mode
-    pysc2_arg, func_valid = get_arg_screen_build(obs, screen, size_screen, action_name, easy_build=True, tag=tag)
+    pysc2_arg, func_valid = get_arg_screen_build(obs, screen, size_screen, action_name, easy_build, tag=tag)
   if func_valid:
     return pysc2_arg, func_valid
   else:
@@ -47,7 +47,7 @@ def get_arg_screen_tag_build(obs, tag: int, size_screen, action_name) -> (tuple,
 def get_arg_screen_build(obs, screen: list, size_screen, action_name, easy_build=False, tag=None, max_retry=144) -> (tuple, bool):  # 标准建造，校验地点和建造条件
   pos00 = [0, 0]
   if easy_build:
-    building_name = action_name.split('Build_')[1]
+    building_name = action_name.split('_')[1]
     building_size = find_building_size(building_name)
     for unit in obs.observation.raw_units:
       if tag is not None and unit.tag == tag:

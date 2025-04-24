@@ -278,10 +278,13 @@ class MainAgent(base_agent.BaseAgent):
       self.func_id_history.append(func_id)
       return func_call
 
-    base_exist = False
+    base_exist, worker_exist = False, False
     for unit in obs.observation.raw_units:
       if unit.unit_type in BASE_BUILDING_TYPE and unit.alliance == features.PlayerRelative.SELF:
         base_exist = True
+      if unit.unit_type in WORKER_TYPE and unit.alliance == features.PlayerRelative.SELF:
+        worker_exist = True
+      if base_exist and worker_exist:
         break
 
     # initial steps and camera calibration (necessary)
@@ -292,10 +295,13 @@ class MainAgent(base_agent.BaseAgent):
         return func_call
 
     # auto worker-training (optional if only concerns about combat, otherwise necessary)
-    func_id, func_call = main_agent_func3(self, obs)
-    if func_call is not None:
-      logger.success(f"[ID {self.log_id}] main_agent_func3 (worker-training): Func Call {func_id} {func_call}")
-      return func_call
+    if base_exist:
+      func_id, func_call = main_agent_func3(self, obs)
+      if func_call is not None:
+        logger.success(f"[ID {self.log_id}] main_agent_func3 (worker-training): Func Call {func_id} {func_call}")
+        return func_call
+    else:
+      logger.error(f"[ID {self.log_id}] it seems that base do not exist? is it the last step?")
 
     if base_exist and (not safe_mode or (safe_mode and not possible_endless_loop)) and not self.locks['all_auxiliary_module']:
 
@@ -316,10 +322,13 @@ class MainAgent(base_agent.BaseAgent):
       self.locks['team_gathering'] = True
 
       # auto worker-management (optional)
-      func_id, func_call = main_agent_func2(self, obs)
-      if func_call is not None:
-        logger.success(f"[ID {self.log_id}] main_agent_func2 (worker-management): Func Call {func_id} {func_call}")
-        return func_call
+      if worker_exist:
+        func_id, func_call = main_agent_func2(self, obs)
+        if func_call is not None:
+          logger.success(f"[ID {self.log_id}] main_agent_func2 (worker-management): Func Call {func_id} {func_call}")
+          return func_call
+      else:
+        logger.error(f"[ID {self.log_id}] it seems that worker do not exist? is it the last step?")
 
     if not possible_endless_loop:
       self.locks['all_auxiliary_module'] = True

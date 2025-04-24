@@ -205,7 +205,7 @@ class ProtossAgentConfig(AgentConfig):
           'basic_prompt': self.basic_prompt,
           'translator_o': 'builder',
           'translator_a': self.translator_a,
-          'img_names': ['rgb_minimap', 'buildable', 'power'],  # 'rgb_screen', , 'pathable'
+          'img_names': ['rgb_screen', 'rgb_minimap', 'buildable', 'power'],  # 'rgb_screen', , 'pathable'
           # ['power', 'pathable', 'buildable', 'height_map', 'player_relative']
           'img_fea': self.ENABLE_IMAGE_FEATURE,
           'img_rgb': self.ENABLE_IMAGE_RGB,
